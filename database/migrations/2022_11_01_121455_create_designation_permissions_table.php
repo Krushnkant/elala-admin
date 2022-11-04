@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateDesignationPermissionsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('designation_permissions', function (Blueprint $table) {
+            $table->id();
+            $table->integer('designation_id');
+            $table->integer('project_page_id');
+            $table->boolean('can_read')->default(0)->comment('0->No,1->Yes');
+            $table->boolean('can_write')->default(0)->comment('0->No,1->Yes');
+            $table->boolean('can_delete')->default(0)->comment('0->No,1->Yes');
+            $table->integer('estatus')->default(1)->comment('1->Active,2->Deactive,3->Deleted,4->Pending');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('designation_permissions');
+    }
+}
