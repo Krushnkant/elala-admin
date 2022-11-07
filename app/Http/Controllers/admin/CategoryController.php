@@ -277,14 +277,16 @@ class CategoryController extends Controller
     public function categoryattributestore(Request $request)
     {
         $data = $request->all();
-        dd($data);
+        //dd($data);
         $field_titles = (isset($data['title']) && $data['title']) ? $data['title'] : null;
-        $catattr= CategoryAttribute::where('category_id',$request->category_id)->get()->pluck('id');
-
-        if(count($catattr) > 0){
-            $delete_sub_form_data_1 = AttributeOption::whereIn('attribute_id', $catattr)->delete();
-            $delete_subform_remove_form_fields = CategoryAttribute::where('category_id', $request->category_id)->delete();
-        }
+        $old_field_titles = (isset($data['old_title']) && $data['old_title']) ? $data['old_title'] : null;
+        $oldcateids = CategoryAttribute::where('category_id',$request->category_id)->get()->pluck('id');
+        $allreadycateids = (isset($data['allreadycateids']) && $data['allreadycateids']) ? $data['allreadycateids'] : [];
+          
+        // if(count($catattr) > 0){
+        //     $delete_sub_form_data_1 = AttributeOption::whereIn('attribute_id', $catattr)->delete();
+        //     $delete_subform_remove_form_fields = CategoryAttribute::where('category_id', $request->category_id)->delete();
+        // }
      
         if($field_titles != ""){
             foreach($field_titles as $key => $field_title){
@@ -304,10 +306,32 @@ class CategoryController extends Controller
                     }
                 }
             }
-            return response()->json(['status' => '200', 'action' => 'done']);
+            
         }
 
-       
+        if($old_field_titles != ""){
+            foreach($old_field_titles as $key => $old_field_title){
+                $CategoryAttributes = CategoryAttribute::find($request->allreadycateids[$key]);
+                $CategoryAttributes->title = $old_field_title;
+                $CategoryAttributes->field_id = $request->old_field_type[$key];
+                $CategoryAttributes->save();
+                if($request->old_field_type[$key] == 2 || $request->old_field_type[$key] == 3){
+                    $field_option_name = 'field_options_'.$key;
+                    if(isset($request->$field_option_name)){
+                        $field_options = $request->$field_option_name;
+                        foreach($field_options as $field_option){
+                            $AttributeOption = new AttributeOption();
+                            $AttributeOption->attribute_id = $CategoryAttributes->id;
+                            $AttributeOption->option_value = $field_option;
+                            $AttributeOption->save();
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        return response()->json(['status' => '200', 'action' => 'done']);
     }
 
 

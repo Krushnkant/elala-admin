@@ -51,6 +51,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-10 col-xl-6 add-value-main px-0">
                                         @foreach($already as $key => $data)
+                                        
                                         <?php
                                            
                                             $title = $data->id."_title[]"; 
@@ -59,6 +60,7 @@
                                         ?>
                                             @if($data->field_id == 1)
                                             <div class="row mt-3 mx-0"> 
+                                                <input type="hidden" value="{{$data->id}}" class="form-control input-flat pe-none" name="allreadycateids[]" />
                                                 <div class="col-12 col-sm-10 mb-3 mb-sm-0">
                                                     <input type="text" placeholder="Title" data="specific" data-id="{{ $key }}" id="{{$key_name_id}}" value="{{$data->title}}" class="form-control input-flat specReq" data-name="title" name="old_title[]" />
                                                     <label id="title-error" class="error invalid-feedback animated fadeInDown" for=""></label>
@@ -74,6 +76,7 @@
                                             </div><hr class="mb-4 mt-4">
                                             @elseif($data->field_id == 2 || $data->field_id == 3)
                                             <div class="row mt-3 mx-0"> 
+                                                <input type="hidden" value="{{$data->id}}" class="form-control input-flat pe-none" name="allreadycateids[]" />
                                                 <div class="col-12 col-sm-10 mb-3 mb-sm-0">
                                                     <input type="text" placeholder="Title" data="specific" data-id="{{ $key }}" id="{{$key_name_id}}" value="{{$data->title}}" class="form-control input-flat specReq myClass" data-name="title" name="old_title[]" />
                                                     <label id="title-error" class="error invalid-feedback animated fadeInDown" for=""></label>
@@ -142,9 +145,9 @@
 
 $(document).ready(function() { 
     //$("#Add").on("click", function() {
-    var count = "{{ count($already)}}";
-    var count_sm = "{{ count($already)}}" -1;
-    
+    var count = 0;
+    //var count_sm = "{{ count($already)}}" -1;
+    var count_sm = -1;
     $('body').on('click', '#Add', function(){    
         var html = "";
         count_sm++;
@@ -173,7 +176,7 @@ $(document).ready(function() {
       
             html += '<div class="row mt-3 mx-0">'+
                         '<div class="col-12 col-sm-10 mb-3 ">'+
-                            '<input type="text" placeholder="Title" data="specific" id="'+inputkey+'" class="form-control input-flat specReq myClass" data-name="title" name="title[]" /><label id="title-error my-0" class="error invalid-feedback animated fadeInDown" for=""></label>'+
+                            '<input type="text" placeholder="Title" data="specific" data-id="'+count+'" id="'+inputkey+'" class="form-control input-flat specReq myClass" data-name="title" name="title[]" /><label id="title-error my-0" class="error invalid-feedback animated fadeInDown" for=""></label>'+
                         '</div>'+
                         '<div class="">'+
                             '<input type="hidden" value="'+type+'" class="form-control input-flat pe-none" name="field_type[]"  />'+
@@ -200,7 +203,7 @@ $(document).ready(function() {
         }else if(type == 1){
             html += '<div class="row mt-3 mx-0">'+
                     '<div class="col-12 col-sm-10 mb-3 mb-sm-0">'+
-                        '<input type="text" placeholder="Title" data="specific" id="'+inputkey+'" class="form-control input-flat specReq myClass" data-name="title" name="title[]" /><label id="title-error my-0" class="error invalid-feedback animated fadeInDown" for=""></label>'+
+                        '<input type="text" placeholder="Title" data="specific" data-id="'+count+'" id="'+inputkey+'" class="form-control input-flat specReq myClass" data-name="title" name="title[]" /><label id="title-error my-0" class="error invalid-feedback animated fadeInDown" for=""></label>'+
                     '</div>'+
                     '<div class="">'+
                         '<input type="hidden" value="'+type+'" class="form-control input-flat pe-none" name="field_type[]"  />'+
@@ -225,6 +228,7 @@ $(document).ready(function() {
         var inputkeyoption = "ex_input_key_option_"+count1;
         console.log($(this).parent().parent().parent().parent().find('.myClass'));
         var count_s = $(this).parent().parent().parent().parent().find('.myClass').attr('data-id');
+       
         var next_sub_form_row = $(this).parent().parent().parent();
 
         var html = "";
