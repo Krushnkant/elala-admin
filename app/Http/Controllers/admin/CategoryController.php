@@ -1,0 +1,338 @@
+<?php
+
+namespace App\Http\Controllers\admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\AttributeOption;
+use App\Models\CategoryAttribute;
+use App\Models\ProjectPage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class CategoryController extends Controller
+{
+    private $page = "Category";
+
+    public function index(){
+        $action = "list";
+        $categories = Category::where('estatus',1)->get();
+        return view('admin.categories.list',compact('action','categories'))->with('page',$this->page);
+    }
+
+    public function create(){
+        $action = "create";
+        $categories = Category::where('estatus',1)->get()->toArray();
+        $sr_no = Category::where('estatus',1)->orderBy('sr_no','desc')->pluck('sr_no')->first();
+        return view('admin.categories.list',compact('action','categories','sr_no'))->with('page',$this->page);
+    }
+
+    public function save(Request $request){
+        $messages = [
+            'sr_no.required' =>'Please provide valid Serial Number',
+            'sr_no.numeric' =>'Please provide valid Serial Number',
+            'category_name.required' =>'Please provide a Category Name',
+            'catImg.required' =>'Please provide a Category Image',
+        ];
+
+        if(isset($request->action) && $request->action=="update"){
+            $validator = Validator::make($request->all(), [
+                'sr_no' => 'required|numeric',
+                'category_name' => 'required',
+                'catImg' => 'required',
+            ], $messages);
+        }
+        else{
+            $validator = Validator::make($request->all(), [
+                'sr_no' => 'required|numeric',
+                'category_name' => 'required',
+                'catImg' => 'required',
+            ], $messages);
+        }
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(),'status'=>'failed']);
+        }
+
+        if (isset($request->action) && $request->action=="update"){
+            $action = "update";
+            $category = Category::find($request->category_id);
+
+            if(!$category){
+                return response()->json(['status' => '400']);
+            }
+
+            if ($category->category_thumb != $request->catImg){
+                if(isset($category->category_thumb)) {
+                    $image = public_path($category->category_thumb);
+                    if (file_exists($image)) {
+                        unlink($image);
+                    }
+                }
+                $category->category_thumb = $request->catImg;
+
+            }
+
+            $category->sr_no = $request->sr_no;
+            $category->category_name = $request->category_name;
+            $category->parent_category_id = isset($request->parent_category_id)?$request->parent_category_id:0;
+            
+        }
+        else{
+            $action = "add";
+            $category = new Category();
+            $category->sr_no = $request->sr_no;
+            $category->category_name = $request->category_name;
+            $category->parent_category_id = isset($request->parent_category_id)?$request->parent_category_id:0;
+            //$category->created_at = new \DateTime(null, new \DateTimeZone('Asia/Kolkata'));
+            $category->category_thumb = $request->catImg;
+         
+        }
+
+        $category->save();
+         
+        return response()->json(['status' => '200', 'action' => $action]);
+    }
+
+    public function allcategorylist(Request $request){
+        if ($request->ajax()) {
+            $columns = array(
+                0 =>'sr_no',
+                1 =>'category_thumb',
+                2 => 'category_name',
+                3 => 'estatus',
+                4 => 'created_at',
+                5 => 'action',
+            );
+            $totalData = Category::count();
+            
+            $totalFiltered = $totalData;
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+
+            if($order == "sr_no"){
+                $order = "created_at";
+                $dir = 'desc';
+            }
+
+            if(empty($request->input('search.value')))
+            {
+                $categories = Category::offset($start)
+                    ->limit($limit)
+                    ->orderBy($order,$dir)
+                    ->get();
+              
+            }
+            else {
+                $search = $request->input('search.value');
+                $categories =  Category::where('sr_no','LIKE',"%{$search}%")
+                    ->orWhere('category_name', 'LIKE',"%{$search}%")
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order,$dir)
+                    ->get();
+
+
+                $totalFiltered = Category::where('sr_no','LIKE',"%{$search}%")
+                    ->orWhere('category_name', 'LIKE',"%{$search}%")
+                    ->count();
+          
+            }
+
+            $data = array();
+
+            if(!empty($categories))
+            {
+                foreach ($categories as $category)
+                {
+                    $page_id = ProjectPage::where('route_url','admin.categories.list')->pluck('id')->first();
+
+                    if( $category->estatus==1 && (getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id))) ){
+                        $estatus = '<label class="switch"><input type="checkbox" id="CategoryStatuscheck_'. $category->id .'" onchange="chageCategoryStatus('. $category->id .')" value="1" checked="checked"><span class="slider round"></span></label>';
+                    }
+                    elseif ($category->estatus==1){
+                        $estatus = '<label class="switch"><input type="checkbox" id="CategoryStatuscheck_'. $category->id .'" value="1" checked="checked"><span class="slider round"></span></label>';
+                    }
+
+                    if( $category->estatus==2 && (getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id))) ){
+                        $estatus = '<label class="switch"><input type="checkbox" id="CategoryStatuscheck_'. $category->id .'" onchange="chageCategoryStatus('. $category->id .')" value="2"><span class="slider round"></span></label>';
+                    }
+                    elseif ($category->estatus==2){
+                        $estatus = '<label class="switch"><input type="checkbox" id="CategoryStatuscheck_'. $category->id .'" value="2"><span class="slider round"></span></label>';
+                    }
+
+                    if(isset($category->category_thumb) && $category->category_thumb!=null){
+                        $thumb_path = url($category->category_thumb);
+                    }
+
+                    $action='';
+                    if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
+                        $action .= '<button id="addCategoryAttributeBtn" class="btn btn-gray text-pink btn-sm" onclick="" data-id="' .$category->id. '"><i class="fa fa-align-center" aria-hidden="true"></i></button>
+                                    <button id="editCategoryBtn" class="btn btn-gray text-blue btn-sm" data-id="' .$category->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+                    }
+                    if ( getUSerRole()==1 || (getUSerRole()!=1 && is_delete($page_id)) ){
+                        $action .= '<button id="deleteCategoryBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteCategoryModal" onclick="" data-id="' .$category->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
+                    }
+                    if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
+                        if($category->is_custom == 1){
+                            $action .= '<button id="viewpopCategoryBtn" class="btn btn-gray text-blue btn-sm" data-id="' .$category->id. '">step popup</button>';
+                        }
+                    }
+                    $nestedData['category_thumb'] = '<img src="'. $thumb_path .'" width="50px" height="50px" alt="Thumbnail">';
+                    $nestedData['category_name'] = $category->category_name;
+                    $nestedData['estatus'] = $estatus;
+                    $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($category->created_at));
+                    $nestedData['action'] = $action;
+                    $data[] = $nestedData;
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data" => $data,
+            );
+            echo json_encode($json_data);
+        }
+    }
+
+    public function changecategorystatus($id){
+        $category = Category::find($id);
+        if ($category->estatus==1){
+            $category->estatus = 2;
+            $category->save();
+            return response()->json(['status' => '200','action' =>'deactive']);
+        }
+        if ($category->estatus==2){
+            $category->estatus = 1;
+            $category->save();
+            return response()->json(['status' => '200','action' =>'active']);
+        }
+    }
+
+    public function deletecategory($id){
+        $category = Category::find($id);
+        if ($category){
+            $image = $category->category_thumb;
+            $category->estatus = 3;
+            $category->save();
+
+            $category->delete();
+            $image = public_path($image);
+            if (file_exists($image)) {
+                unlink($image);
+            }
+            return response()->json(['status' => '200']);
+        }
+        return response()->json(['status' => '400']);
+    }
+
+    public function editcategory($id){
+        $action = "edit";
+        $categories = Category::where('estatus',1)->where('id',"!=",$id)->where('parent_category_id',"!=",$id)->get()->toArray();
+        $category = Category::find($id);
+      
+        return view('admin.categories.list',compact('action','category','categories'))->with('page',$this->page);
+    }
+
+    public function uploadfile(Request $request){
+        if(isset($request->action) && $request->action == 'uploadCatIcon'){
+            if ($request->hasFile('files')) {
+                $image = $request->file('files')[0];
+                $image_name = 'categoryThumb_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
+                $destinationPath = public_path('images/categoryThumb');
+                $image->move($destinationPath, $image_name);
+                return response()->json(['data' => 'images/categoryThumb/'.$image_name]);
+            }
+        }
+    }
+
+    public function removefile(Request $request){
+        if(isset($request->action) && $request->action == 'removeCatIcon'){
+            $image = $request->file;
+            if(isset($image)) {
+                $image = public_path($request->file);
+                if (file_exists($image)) {
+                    unlink($image);
+                    return response()->json(['status' => '200']);
+                }
+            }
+        }
+    }
+
+    public function addcategoryattribute($id)
+    {
+        $already = CategoryAttribute::with('attr_optioin')->where('category_id', $id)->get();
+        if(count($already) > 0){
+            return view('admin.categories.update', compact('id','already'));
+        }else{
+            return view('admin.categories.add', compact('id'));
+        }
+    }
+
+    public function categoryattributestore(Request $request)
+    {
+        $data = $request->all();
+        //dd($data);
+        $field_titles = (isset($data['title']) && $data['title']) ? $data['title'] : null;
+        $old_field_titles = (isset($data['old_title']) && $data['old_title']) ? $data['old_title'] : null;
+        $oldcateids = CategoryAttribute::where('category_id',$request->category_id)->get()->pluck('id');
+        $allreadycateids = (isset($data['allreadycateids']) && $data['allreadycateids']) ? $data['allreadycateids'] : [];
+          
+        // if(count($catattr) > 0){
+        //     $delete_sub_form_data_1 = AttributeOption::whereIn('attribute_id', $catattr)->delete();
+        //     $delete_subform_remove_form_fields = CategoryAttribute::where('category_id', $request->category_id)->delete();
+        // }
+     
+        if($field_titles != ""){
+            foreach($field_titles as $key => $field_title){
+                $CategoryAttributes = new CategoryAttribute();
+                $CategoryAttributes->category_id = $request->category_id;
+                $CategoryAttributes->title = $field_title;
+                $CategoryAttributes->field_id = $request->field_type[$key];
+                $CategoryAttributes->save();
+                if($request->field_type[$key] == 2 || $request->field_type[$key] == 3){
+                    $field_option_name = 'field_options_'.$key;
+                    $field_options = $request->$field_option_name;
+                    foreach($field_options as $field_option){
+                        $AttributeOption = new AttributeOption();
+                        $AttributeOption->attribute_id = $CategoryAttributes->id;
+                        $AttributeOption->option_value = $field_option;
+                        $AttributeOption->save();
+                    }
+                }
+            }
+            
+        }
+
+        if($old_field_titles != ""){
+            foreach($old_field_titles as $key => $old_field_title){
+                $CategoryAttributes = CategoryAttribute::find($request->allreadycateids[$key]);
+                $CategoryAttributes->title = $old_field_title;
+                $CategoryAttributes->field_id = $request->old_field_type[$key];
+                $CategoryAttributes->save();
+                if($request->old_field_type[$key] == 2 || $request->old_field_type[$key] == 3){
+                    $field_option_name = 'field_options_'.$key;
+                    if(isset($request->$field_option_name)){
+                        $field_options = $request->$field_option_name;
+                        foreach($field_options as $field_option){
+                            $AttributeOption = new AttributeOption();
+                            $AttributeOption->attribute_id = $CategoryAttributes->id;
+                            $AttributeOption->option_value = $field_option;
+                            $AttributeOption->save();
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        return response()->json(['status' => '200', 'action' => 'done']);
+    }
+
+
+}
