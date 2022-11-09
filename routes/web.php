@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController,CategoryController};
+use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController,CategoryController,CategoryAttributeController};
 
 
 
@@ -16,6 +16,14 @@ use App\Http\Controllers\admin\{AuthController,DashboardController,UserControlle
 |
 */
 
+Route::get('/clear-cache', function() {
+    //dd(bcrypt('123456'));
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    return "Cache is cleared";
+});
 
 //Admin  Rpute
 Route::get('admin',[AuthController::class,'index'])->name('admin.login');
@@ -65,8 +73,9 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('categories/uploadfile',[CategoryController::class,'uploadfile'])->name('categories.uploadfile');
     Route::post('categories/removefile',[CategoryController::class,'removefile'])->name('categories.removefile');
     Route::get('categories/checkparentcat/{id}',[CategoryController::class,'checkparentcat'])->name('categories.checkparentcat');
-    Route::get('addcategoryattribute/{id}',[CategoryController::class,'addcategoryattribute'])->name('categories.addcategoryattribute');
-    Route::post('categoryattribute/store',[CategoryController::class,'categoryattributestore'])->name('categoryattribute.store');
+
+    Route::get('addcategoryattribute/{id}',[CategoryAttributeController::class,'addcategoryattribute'])->name('categories.addcategoryattribute');
+    Route::post('categoryattribute/store',[CategoryAttributeController::class,'categoryattributestore'])->name('categoryattribute.store');
 
 
     

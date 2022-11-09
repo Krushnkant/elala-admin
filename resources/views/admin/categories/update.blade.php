@@ -98,6 +98,7 @@
                                                     <div class="row  mx-0 ">
                                                         <div class="col-8 col-sm-8 mt-2">
                                                             <input type="text" class="form-control input-flat pe-none" value="{{$option->option_value}}"  id="" name="old_field_options_{{ $key }}[]" placeholder="option value" />
+                                                            <input type="hidden" value="{{$option->id}}" class="" name="old_field_options_ids_{{ $key }}[]" />
                                                         </div>
                                                         <div class="ml-auto col-2 col-sm-2 mt-2">
                                                             <button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>
@@ -184,7 +185,7 @@ $(document).ready(function() {
                         '<div class="col-2 col-sm-2 text-center">'+
                             '<button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>'+
                         '</div>'+
-                    '</div>'+
+                    
                     '<div class="optiondiv">'+
                         '<div class="row  mx-0 ">'+
                             '<div class="col-8 col-sm-8">'+
@@ -197,7 +198,8 @@ $(document).ready(function() {
                             
                             '</div>'+
                         '</div>'+
-                    '</div><hr class="mb-4 mt-4">';
+                    '</div><hr class="mb-4 mt-4">'+
+                    '</div>';
             $(".add-value-main").append(html);
            
         }else if(type == 1){
@@ -226,9 +228,9 @@ $(document).ready(function() {
     $('body').on('click', '#AddOption', function(){  
    
         var inputkeyoption = "ex_input_key_option_"+count1;
-        console.log($(this).parent().parent().parent().parent().find('.myClass'));
+        //console.log($(this).parent().parent().parent().parent().find('.myClass'));
         var count_s = $(this).parent().parent().parent().parent().find('.myClass').attr('data-id');
-       
+
         var next_sub_form_row = $(this).parent().parent().parent();
 
         var html = "";
