@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController,CategoryController,CategoryAttributeController};
-
+use App\Http\Controllers\admin\{ExperienceController};
 
 
 /*
@@ -24,6 +24,8 @@ Route::get('/clear-cache', function() {
     Artisan::call('config:clear');
     return "Cache is cleared";
 });
+
+
 
 //Admin  Rpute
 Route::get('admin',[AuthController::class,'index'])->name('admin.login');
@@ -77,8 +79,14 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::get('addcategoryattribute/{id}',[CategoryAttributeController::class,'addcategoryattribute'])->name('categories.addcategoryattribute');
     Route::post('categoryattribute/store',[CategoryAttributeController::class,'categoryattributestore'])->name('categoryattribute.store');
 
-
-    
+    //experience route
+    Route::get('experience',[ExperienceController::class,'index'])->name('experience.list');
+    Route::post('allexperiencelist',[ExperienceController::class,'allexperiencelist'])->name('allcategorylist');
+    Route::post('experience/save',[ExperienceController::class,'save'])->name('experience.save');
+    Route::get('experience/{id}/edit',[ExperienceController::class,'editexperience'])->name('experience.edit');
+    Route::get('changeexperiencestatus/{id}',[ExperienceController::class,'changeexperiencestatus'])->name('experience.changeexperiencestatus');
+    Route::get('experience/{id}/delete',[ExperienceController::class,'deleteexperience'])->name('experience.delete');
+    Route::post('experience/removefile',[ExperienceController::class,'removefile'])->name('experience.removefile');
 });
 
 Route::group(['middleware'=>['auth']],function (){

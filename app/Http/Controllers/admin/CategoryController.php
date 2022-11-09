@@ -174,11 +174,7 @@ class CategoryController extends Controller
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_delete($page_id)) ){
                         $action .= '<button id="deleteCategoryBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteCategoryModal" onclick="" data-id="' .$category->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
                     }
-                    if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
-                        if($category->is_custom == 1){
-                            $action .= '<button id="viewpopCategoryBtn" class="btn btn-gray text-blue btn-sm" data-id="' .$category->id. '">step popup</button>';
-                        }
-                    }
+                  
                     $nestedData['category_thumb'] = '<img src="'. $thumb_path .'" width="50px" height="50px" alt="Thumbnail">';
                     $nestedData['category_name'] = $category->category_name;
                     $nestedData['estatus'] = $estatus;

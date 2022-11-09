@@ -67,6 +67,17 @@ class ProjectPageSeeder extends Seeder
             'sr_no' => 2
         ]);
 
+        ProjectPage::create([
+            'id' => 6,
+            'parent_menu' => 0,
+            'label' => 'Experience',
+            'icon_class' => 'fa fa-level-up',
+            'route_url' => 'admin.experience.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.experience.list',
+            'sr_no' => 3
+        ]);
+
 
         $users = User::where('role',"!=",1)->get();
         $project_page_ids1 = ProjectPage::where('parent_menu',0)->where('is_display_in_menu',0)->pluck('id')->toArray();

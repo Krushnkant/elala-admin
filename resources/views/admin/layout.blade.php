@@ -25,10 +25,13 @@
     <link href="{{ asset('css/jquery.filer-dragdropbox-theme.css') }}" rel="stylesheet">
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
     <link href="{{asset('css/custom-style.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.css" />
 {{--    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">--}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     {{--    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>--}}
+    
 
+   
 </head>
 
 <body>
@@ -278,7 +281,7 @@
 <script src="{{ asset('js/CatImgJs.js') }}" type="text/javascript"></script>
 
 <script src="{{ url('plugins/chart.js/Chart.bundle.min.js') }}"></script>
-
+<script src="//cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.min.js"></script>
 @yield('js')
 
 </body>

@@ -1,0 +1,332 @@
+@extends('admin.layout')
+
+@section('content')
+    <div class="row page-titles mx-0">
+        <div class="col p-md-0">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Experience</a></li>
+            </ol>
+        </div>
+    </div>
+    <!-- row -->
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        @if(isset($action) && $action=='list')
+                            <div class="table-responsive">
+                                <table id="Experience" class="table zero-configuration customNewtable" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Sr. No</th>
+                                        <th>Name</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Time</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Sr. No</th>
+                                        <th>Name</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Time</th>
+                                        <th>Price</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        @endif
+
+                        @if(isset($action) && $action=='edit')
+                            @include('admin.experience.edit')
+                        @endif
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="DeleteExperienceModal">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Remove Experience</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you wish to remove this Experience?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Cancel</button>
+                    <button class="btn btn-danger" id="RemoveExperienceSubmit" type="submit">Remove <i class="fa fa-circle-o-notch fa-spin removeloadericonfa" style="display:none;"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('js')
+<!-- category JS start -->
+<script type="text/javascript">
+
+$('#language_id').select2({
+    width: '100%',
+    placeholder: "Select Language",
+    allowClear: true
+}).trigger('change');    
+
+
+$(document).ready(function() {
+    experience_table(true);
+});
+
+
+
+$('body').on('click', '#save_closeExperienceBtn', function () {
+    save_experience($(this),'save_close');
+});
+
+$('body').on('click', '#save_newExperienceBtn', function () {
+    save_experience($(this),'save_new');
+});
+
+function save_experience(btn,btn_type){
+    $(btn).prop('disabled',true);
+    $(btn).find('.loadericonfa').show();
+    var action  = $(btn).attr('data-action');
+
+    var formData = new FormData($("#ExperienceCreateForm")[0]);
+    formData.append('action',action);
+
+    $.ajax({
+        type: 'POST',
+        url: "{{ route('admin.experience.save') }}",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            if(res.status == 'failed'){
+                $(btn).prop('disabled',false);
+                $(btn).find('.loadericonfa').hide();
+
+                if (res.errors.sr_no) {
+                    $('#srno-error').show().text(res.errors.sr_no);
+                } else {
+                    $('#srno-error').hide();
+                }
+
+                if (res.errors.category_name) {
+                    $('#categoryname-error').show().text(res.errors.category_name);
+                } else {
+                    $('#categoryname-error').hide();
+                }
+
+                if (res.errors.catImg) {
+                    $('#categorythumb-error').show().text(res.errors.catImg);
+                } else {
+                    $('#categorythumb-error').hide();
+                }
+            }
+
+            if(res.status == 200){
+                if(btn_type == 'save_close'){
+                    $(btn).prop('disabled',false);
+                    $(btn).find('.loadericonfa').hide();
+                    location.href="{{ route('admin.categories.list')}}";
+                    if(res.action == 'add'){
+                        toastr.success("Category Added",'Success',{timeOut: 5000});
+                    }
+                    if(res.action == 'update'){
+                        toastr.success("Category Updated",'Success',{timeOut: 5000});
+                    }
+                }
+                if(btn_type == 'save_new'){
+                    $(btn).prop('disabled',false);
+                    $(btn).find('.loadericonfa').hide();
+                    $('#CategoryCreateForm').trigger("reset");
+                    location.href="{{ route('admin.categories.add')}}";
+                    if(res.action == 'add'){
+                        toastr.success("Category Added",'Success',{timeOut: 5000});
+                    }
+                    if(res.action == 'update'){
+                        toastr.success("Category Updated",'Success',{timeOut: 5000});
+                    }
+                }
+            }
+
+        },
+        error: function (data) {
+            $(btn).prop('disabled',false);
+            $(btn).find('.loadericonfa').hide();
+            toastr.error("Please try again",'Error',{timeOut: 5000});
+        }
+    });
+}
+
+function experience_table(is_clearState=false){
+    if(is_clearState){
+        $('#Experience').DataTable().state.clear();
+    }
+
+    $('#Experience').DataTable({
+        "destroy": true,
+        "processing": true,
+        "serverSide": true,
+        'stateSave': function(){
+            if(is_clearState){
+                return false;
+            }
+            else{
+                return true;
+            }
+        },
+        "ajax":{
+            "url": "{{ url('admin/allexperiencelist') }}",
+            "dataType": "json",
+            "type": "POST",
+            "data":{ _token: '{{ csrf_token() }}' },
+            // "dataSrc": ""
+        },
+        'columnDefs': [
+            { "width": "50px", "targets": 0 },
+            { "width": "120px", "targets": 1 },
+            { "width": "170px", "targets": 2 },
+            { "width": "70px", "targets": 3 },
+            { "width": "120px", "targets": 4 },
+            { "width": "120px", "targets": 5 },
+            { "width": "120px", "targets": 6 },
+            { "width": "120px", "targets": 7 },
+            { "width": "120px", "targets": 8 },
+        ],
+        "columns": [
+            {data: 'sr_no', name: 'sr_no', class: "text-center", orderable: false,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
+            {data: 'name', name: 'name', orderable: false, searchable: false, class: "text-center"},
+            {data: 'title', name: 'title', orderable: false, searchable: false, class: "text-center"},
+            {data: 'category_name', name: 'category_name', class: "text-left", orderable: false, searchable: false,},
+            {data: 'time', name: 'time', class: "text-left", orderable: false, searchable: false,},
+            {data: 'price', name: 'price', class: "text-left", orderable: false, searchable: false,},
+            {data: 'estatus', name: 'estatus', orderable: false, searchable: false, class: "text-center"},
+            {data: 'created_at', name: 'created_at', searchable: false, class: "text-left"},
+            {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
+        ]
+    });
+}
+
+function chageExperienceStatus(experience_id) {
+    $.ajax({
+        type: 'GET',
+        url: "{{ url('admin/changeexperiencestatus') }}" +'/' + experience_id,
+        success: function (res) {
+            if(res.status == 200 && res.action=='deactive'){
+                $("#ExperienceStatuscheck_"+experience_id).val(2);
+                $("#ExperienceStatuscheck_"+experience_id).prop('checked',false);
+                toastr.success("Experience Deactivated",'Success',{timeOut: 5000});
+            }
+            if(res.status == 200 && res.action=='active'){
+                $("#ExperienceStatuscheck_"+experience_id).val(1);
+                $("#ExperienceStatuscheck_"+experience_id).prop('checked',true);
+                toastr.success("Experience activated",'Success',{timeOut: 5000});
+            }
+        },
+        error: function (data) {
+            toastr.error("Please try again",'Error',{timeOut: 5000});
+        }
+    });
+}
+
+
+
+$('body').on('click', '#deleteExperienceBtn', function (e) {
+    // e.preventDefault();
+    var experience_id = $(this).attr('data-id');
+    $("#DeleteExperienceModal").find('#RemoveExperienceSubmit').attr('data-id',experience_id);
+});
+
+$('body').on('click', '#RemoveExperienceSubmit', function (e) {
+    $('#RemoveExperienceSubmit').prop('disabled',true);
+    $(this).find('.removeloadericonfa').show();
+    e.preventDefault();
+    var experience_id = $(this).attr('data-id');
+    $.ajax({
+        type: 'GET',
+        url: "{{ url('admin/experience') }}" +'/' + experience_id +'/delete',
+        success: function (res) {
+            if(res.status == 200){
+                $("#DeleteExperienceModal").modal('hide');
+                $('#RemoveExperienceSubmit').prop('disabled',false);
+                $("#RemoveExperienceSubmit").find('.removeloadericonfa').hide();
+                experience_table();
+                toastr.success("Experience Deleted",'Success',{timeOut: 5000});
+            }
+
+            if(res.status == 400){
+                $("#DeleteExperienceModal").modal('hide');
+                $('#RemoveExperienceSubmit').prop('disabled',false);
+                $("#RemoveExperienceSubmit").find('.removeloadericonfa').hide();
+                experience_table();
+                toastr.error("Please try again",'Error',{timeOut: 5000});
+            }
+        },
+        error: function (data) {
+            $("#DeleteExperienceModal").modal('hide');
+            $('#RemoveExperienceSubmit').prop('disabled',false);
+            $("#RemoveExperienceSubmit").find('.removeloadericonfa').hide();
+            experience_table();
+            toastr.error("Please try again",'Error',{timeOut: 5000});
+        }
+    });
+});
+
+$('#DeleteExperienceModal').on('hidden.bs.modal', function () {
+    $(this).find("#RemoveExperienceSubmit").removeAttr('data-id');
+});
+
+$('body').on('click', '#editExperienceBtn', function () {
+    var experience_id = $(this).attr('data-id');
+    var url = "{{ url('admin/experience') }}" + "/" + experience_id + "/edit";
+    window.open(url,"_blank");
+});
+
+function removeuploadedimg(divId ,inputId, imgName){
+    if(confirm("Are you sure you want to remove this file?")){
+        $("#"+divId).remove();
+        $("#"+inputId).removeAttr('value');
+        var filerKit = $("#catIconFiles").prop("jFiler");
+        filerKit.reset();
+    }
+}
+
+$(document).on('change', '#is_bring_item', function() {
+    if ($(this).is(':checked')) {
+        var value =$(this).val();
+       if(value != 1){
+        $(".BringItem").hide();
+       }else{
+        $(".BringItem").show();
+       }
+        
+        
+    }
+   
+});
+
+</script>
+<!-- category JS end -->
+@endsection
+
