@@ -113,7 +113,7 @@ class ExperienceController extends Controller
                     
                     $nestedData['name'] = $experience->user->full_name;
                     $nestedData['title'] = $experience->title;
-                    $nestedData['category_name'] = $experience->category->category_name;
+                    $nestedData['category_name'] = isset($experience->category)?$experience->category->category_name:"";
                     $nestedData['time'] = $experience->duration .' min';
                     $nestedData['price'] = $price;
                     $nestedData['estatus'] = $estatus;
