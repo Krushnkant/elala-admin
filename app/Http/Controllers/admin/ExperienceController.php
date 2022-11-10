@@ -7,10 +7,12 @@ use App\Models\Experience;
 use App\Models\ProjectPage;
 use App\Models\Language;
 use App\Models\AgeGroup;
+use App\Models\ExperienceMedia;
 use App\Models\ExperienceProvideItem;
 use App\Models\ExperienceBrindItem;
 use App\Models\ExperienceLanguage;
 use App\Models\CategoryAttribute;
+use App\Models\ExperienceCategoryAttribute;
 use App\Models\ExperienceCancellationPolicy;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -128,9 +130,135 @@ class ExperienceController extends Controller
                 "data" => $data,
             );
             echo json_encode($json_data);
+        }   
+    }
+
+    public function save(Request $request){
+        //dd($request->all());
+        $messages = [
+            'type.required' =>'Please provide a type',
+            'location.required' =>'Please provide a location',
+            'language_id.required' =>'Please select language',
+            'title.required' =>'Please provide a title',
+            'description.required' =>'Please provide a description',
+            'duration.required' =>'Please provide a time section',
+            'age_limit.required' =>'Please provide a age limit',
+            'is_bring_item.required' =>'Please provide a is bring item',
+            'meet_address.required' =>'Please provide a  street address',
+            'meet_city.required' =>'Please provide a city',
+            'meet_state.required' =>'Please provide a state',
+            'meet_country.required' =>'Please provide a country',
+            'pine_code.required' =>'Please provide a pinecode',
+            'max_member_public_group_size.required' =>'Please provide a Public Groups',
+            'max_member_private_group_size.required' =>'Please provide a Private Groups',
+            'individual_rate.required' =>'Please provide a individual rate',
+            'min_private_group_rate.required' =>'Please provide a Private Groups Rate',
+            'cancellation_policy_id.required' =>'Please Chosse a cancellation policy'
+        ];
+
+        
+        $validator = Validator::make($request->all(), [
+            'type' => 'required',
+            'location' => 'required',
+            'language_id' => 'required',
+            'title' => 'required',
+            'description' => 'required',
+            'duration' => 'required',
+            'age_limit' => 'required',
+            'is_bring_item' => 'required',
+            'meet_address' => 'required',
+            'meet_city' => 'required',
+            'meet_state' => 'required',
+            'meet_country' => 'required',
+            'pine_code' => 'required',
+            'max_member_public_group_size' => 'required',
+            'max_member_private_group_size' => 'required',
+            'individual_rate' => 'required',
+            'min_private_group_rate' => 'required',
+            'cancellation_policy_id' => 'required',
+        ], $messages);
+        
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(),'status'=>'failed']);
         }
 
         
+        $action = "update";
+        $experience = Experience::find($request->experience_id);
+
+        if(!$experience){
+            return response()->json(['status' => '400']);
+        }
+        $experience->type = $request->type;
+        $experience->location = $request->location;
+        //$experience->language_id = $request->language_id;
+        $experience->title = $request->title;
+        $experience->description = $request->description;
+        $experience->duration = $request->duration;
+        $experience->age_limit = implode(',',$request->age_limit);
+        $experience->is_bring_item = $request->is_bring_item;
+        $experience->meet_address = $request->meet_address;
+        $experience->meet_address_flat_no = $request->meet_address_flat_no;
+        $experience->meet_city = $request->meet_city;
+        $experience->meet_state = $request->meet_state;
+        $experience->meet_country = $request->meet_country;
+        $experience->pine_code = $request->pine_code;
+        $experience->max_member_public_group_size = $request->max_member_public_group_size;
+        $experience->individual_rate = $request->individual_rate;
+        $experience->min_private_group_rate = $request->min_private_group_rate;
+        $experience->cancellation_policy_id = $request->cancellation_policy_id;
+        $experience->save();
+
+        $oldlanguageids = ExperienceLanguage::where('experience_id',$request->experience_id)->get()->pluck('language_id')->toArray();
+        foreach($oldlanguageids as $oldlanguageid){
+            if(!in_array($oldlanguageid,$request->language_id)){
+                $experiencelanguage = ExperienceLanguage::find($oldlanguageid);
+                $experiencelanguage->delete();
+            }
+        }
+
+        foreach($request->language_id as $language_id){
+            if(!in_array($language_id,$oldlanguageids)){
+                $experiencelanguage = New ExperienceLanguage();
+                $experiencelanguage->experience_id = $request->experience_id;
+                $experiencelanguage->language_id = $language_id;
+                $experiencelanguage->save();
+            }
+        }
+
+        $experiencelanguage = ExperienceProvideItem::where('experience_id',$request->experience_id);
+        $experiencelanguage->delete();
+
+        $experiencelanguage = ExperienceBrindItem::where('experience_id',$request->experience_id);
+        $experiencelanguage->delete();
+
+        $provide_items = explode(',',$request->provide_item);
+        foreach($provide_items as $provide_item){
+            $experiencelanguage = New ExperienceProvideItem();
+            $experiencelanguage->experience_id = $request->experience_id;
+            $experiencelanguage->title = $provide_item;
+            $experiencelanguage->save();
+        }
+
+        $bring_items = explode(',',$request->bring_item);
+        foreach($bring_items as $bring_item){
+            $experiencelanguage = New ExperienceBrindItem();
+            $experiencelanguage->experience_id = $request->experience_id;
+            $experiencelanguage->title = $bring_item;
+            $experiencelanguage->save();
+        }
+
+        if(isset($request->tagid)){
+            foreach($request->tagid as $tid){
+                $tagvalue = 'tagvalue'.$tid;
+                $value = implode(',',$request->$tagvalue);
+                $categoryattribute = ExperienceCategoryAttribute::where('experience_id',$request->experience_id)->where('cat_attr_id',$tid)->first();
+                $categoryattribute->value = $value;
+                $categoryattribute->save();
+            }
+        }
+        return response()->json(['status' => '200', 'action' => $action]);
     }
 
     public function editexperience($id){
@@ -178,14 +306,21 @@ class ExperienceController extends Controller
 
     public function removefile(Request $request){
         if(isset($request->action) && $request->action == 'removeCatIcon'){
-            $image = $request->file;
-            if(isset($image)) {
-                $image = public_path($request->file);
-                if (file_exists($image)) {
-                    unlink($image);
-                    return response()->json(['status' => '200']);
-                }
+            // $image = $request->file;
+            // if(isset($image)) {
+            //     $image = public_path($request->file);
+            //     if (file_exists($image)) {
+            //         unlink($image);
+            //         return response()->json(['status' => '200']);
+            //     }
+            // }
+            $Media = ExperienceMedia::find($request->imgId);
+            if ($Media){
+                $Media->delete();
+                return response()->json(['status' => '200']);
             }
+            return response()->json(['status' => '400']);
+
         }
     }
 }

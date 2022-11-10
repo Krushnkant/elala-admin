@@ -24,10 +24,9 @@
    
     @if(isset($languages) && !empty($languages))
         <div class="form-group">
-            <label class="col-form-label" for="parent_category_id">Language
+            <label class="col-form-label" for="language_id">Language
             </label>
-            <select id='language_id' name="language_id" class="form-control" multiple>
-                <option></option>
+            <select id='language_id' name="language_id[]" class="form-control" multiple>
                 @foreach($languages as $lag)
                     <option value="{{ $lag['id'] }}" {{ (in_array($lag['id'],$experiencelanguage)) ? "selected" : "" }} >{{ $lag['title'] }}</option>
                 @endforeach
@@ -38,7 +37,7 @@
     <div class="form-group">
         <label class="col-form-label" for="category">Category <span class="text-danger">*</span>
         </label>
-        <input type="text" class="form-control input-flat" id="category" name="category" value="{{ isset($experience)?($experience->category->category_name):'' }}">
+        <input type="text" class="form-control input-flat" id="category" name="category" value="{{ isset($experience)?($experience->category->category_name):'' }}" readonly>
         <div id="category-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
     </div>
 
@@ -67,33 +66,49 @@
             <ul class="jFiler-items-list jFiler-items-grid">
         <?php 
          foreach ($experience->media as $image) {   
-             
+            $idmodel = "myModal".$image->id; 
         ?>
             @if($image->type == 'img')
             <li id="ImgBox" class="jFiler-item" data-jfiler-index="1" style="">
                 <div class="jFiler-item-container">
                     <div class="jFiler-item-inner">
-                        <div class="jFiler-item-thumb">
+                        <div class="jFiler-item-thumb" data-toggle="modal" data-target="#{{ $idmodel }}">
                             <div class="jFiler-item-status"></div>
                             <div class="jFiler-item-thumb-overlay"></div>
                             <div class="jFiler-item-thumb-image">
-                                <img src="{{ url($image->thumb) }}" draggable="false">
-                                
+                                <img src="{{ url($image->thumb) }}" draggable="false" class="set_img" data-toggle="modal" data-target="#{{ $idmodel }}" > 
                             </div>
                         </div>
                         <div class="jFiler-item-assets jFiler-row">
                             <ul class="list-inline pull-right">
-                                <li><a class="icon-jfi-trash jFiler-item-trash-action" onclick="removeuploadedimg('ImgBox', 'catImg','<?php echo $image->thumb;?>');"></a></li>
+                                <li><a class="icon-jfi-trash jFiler-item-trash-action" onclick="removeuploadedimg('ImgBox', 'expImg','<?php echo $image->id;?>');"></a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </li>
+
+            <div class="modal fade" id="{{ $idmodel }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                   
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body"><img src="{{ url($image->thumb) }}" style="height: 300px;width: 100%;"></div>
+                    
+                  </div>
+                </div>
+              </div>
+           
+          
             @else
             <li class="jFiler-item jFiler-no-thumbnail" data-jfiler-index="0" style="">				
                 <div class="jFiler-item-container">					
                     <div class="jFiler-item-inner">			
-                        <div class="jFiler-item-thumb">				
+                        <div class="jFiler-item-thumb" data-toggle="modal" data-target="#{{ $idmodel }}">				
                             <div class="jFiler-item-status"></div>		
                             <div class="jFiler-item-thumb-overlay">	
                     	        <div class="jFiler-item-info">	
@@ -118,6 +133,28 @@
                         </div>				                                                                                                                        		
                     </div>	                                                                                                                               				
                 </li>
+
+
+                <div class="modal fade" id="{{ $idmodel }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                       
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            <video width="320" height="240" controls style="height: 300px;width: 100%;">
+                        <source src="{{ url($image->thumb) }}" type="video/mp4">
+                        <source src="movie.ogg" type="video/ogg">
+                       
+                        </video>  
+                    </div>
+                       
+                      </div>
+                    </div>
+                  </div>
              @endif
             <?php 
                } 
@@ -149,7 +186,7 @@
             @foreach($agegroups as $age)
             <div class="form-check form-check-inline">
                 <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input" name="age_limit" {{ (in_array($age['id'],$age_ids)) ? "checked" : "" }} value="{{ $age['id'] }}">{{ $age['from_age'] }} to {{ $age['to_age'] }}
+                    <input type="checkbox" class="form-check-input" name="age_limit[]" {{ (in_array($age['id'],$age_ids)) ? "checked" : "" }} value="{{ $age['id'] }}">{{ $age['from_age'] }} to {{ $age['to_age'] }}
                 </label>
             </div>
             @endforeach
@@ -176,8 +213,8 @@
     <div class="form-group BringItem">
         <label class="col-form-label" for="title">Bring Item <span class="text-danger">*</span>
         </label><br>
-        <input type="text" data-role="tagsinput" class="form-control input-flat" id="provide_item" name="provide_item" value="{{ isset($experience)?($brinditems):'' }}">
-        <div id="provide_item-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+        <input type="text" data-role="tagsinput" class="form-control input-flat" id="bring_item" name="bring_item" value="{{ isset($experience)?($brinditems):'' }}">
+        <div id="bring_item-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
     </div>
 
     <div class="form-group">
@@ -295,13 +332,26 @@
         <div class="form-group">
             <label class="col-form-label" for="">{{ $attribute['title'] }}  <span class="text-danger">*</span>
             </label><br>
+            <?php  
+                $submenupages = \App\Models\ExperienceCategoryAttribute::where('experience_id',$experience->id)->get()->toArray();
+                $value = searchForId($attribute['id'], $submenupages); 
+            ?>
+            <input type="hidden" class="form-control input-flat"  name="tagid[]" value="{{ $attribute['id'] }}">
+            <input type="hidden" class="form-control input-flat"  name="tagid[]" value="{{ $attribute['id'] }}">
             @if($attribute['field_id']  == 1)
-            <input type="text" class="form-control input-flat" id="" name="" value="">
+            <input type="text" class="form-control input-flat"  name="tagvalue{{ $attribute['id'] }}[]" value="{{ $value }}">
             @elseif($attribute['field_id']  == 2)
+                <?php 
+                    if($value != ""){
+                        $valuearray = explode(',',$value); 
+                    }else{
+                        $valuearray = [];
+                    }
+                ?>
                 @foreach ($attribute['attr_optioin'] as $optioin)
                     <div class="form-check form-check-inline">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" name="cancellation_policy_id" value="{{ $optioin['id'] }}">{{ $optioin['option_value'] }} 
+                            <input type="checkbox" class="form-check-input" name="tagvalue{{ $attribute['id'] }}[]" value="{{ $optioin['id'] }}" {{ (in_array($optioin['id'],$valuearray)) ? "checked" : "" }}>{{ $optioin['option_value'] }} 
                         </label>
                     </div>
                 @endforeach
@@ -309,7 +359,7 @@
                 @foreach ($attribute['attr_optioin'] as $optioin)
                 <div class="form-check form-check-inline">
                     <label class="form-check-label">
-                        <input type="radio" class="form-check-input" name="cancellation_policy_id" value="{{ $optioin['id'] }}">{{ $optioin['option_value'] }}
+                        <input type="radio" class="form-check-input" name="tagvalue{{ $attribute['id'] }}[]"  value="{{ $optioin['id'] }}" {{ ($value == $optioin['id']) ? "checked" : ""  }}>{{ $optioin['option_value'] }}
                     </label>
                 </div>
                 @endforeach
@@ -318,10 +368,19 @@
         @endforeach
     @endif
 
-  
 
-    <button type="button" class="btn btn-outline-primary mt-4" id="save_newCategoryBtn" data-action="update">Save & New <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>&nbsp;&nbsp;
-    <button type="button" class="btn btn-primary mt-4" id="save_closeCategoryBtn" data-action="update">Save & Close <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>
+    <button type="button" class="btn btn-outline-primary mt-4" id="save_newExperienceBtn" data-action="update">Save & New <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>&nbsp;&nbsp;
+    <button type="button" class="btn btn-primary mt-4" id="save_closeExperienceBtn" data-action="update">Save & Close <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>
     </div>
 </form>
+<?php 
+function searchForId($id, $array) {
+    foreach($array as $key => $val) {
+        if($val['cat_attr_id'] == $id) {
+            return $val['value'];
+        }
+    }
+    return null;
+ }
 
+ ?>
