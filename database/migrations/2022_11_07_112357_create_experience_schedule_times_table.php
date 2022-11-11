@@ -17,7 +17,7 @@ class CreateExperienceScheduleTimesTable extends Migration
             $table->id();
             $table->integer('experience_id');
             $table->string('day',255)->nullable();
-            $table->string('time',255)->nullable();
+            $table->time('time');
             $table->timestamps();
         });
     }

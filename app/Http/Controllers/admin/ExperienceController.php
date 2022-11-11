@@ -41,8 +41,28 @@ class ExperienceController extends Controller
                 7 => 'created_at',
                 8 => 'action',
             );
-            $totalData = Experience::count();
+
+            $tab_type = $request->tab_type;
+            if ($tab_type == "Approved_experience_tab"){
+                $experience_status = [1];
+            }
+            elseif ($tab_type == "Rejected_experience_tab"){
+                $experience_status = [6];
+            }
+            elseif ($tab_type == "Draft_experience_tab"){
+                $experience_status = [5];
+            }
+            elseif ($tab_type == "Padding_experience_tab"){
+                $experience_status = [4];
+            }
+            elseif ($tab_type == "Deactive_experience_tab"){
+                $experience_status = [2];
+            }
             
+            $totalData = Experience::count();
+            if (isset($experience_status)){
+                $totalData = Experience::whereIn('estatus',$experience_status)->count();
+            }
             $totalFiltered = $totalData;
 
             $limit = $request->input('length');
@@ -57,7 +77,11 @@ class ExperienceController extends Controller
 
             if(empty($request->input('search.value')))
             {
-                $experiences = Experience::with('user','category')->offset($start)
+                $experiences = Experience::with('user','category');
+                if(isset($experience_status)){
+                    $experiences = $experiences->whereIn('estatus',$experience_status);
+                }
+                $experiences = $experiences->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
                     ->get();
@@ -65,7 +89,11 @@ class ExperienceController extends Controller
             }
             else {
                 $search = $request->input('search.value');
-                $experiences =  Experience::with('user','category')->where('sr_no','LIKE',"%{$search}%")
+                $experiences =  Experience::with('user','category');
+                if (isset($experience_status)){
+                    $experiences = $experiences->whereIn('estatus',$experience_status);
+                }
+                $experiences = $experiences->where('sr_no','LIKE',"%{$search}%")
                     ->orWhere('title', 'LIKE',"%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -73,9 +101,7 @@ class ExperienceController extends Controller
                     ->get();
 
 
-                $totalFiltered = Experience::with('user','category')->where('sr_no','LIKE',"%{$search}%")
-                    ->orWhere('title', 'LIKE',"%{$search}%")
-                    ->count();
+                $totalFiltered = count($experiences->toArray());
           
             }
 
@@ -86,7 +112,7 @@ class ExperienceController extends Controller
                 foreach ($experiences as $experience)
                 {
                     $page_id = ProjectPage::where('route_url','admin.categories.list')->pluck('id')->first();
-                    if($experience->estatus==5){
+                    if($experience->estatus==5 || $experience->estatus==6){
                         $experience_status = getExperienceStatus($experience->estatus);
                         $estatus = '<span class="'.$experience_status['class'].'">'.$experience_status['experience_status'].'</span>';
                     }
@@ -96,6 +122,7 @@ class ExperienceController extends Controller
                          $estatus .= '<button type="button" class="btn mb-1 btn-success btn-xs" data-id="'.$experience->id.'" id="ApproveExperienceBtn">Approve</button>';
                         $estatus .= '<button type="button" class="btn mb-1 btn-danger btn-xs" data-id="'.$experience->id.'" id="RejectExperienceBtn">Reject</button>';
                     }
+                    
                     if( $experience->estatus==1 && (getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id))) ){
                         $estatus = '<label class="switch"><input type="checkbox" id="ExperienceStatuscheck_'. $experience->id .'" onchange="chageExperienceStatus('. $experience->id .')" value="1" checked="checked"><span class="slider round"></span></label>';
                     }
@@ -118,7 +145,7 @@ class ExperienceController extends Controller
                         $action .= '<button id="deleteExperienceBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteExperienceModal" onclick="" data-id="' .$experience->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
                     }
 
-                    $price = '<span> Price: '.$experience->individual_rate.'/Person</span><br>'.'<span>Price:'.$experience->min_private_group_rate.'/Group</span>';
+                    $price = '<span> Price: '.$experience->individual_rate.'/Person</span><br>'.'<span>Price: '.$experience->min_private_group_rate.'/Group</span>';
                     
                     $nestedData['name'] = $experience->user->full_name;
                     $nestedData['title'] = $experience->title;
@@ -334,31 +361,22 @@ class ExperienceController extends Controller
     }
 
     public function change_experience_status(Request $request){
-        //dd($request->all());
         if (isset($request->experience_id)) {
             $experience = Experience::find($request->experience_id);
             if (!$experience) {
                 return ['status' => 400];
             }
-
             if (isset($request->action) && $request->action == 'approve'){
                 $experience->estatus = 1;
                 $experience->save();
                 return ['status' => 200];
             }
-
             if (isset($request->action) && $request->action == 'reject'){
-                $experience->order_status = 3;
+                $experience->estatus = 6;
                 $experience->save();
-                $experience->delete();
                 return ['status' => 200];
             }
-
         }
-
-      
-
-
         return ['status' => 400];
     }
 }

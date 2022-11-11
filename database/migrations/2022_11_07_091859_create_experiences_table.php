@@ -41,7 +41,7 @@ class CreateExperiencesTable extends Migration
             $table->integer('min_private_group_rate');
             $table->integer('cancellation_policy_id');
             $table->string('proccess_page',255)->nullable();
-            $table->integer('estatus')->default(1)->comment('1->Active,2->Deactive,3->Deleted,4->Pending');
+            $table->integer('estatus')->default(1)->comment('1->Active,2->Deactive,3->Deleted,4->Pending,5->Draft,6->Rejected');
             $table->timestamps();
             $table->softDeletes();
         });

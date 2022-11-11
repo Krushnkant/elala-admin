@@ -82,11 +82,12 @@ function getExperienceStatus($experience_status){
     if($experience_status == 4){
         $experience_status = "Pending";
         $class = "text-primary";
-    }
-   
-    elseif($experience_status == 5){
+    }elseif($experience_status == 5){
         $experience_status = "Draft";
         $class = "text-info";
+    }elseif($experience_status == 6){
+        $experience_status = "Rejected";
+        $class = "text-danger";
     }
    
     return ['experience_status' => $experience_status, 'class' => $class];

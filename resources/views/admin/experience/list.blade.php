@@ -17,6 +17,23 @@
                 <div class="card">
                     <div class="card-body">
                         @if(isset($action) && $action=='list')
+                            <h4 class="card-title">Experience List</h4>
+                            <div class="custom-tab-1">
+                                <ul class="nav nav-tabs mb-3">
+                                    <li class="nav-item experience_page_tabs" data-tab="ALL_experience_tab"><a class="nav-link active show" data-toggle="tab" href="">ALL</a>
+                                    </li>
+                                    <li class="nav-item experience_page_tabs" data-tab="Approved_experience_tab"><a class="nav-link" data-toggle="tab" href="">Approved</a>
+                                    </li>
+                                    <li class="nav-item experience_page_tabs" data-tab="Rejected_experience_tab"><a class="nav-link" data-toggle="tab" href="">Rejected</a>
+                                    </li>
+                                    <li class="nav-item experience_page_tabs" data-tab="Draft_experience_tab"><a class="nav-link" data-toggle="tab" href="">Draft</a>
+                                    </li>
+                                    <li class="nav-item experience_page_tabs" data-tab="Padding_experience_tab"><a class="nav-link" data-toggle="tab" href="">Padding</a>
+                                    </li>
+                                    <li class="nav-item experience_page_tabs" data-tab="Deactive_experience_tab"><a class="nav-link" data-toggle="tab" href="">Deactive</a>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="table-responsive">
                                 <table id="Experience" class="table zero-configuration customNewtable" style="width:100%">
                                     <thead>
@@ -80,6 +97,21 @@
 @section('js')
 <!-- category JS start -->
 <script type="text/javascript">
+$('body').on('click', '.experience_page_tabs', function () {
+    var tab_type = $(this).attr('data-tab');
+    experience_table(tab_type,true);
+});
+
+function get_experience_page_tabType(){
+    var tab_type;
+    $('.experience_page_tabs').each(function() {
+        var thi = $(this);
+        if($(thi).find('a').hasClass('show')){
+            tab_type = $(thi).attr('data-tab');
+        }
+    });
+    return tab_type;
+}
 
 $('#language_id').select2({
     width: '100%',
@@ -89,7 +121,7 @@ $('#language_id').select2({
 
 
 $(document).ready(function() {
-    experience_table(true);
+    experience_table('',true);
 });
 
 $('body').on('click', '#save_closeExperienceBtn', function () {
@@ -250,7 +282,7 @@ function save_experience(btn,btn_type){
     });
 }
 
-function experience_table(is_clearState=false){
+function experience_table(tab_type='',is_clearState=false){
     if(is_clearState){
         $('#Experience').DataTable().state.clear();
     }
@@ -271,7 +303,7 @@ function experience_table(is_clearState=false){
             "url": "{{ url('admin/allexperiencelist') }}",
             "dataType": "json",
             "type": "POST",
-            "data":{ _token: '{{ csrf_token() }}' },
+            "data":{ _token: '{{ csrf_token() }}', tab_type: tab_type},
             // "dataSrc": ""
         },
         'columnDefs': [
@@ -337,6 +369,7 @@ $('body').on('click', '#RemoveExperienceSubmit', function (e) {
     $('#RemoveExperienceSubmit').prop('disabled',true);
     $(this).find('.removeloadericonfa').show();
     e.preventDefault();
+    var tab_type = get_experience_page_tabType();
     var experience_id = $(this).attr('data-id');
     $.ajax({
         type: 'GET',
@@ -346,7 +379,7 @@ $('body').on('click', '#RemoveExperienceSubmit', function (e) {
                 $("#DeleteExperienceModal").modal('hide');
                 $('#RemoveExperienceSubmit').prop('disabled',false);
                 $("#RemoveExperienceSubmit").find('.removeloadericonfa').hide();
-                experience_table();
+                experience_table(tab_type);
                 toastr.success("Experience Deleted",'Success',{timeOut: 5000});
             }
 
@@ -354,7 +387,7 @@ $('body').on('click', '#RemoveExperienceSubmit', function (e) {
                 $("#DeleteExperienceModal").modal('hide');
                 $('#RemoveExperienceSubmit').prop('disabled',false);
                 $("#RemoveExperienceSubmit").find('.removeloadericonfa').hide();
-                experience_table();
+                experience_table(tab_type);
                 toastr.error("Please try again",'Error',{timeOut: 5000});
             }
         },
@@ -362,7 +395,7 @@ $('body').on('click', '#RemoveExperienceSubmit', function (e) {
             $("#DeleteExperienceModal").modal('hide');
             $('#RemoveExperienceSubmit').prop('disabled',false);
             $("#RemoveExperienceSubmit").find('.removeloadericonfa').hide();
-            experience_table();
+            experience_table(tab_type);
             toastr.error("Please try again",'Error',{timeOut: 5000});
         }
     });
@@ -405,6 +438,7 @@ $(document).on('change', '#is_bring_item', function() {
 });
 
 $('body').on('click', '#ApproveExperienceBtn', function () {
+    var tab_type = get_experience_page_tabType();
     var experience_id = $(this).attr('data-id');
     $.ajax ({
         type:"POST",
@@ -418,7 +452,7 @@ $('body').on('click', '#ApproveExperienceBtn', function () {
             }
         },
         complete: function(){
-            experience_table();
+            experience_table(tab_type);
         },
         error: function() {
             toastr.error("Please try again",'Error',{timeOut: 5000});
@@ -427,7 +461,7 @@ $('body').on('click', '#ApproveExperienceBtn', function () {
 });
 
 $('body').on('click', '#RejectExperienceBtn', function () {
-
+    var tab_type = get_experience_page_tabType();
     var experience_id = $(this).attr('data-id');
     $.ajax ({
         type:"POST",
@@ -441,7 +475,7 @@ $('body').on('click', '#RejectExperienceBtn', function () {
             }
         },
         complete: function(){
-            experience_table();
+            experience_table(tab_type);
         },
         error: function() {
             toastr.error("Please try again",'Error',{timeOut: 5000});
