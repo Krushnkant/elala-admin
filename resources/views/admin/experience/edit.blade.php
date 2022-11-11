@@ -17,7 +17,7 @@
     <div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
         <div class="row">
             <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-                <h4 class="card-title">Experience</h4>
+                <h4 class="card-title mt-3">Experience</h4>
                 <div class="form-group">
                     <label class="col-form-label" for="category">Category <span class="text-danger">*</span>
                     </label>
@@ -145,7 +145,7 @@
                     </div>
                     <?php } ?>
                 </div>
-                <h4 class="card-title">Timings</h4> 
+                <h4 class="card-title mt-3">Timings</h4> 
                 <div class="form-group">
                     <label class="col-form-label" for="title">Time Seletion <span class="text-danger">*</span>
                     </label>
@@ -170,7 +170,7 @@
                     
                     <div id="duration-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
                 </div>
-                <h4 class="card-title">Pricing</h4>
+                <h4 class="card-title mt-3">Pricing</h4>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
@@ -238,7 +238,7 @@
                 @endif
             </div>
             <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-                <h4 class="card-title">Venue</h4> 
+                <h4 class="card-title mt-3">Venue</h4> 
                 <div class="form-group">
                     <label class="col-form-label" for="location">Location <span class="text-danger">*</span>
                     </label>
@@ -256,7 +256,7 @@
                         </select>
                     </div>
                 @endif
-                <h4 class="card-title">Detail</h4>
+                <h4 class="card-title mt-3">Detail</h4>
                 @if(isset($agegroups) && !empty($agegroups))
                     <div class="form-group">
                         <label class="col-form-label" for="parent_category_id">Age Seletion
@@ -294,7 +294,7 @@
                     <input type="text" data-role="tagsinput" class="form-control input-flat" id="bring_item" name="bring_item" value="{{ isset($experience)?($brinditems):'' }}">
                     <div id="bring_item-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
                 </div>
-                <h4 class="card-title">Meetup</h4>
+                <h4 class="card-title mt-3">Meetup</h4>
                 <div class="form-group">
                     <label class="col-form-label" for="meet_address">Street address <span class="text-danger">*</span>
                     </label>
@@ -343,7 +343,7 @@
                         </div>
                     </div>
                 </div>
-                <h4 class="card-title">Extra Detail</h4>
+                <h4 class="card-title mt-3">Extra Detail</h4>
                     @if(isset($categoryattributes) && !empty($categoryattributes))
                         @foreach($categoryattributes as $attribute)
                         
