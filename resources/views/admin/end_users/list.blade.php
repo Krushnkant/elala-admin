@@ -16,7 +16,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Customer List</h4>
+                        {{-- <h4 class="card-title">Customer List</h4> --}}
 
 
                         <div class="custom-tab-1">

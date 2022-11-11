@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\Validator;
 
 class DesignationController extends Controller
 {
+    private $page = "Designation";
     public function index(){
-        return view('admin.designation.list');
+        return view('admin.designation.list')->with('page',$this->page);
     }
 
     public function addorupdatedesignation(Request $request){
@@ -151,7 +152,7 @@ class DesignationController extends Controller
 
                     $nestedData['title'] = $designation->title;
                     $nestedData['estatus'] = $estatus;
-                    $nestedData['created_at'] = date('Y-m-d H:i:s', strtotime($designation->created_at));
+                    $nestedData['created_at'] = date('Y-m-d H:i A', strtotime($designation->created_at));
                     $nestedData['action'] = $action;
                     $data[] = $nestedData;
                 }
@@ -203,8 +204,9 @@ class DesignationController extends Controller
     }
 
     public function permissiondesignation($id){
+        $page = "Designation Permission";
         $designation_permissions = DesignationPermission::where('designation_id',$id)->orderBy('project_page_id','asc')->get();
-        return view('admin.designation.permission',compact('designation_permissions'));
+        return view('admin.designation.permission',compact('designation_permissions'))->with('page',$page);
     }
 
     public function savepermission(Request $request){

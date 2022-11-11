@@ -12,12 +12,15 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    private $page = "Users";
+
     public function index(){
         $designations = Designation::where('estatus',1)->get();
-        return view('admin.users.list',compact('designations'));
+        return view('admin.users.list',compact('designations'))->with('page',$this->page);
     }
 
     public function addorupdateuser(Request $request){
@@ -150,11 +153,12 @@ class UserController extends Controller
             $columns = array(
                 0 =>'id',
                 1 =>'profile_pic',
-                2=> 'contact_info',
-                3=> 'login_info',
-                4=> 'estatus',
-                5=> 'created_at',
-                6=> 'action',
+                2=> 'user_info',
+                3=> 'contact_info',
+                4=> 'login_info',
+                5=> 'estatus',
+                6=> 'created_at',
+                7=> 'action',
             );
 
             $totalData = User::where('role',2);
@@ -168,6 +172,7 @@ class UserController extends Controller
             $limit = $request->input('length');
             $start = $request->input('start');
 //            dd($columns[$request->input('order.0.column')]);
+         
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
@@ -178,7 +183,7 @@ class UserController extends Controller
 
             if(empty($request->input('search.value')))
             {
-                $users = User::where('role',2);
+                $users = User::with('designation')->where('role',2)->where('id', '<>',Auth::id());
                 if (isset($estatus)){
                     $users = $users->where('estatus',$estatus);
                 }
@@ -189,7 +194,7 @@ class UserController extends Controller
             }
             else {
                 $search = $request->input('search.value');
-                $users =  User::where('role',2);
+                $users = User::with('designation')->where('role',2)->where('id', '<>',Auth::id());
                 if (isset($estatus)){
                     $users = $users->where('estatus',$estatus);
                 }
@@ -205,7 +210,7 @@ class UserController extends Controller
                       ->orderBy($order,$dir)
                       ->get();
 
-                $totalFiltered = User::where('role',2);
+                $totalFiltered = User::with('designation')->where('role',2)->where('id', '<>',Auth::id());
                 if (isset($estatus)){
                     $totalFiltered = $totalFiltered->where('estatus',$estatus);
                 }
@@ -249,6 +254,21 @@ class UserController extends Controller
                         $profile_pic = url('images/default_avatar.jpg');
                     }
 
+                    if(isset($user->full_name)){
+                        $full_name = $user->full_name;
+                    }
+                    else{
+                        $full_name="";
+                    }
+
+                    $user_info = '';
+                    if (isset($full_name)){
+                        $user_info = '<span> ' .$full_name .'</span>';
+                    }
+                    if (isset($user->designation)){
+                        $user_info .= '<span> ' .$user->designation->title .'</span>';
+                    }
+
                     $contact_info = '';
                     if (isset($user->email)){
                         $contact_info = '<span><i class="fa fa-envelope" aria-hidden="true"></i> ' .$user->email .'</span>';
@@ -265,12 +285,7 @@ class UserController extends Controller
                         $login_info .= '<span>' .$user->decrypted_password .'</span>';
                     }
 
-                    if(isset($user->full_name)){
-                        $full_name = $user->full_name;
-                    }
-                    else{
-                        $full_name="";
-                    }
+                   
 
                     $action='';
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
@@ -282,11 +297,12 @@ class UserController extends Controller
                     }
 
 //                    $nestedData['id'] = $i;
-                    $nestedData['profile_pic'] = '<img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic"><span>'.$full_name.'</span>';
+                    $nestedData['profile_pic'] = '<img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic">';
+                    $nestedData['user_info'] = $user_info;
                     $nestedData['contact_info'] = $contact_info;
                     $nestedData['login_info'] = $login_info;
                     $nestedData['estatus'] = $estatus;
-                    $nestedData['created_at'] = date('Y-m-d H:i:s', strtotime($user->created_at));
+                    $nestedData['created_at'] = date('Y-m-d H:i A', strtotime($user->created_at));
                     $nestedData['action'] = $action;
                     $data[] = $nestedData;
 //                    $i=$i+1;
@@ -343,8 +359,9 @@ class UserController extends Controller
     }
 
     public function permissionuser($id){
+        $page = "User Permission";
         $user_permissions = UserPermission::where('user_id',$id)->orderBy('project_page_id','asc')->get();
-        return view('admin.users.permission',compact('user_permissions'));
+        return view('admin.users.permission',compact('user_permissions'))->with('page',$page);
     }
 
     public function savepermission(Request $request){

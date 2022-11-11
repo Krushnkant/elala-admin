@@ -5,7 +5,7 @@
         <div class="col p-md-0">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active"><a href="javascript:void(0)">Experience</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Experience List</a></li>
             </ol>
         </div>
     </div>
@@ -17,7 +17,7 @@
                 <div class="card">
                     <div class="card-body">
                         @if(isset($action) && $action=='list')
-                            <h4 class="card-title">Experience List</h4>
+                            {{-- <h4 class="card-title">Experience List</h4> --}}
                             <div class="custom-tab-1">
                                 <ul class="nav nav-tabs mb-3">
                                     <li class="nav-item experience_page_tabs" data-tab="ALL_experience_tab"><a class="nav-link active show" data-toggle="tab" href="">ALL</a>

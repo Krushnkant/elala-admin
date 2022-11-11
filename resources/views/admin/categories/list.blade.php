@@ -195,6 +195,7 @@ function save_category(btn,btn_type){
 }
 
 function category_table(is_clearState=false){
+    var cat_id = "{{ isset($id)?$id:0 }}";
     if(is_clearState){
         $('#Category').DataTable().state.clear();
     }
@@ -215,7 +216,7 @@ function category_table(is_clearState=false){
             "url": "{{ url('admin/allcategorylist') }}",
             "dataType": "json",
             "type": "POST",
-            "data":{ _token: '{{ csrf_token() }}' },
+            "data":{ _token: '{{ csrf_token() }}',cat_id:cat_id },
             // "dataSrc": ""
         },
         'columnDefs': [

@@ -70,7 +70,7 @@
                                                 </div>
                                                
                                                 <div class="col-2 col-sm-2 text-center">
-                                                    <button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>
+                                                    <button type="button"  class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>
                                                 </div>
                                                
                                             </div><hr class="mb-4 mt-4">
@@ -82,7 +82,7 @@
                                                     <label id="title-error" class="error invalid-feedback animated fadeInDown" for=""></label>
                                                 </div>
                                                 <div class="col-2 col-sm-2 text-center">
-                                                    <button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>
+                                                    <button type="button"  class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>
                                                 </div>
                                                 <div class="">
                                                     <input type="hidden" value="{{$data->field_id}}" class="form-control input-flat pe-none" name="old_field_type[]" />
@@ -90,7 +90,7 @@
                                                 <div class="optiondiv mt-3">
                                                     <div class="row  mx-0 ">
                                                         <div class="col-2 col-sm-2 mt-2">
-                                                            <button type="button" class="plus_btn btn btn-info" id="AddOption">Add</button>
+                                                            <button type="button" class="plus_btn btn btn-info" id="AddOption">Add Option</button>
                                                         </div>
                                                     </div>
                                                     @foreach($data->attr_optioin as $option)
@@ -101,7 +101,7 @@
                                                             <input type="hidden" value="{{$option->id}}" class="" name="old_field_options_ids_{{ $key }}[]" />
                                                         </div>
                                                         <div class="ml-auto col-2 col-sm-2 mt-2">
-                                                            <button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>
+                                                            <button type="button"  class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>
                                                         </div>
                                                         <div class="ml-auto col-2 col-sm-2 ">
                                                         </div>
@@ -183,7 +183,7 @@ $(document).ready(function() {
                             '<input type="hidden" value="'+type+'" class="form-control input-flat pe-none" name="field_type[]"  />'+
                         '</div>'+
                         '<div class="col-2 col-sm-2 text-center">'+
-                            '<button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>'+
+                            '<button type="button"  class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>'+
                         '</div>'+
                     
                     '<div class="optiondiv">'+
@@ -192,7 +192,7 @@ $(document).ready(function() {
                                 '<input type="text" class="form-control input-flat pe-none"  id="'+inputkeyoption+'" name="field_options_'+count_sm+'[]" placeholder="option value" />'+
                             '</div>'+
                             '<div class="ml-auto col-2 col-sm-2 ">'+
-                                '<button type="button" class="plus_btn btn btn-info" id="AddOption">Add</button>'+
+                                '<button type="button" class="plus_btn btn btn-info" id="AddOption">Add Option</button>'+
                             '</div>'+
                             '<div class="ml-auto col-2 col-sm-2 ">'+
                             
@@ -211,7 +211,7 @@ $(document).ready(function() {
                         '<input type="hidden" value="'+type+'" class="form-control input-flat pe-none" name="field_type[]"  />'+
                     '</div>'+
                     '<div class="col-2 col-sm-2 text-center">'+
-                        '<button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>'+
+                        '<button type="button"  class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>'+
                     '</div>'+
                 '</div><hr class="mb-4 mt-4">';
 
@@ -240,7 +240,7 @@ $(document).ready(function() {
                         '<input type="text" value="" class="form-control input-flat pe-none"  id="'+inputkeyoption+'" name="field_options_'+count_s+'[]" placeholder="option value" />'+
                     '</div>'+
                     '<div class="ml-auto col-2 col-sm-2 mt-2">'+
-                        '<button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>'+
+                        '<button type="button"  class="minus_btn bplus_btn btn btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>'+
                     '</div>'+
                     '<div class="ml-auto col-2 col-sm-2 ">'+
                        

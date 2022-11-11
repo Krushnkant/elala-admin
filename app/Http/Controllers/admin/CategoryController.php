@@ -12,10 +12,10 @@ class CategoryController extends Controller
 {
     private $page = "Category";
 
-    public function index(){
+    public function index($id=0){
         $action = "list";
         $categories = Category::where('estatus',1)->get();
-        return view('admin.categories.list',compact('action','categories'))->with('page',$this->page);
+        return view('admin.categories.list',compact('action','categories','id'))->with('page',$this->page);
     }
 
     public function create(){
@@ -102,7 +102,7 @@ class CategoryController extends Controller
                 4 => 'created_at',
                 5 => 'action',
             );
-            $totalData = Category::count();
+            $totalData = Category::where('parent_category_id',$request->cat_id)->count();
             
             $totalFiltered = $totalData;
 
@@ -118,7 +118,7 @@ class CategoryController extends Controller
 
             if(empty($request->input('search.value')))
             {
-                $categories = Category::offset($start)
+                $categories = Category::where('parent_category_id',$request->cat_id)->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
                     ->get();
@@ -126,7 +126,7 @@ class CategoryController extends Controller
             }
             else {
                 $search = $request->input('search.value');
-                $categories =  Category::where('sr_no','LIKE',"%{$search}%")
+                $categories =  Category::where('parent_category_id',$request->cat_id)->where('sr_no','LIKE',"%{$search}%")
                     ->orWhere('category_name', 'LIKE',"%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -134,7 +134,7 @@ class CategoryController extends Controller
                     ->get();
 
 
-                $totalFiltered = Category::where('sr_no','LIKE',"%{$search}%")
+                $totalFiltered = Category::where('parent_category_id',$request->cat_id)->where('sr_no','LIKE',"%{$search}%")
                     ->orWhere('category_name', 'LIKE',"%{$search}%")
                     ->count();
           
@@ -168,15 +168,15 @@ class CategoryController extends Controller
 
                     $action='';
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
-                        $action .= '<button id="addCategoryAttributeBtn" class="btn btn-gray text-pink btn-sm" onclick="" data-id="' .$category->id. '"><i class="fa fa-align-center" aria-hidden="true"></i></button>
-                                    <button id="editCategoryBtn" class="btn btn-gray text-blue btn-sm" data-id="' .$category->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+                        $action .= '<button title="Attribute" id="addCategoryAttributeBtn" class="btn btn-gray text-pink btn-sm" onclick="" data-id="' .$category->id. '"><i class="fa fa-align-center" aria-hidden="true"></i></button>
+                                    <button title="Edit" id="editCategoryBtn" class="btn btn-gray text-blue btn-sm" data-id="' .$category->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
                     }
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_delete($page_id)) ){
-                        $action .= '<button id="deleteCategoryBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteCategoryModal" onclick="" data-id="' .$category->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
+                        $action .= '<button title="Delete" id="deleteCategoryBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteCategoryModal" onclick="" data-id="' .$category->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
                     }
-                  
+                    $category_name = '<a href="'. url("admin/categorieslist/".$category->id) .'"> ' .$category->category_name .'</a>';
                     $nestedData['category_thumb'] = '<img src="'. $thumb_path .'" width="50px" height="50px" alt="Thumbnail">';
-                    $nestedData['category_name'] = $category->category_name;
+                    $nestedData['category_name'] = $category_name;
                     $nestedData['estatus'] = $estatus;
                     $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($category->created_at));
                     $nestedData['action'] = $action;

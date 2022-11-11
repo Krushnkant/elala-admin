@@ -53,6 +53,10 @@ class User extends Authenticatable
         }
     }
 
+    public function designation(){
+        return $this->hasOne(Designation::class,'id','designation_id');
+    }
+
     public function cover_photos(){
         return $this->hasMany(UserCoverPhotos::class,'user_id','id');
     }

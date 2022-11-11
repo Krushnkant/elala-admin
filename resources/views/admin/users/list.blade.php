@@ -19,14 +19,14 @@
                         {{--<h4 class="card-title">User List</h4>--}}
 
                         <div class="action-section row">
-                            <div class="col-lg-8 col-md-8 col-sm-12">
+                            <div class="col-lg-12 col-md-8 col-sm-12">
                                 <?php $page_id = \App\Models\ProjectPage::where('route_url',\Illuminate\Support\Facades\Route::currentRouteName())->pluck('id')->first(); ?>
                                 @if(getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) )
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#UserModal" id="AddUserBtn"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                 @endif
                                 {{-- <button class="btn btn-danger" onclick="deleteMultipleAttributes()"><i class="fa fa-trash" aria-hidden="true"></i></button>--}}
                             </div>
-                            <div class="custom-tab-1 col-lg-4">
+                            <div class="custom-tab-1 col-lg-2 mt-3">
                                 <ul class="nav nav-tabs nav-fill">
                                     <li class="nav-item user_page_tabs" data-tab="all_user_tab"><a class="nav-link active show" data-toggle="tab" href="">All</a>
                                     </li>
@@ -43,7 +43,8 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Profile</th>
+                                    <th>Image</th>
+                                    <th>User Info</th>
                                     <th>Contact Info</th>
                                     <th>Login Info</th>
                                     <th>User Status</th>
@@ -54,7 +55,8 @@
                                 <tfoot>
                                 <tr>
                                     <th>No</th>
-                                    <th>Profile</th>
+                                    <th>Image</th>
+                                    <th>User Info</th>
                                     <th>Contact Info</th>
                                     <th>Login Info</th>
                                     <th>User Status</th>
@@ -407,11 +409,12 @@
             'columnDefs': [
                 { "width": "50px", "targets": 0 },
                 { "width": "145px", "targets": 1 },
-                { "width": "165px", "targets": 2 },
-                { "width": "230px", "targets": 3 },
-                { "width": "75px", "targets": 4 },
-                { "width": "120px", "targets": 5 },
-                { "width": "115px", "targets": 6 },
+                { "width": "145px", "targets": 2 },
+                { "width": "165px", "targets": 3 },
+                { "width": "230px", "targets": 4 },
+                { "width": "75px", "targets": 5 },
+                { "width": "120px", "targets": 6 },
+                { "width": "115px", "targets": 7 },
             ],
             "columns": [
                 {data: 'id', name: 'id', class: "text-center", orderable: false,
@@ -420,6 +423,7 @@
                     }
                 },
                 {data: 'profile_pic', name: 'profile_pic', class: "text-center multirow"},
+                {data: 'user_info', name: 'user_info', class: "text-left multirow", orderable: false},
                 {data: 'contact_info', name: 'contact_info', class: "text-left multirow", orderable: false},
                 {data: 'login_info', name: 'login_info', class: "text-left multirow", orderable: false},
                 {data: 'estatus', name: 'estatus', orderable: false, searchable: false, class: "text-center"},

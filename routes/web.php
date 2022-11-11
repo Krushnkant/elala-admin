@@ -65,7 +65,7 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('designation/savepermission',[DesignationController::class,'savepermission'])->name('designation.savepermission');
 
     //category route
-    Route::get('categories',[CategoryController::class,'index'])->name('categories.list');
+    Route::get('categorieslist/{id?}',[CategoryController::class,'index'])->name('categories.list');
     Route::get('categories/create',[CategoryController::class,'create'])->name('categories.add');
     Route::post('categories/save',[CategoryController::class,'save'])->name('categories.save');
     Route::post('allcategorylist',[CategoryController::class,'allcategorylist'])->name('allcategorylist');

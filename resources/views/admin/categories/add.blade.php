@@ -129,7 +129,7 @@ $(document).ready(function() {
                                 '<input type="text" class="form-control input-flat pe-none "  id="'+inputkeyoption+'" name="field_options_'+count+'[]" placeholder="option value" />'+
                             '</div>'+
                             '<div class="ml-auto col-2 col-sm-2 ">'+
-                                '<button type="button" class="plus_btn btn btn-info" id="AddOption">Add</button>'+
+                                '<button type="button" class="plus_btn btn btn-info" id="AddOption">Add Option</button>'+
                             '</div>'+
                             '<div class="ml-auto col-2 col-sm-2 ">'+
                             
