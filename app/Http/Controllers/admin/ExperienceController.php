@@ -246,6 +246,8 @@ class ExperienceController extends Controller
         $experience->cancellation_policy_id = $request->cancellation_policy_id;
         $experience->save();
 
+        
+
         $oldlanguageids = ExperienceLanguage::where('experience_id',$request->experience_id)->get()->pluck('language_id')->toArray();
         foreach($oldlanguageids as $oldlanguageid){
             if(!in_array($oldlanguageid,$request->language_id)){
@@ -294,6 +296,26 @@ class ExperienceController extends Controller
                 $categoryattribute->save();
             }
         }
+
+        if(isset($request->expImg)){
+            $expImgs = explode(',',$request->expImg);
+            $check_ext = array(
+                "jpg", "jpeg", "png"
+            );
+            foreach($expImgs as $expImg){
+                $ext = pathinfo($expImg, PATHINFO_EXTENSION);
+                if(in_array($ext, $check_ext)){
+                    $type = 'img';
+                }else{
+                    $type = 'video';
+                }
+                $experiencemedia = New ExperienceMedia();
+                $experiencemedia->experience_id = $request->experience_id;
+                $experiencemedia->thumb = $expImg;
+                $experiencemedia->type = $type;
+                $experiencemedia->save();
+            }
+        }
         return response()->json(['status' => '200', 'action' => $action]);
     }
 
@@ -337,6 +359,18 @@ class ExperienceController extends Controller
             return response()->json(['status' => '200']);
         }
         return response()->json(['status' => '400']);
+    }
+
+    public function uploadfile(Request $request){
+        if(isset($request->action) && $request->action == 'uploadExpIcon'){
+            if ($request->hasFile('files')) {
+                $image = $request->file('files')[0];
+                $image_name = 'experienceThumb_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
+                $destinationPath = public_path('images/experience_images');
+                $image->move($destinationPath, $image_name);
+                return response()->json(['data' => 'images/experience_images/'.$image_name]);
+            }
+        }
     }
 
 

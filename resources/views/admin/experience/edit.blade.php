@@ -17,7 +17,7 @@
     <div class="col-lg-12 col-md-8 col-sm-10 col-xs-12">
         <div class="row">
             <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-                <h4 class="card-title mt-3">Experience</h4>
+                <h4 class="card-title mt-4">Experience</h4>
                 <div class="form-group">
                     <label class="col-form-label" for="category">Category <span class="text-danger">*</span>
                     </label>
@@ -41,10 +41,13 @@
                 <div class="form-group">
                     <label class="col-form-label" for="Thumbnail">Media  <span class="text-danger">*</span>
                     </label>
+                    
+                    <input type="hidden" name="expImg" id="expImg" value="">
+                    <input type="file" name="files[]" id="experienceIconFiles" multiple="multiple">
                     <?php
                     if(isset($experience) && isset($experience->media)){
                     ?>    
-                        <div class="jFiler-items jFiler-row oldImgDisplayBox">
+                        <div class="jFiler-items jFiler-row ">
                         <ul class="jFiler-items-list jFiler-items-grid">
                     <?php 
                     foreach ($experience->media as $image) {   
@@ -145,7 +148,7 @@
                     </div>
                     <?php } ?>
                 </div>
-                <h4 class="card-title mt-3">Timings</h4> 
+                <h4 class="card-title mt-4">Timings</h4> 
                 <div class="form-group">
                     <label class="col-form-label" for="title">Time Seletion <span class="text-danger">*</span>
                     </label>
@@ -161,16 +164,17 @@
                         <div class="form-group">
                             <label class="col-form-label" for="">Experience start time
                             </label><br>
-                        
+                            <ul>
                             @foreach($experience->scheduletime as $scheduletime)
-                                <p>{{ $scheduletime->day }} :  {{  date('h:i A', strtotime($scheduletime->time)); }}</p>
+                                <li>{{ $scheduletime->day }} :  {{  date('h:i A', strtotime($scheduletime->time)); }}</li>
                             @endforeach
+                            </ul>
                         </div>
                         @endif
                     
                     <div id="duration-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
                 </div>
-                <h4 class="card-title mt-3">Pricing</h4>
+                <h4 class="card-title mt-4">Pricing</h4>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
@@ -212,12 +216,13 @@
                 <div class="form-group">
                     <label class="col-form-label" for="">Offer group rates and get more bookings
                     </label><br>
-                
+                <ul>
                 @foreach($experience->discountrate as $discountrate)
-                    <p>{{ $discountrate->from_member }} to  {{ $discountrate->to_member }} = {{ $discountrate->discount }}%
-                    </p>
+                    <li>{{ $discountrate->from_member }} to  {{ $discountrate->to_member }} = {{ $discountrate->discount }}%
+                    </li>
             
                 @endforeach
+                </ul>
                 </div>
                 @endif
 
@@ -238,7 +243,7 @@
                 @endif
             </div>
             <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
-                <h4 class="card-title mt-3">Venue</h4> 
+                <h4 class="card-title mt-4">Venue</h4> 
                 <div class="form-group">
                     <label class="col-form-label" for="location">Location <span class="text-danger">*</span>
                     </label>
@@ -256,7 +261,7 @@
                         </select>
                     </div>
                 @endif
-                <h4 class="card-title mt-3">Detail</h4>
+                <h4 class="card-title mt-4">Detail</h4>
                 @if(isset($agegroups) && !empty($agegroups))
                     <div class="form-group">
                         <label class="col-form-label" for="parent_category_id">Age Seletion
@@ -294,7 +299,7 @@
                     <input type="text" data-role="tagsinput" class="form-control input-flat" id="bring_item" name="bring_item" value="{{ isset($experience)?($brinditems):'' }}">
                     <div id="bring_item-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
                 </div>
-                <h4 class="card-title mt-3">Meetup</h4>
+                <h4 class="card-title mt-4">Meetup</h4>
                 <div class="form-group">
                     <label class="col-form-label" for="meet_address">Street address <span class="text-danger">*</span>
                     </label>
@@ -343,7 +348,7 @@
                         </div>
                     </div>
                 </div>
-                <h4 class="card-title mt-3">Extra Detail</h4>
+                <h4 class="card-title mt-4">Extra Detail</h4>
                     @if(isset($categoryattributes) && !empty($categoryattributes))
                         @foreach($categoryattributes as $attribute)
                         
@@ -387,7 +392,7 @@
                     @endif 
             </div>
         </div>
-        <button type="button" class="btn btn-outline-primary mt-4" id="save_newExperienceBtn" data-action="update">Save & New <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>&nbsp;&nbsp;
+        {{-- <button type="button" class="btn btn-outline-primary mt-4" id="save_newExperienceBtn" data-action="update">Save & New <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>&nbsp;&nbsp; --}}
         <button type="button" class="btn btn-primary mt-4" id="save_closeExperienceBtn" data-action="update">Save & Close <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>
     </div>        
         

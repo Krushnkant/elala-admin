@@ -1,6 +1,7 @@
 jQuery(document).ready(function(){
     var ImageUrl = $("#web_url").val() + "/admin/";
     var FileforEditUrl = $("#web_url").val() + "/public/";
+
     var catImg = $("#catImg").val();
     var FileforEdit = null;
     if (catImg!=''){
@@ -14,6 +15,7 @@ jQuery(document).ready(function(){
             }
         ];
     }
+	
 
 	jQuery("#catIconFiles").filer({
 		limit: 1,
@@ -165,10 +167,24 @@ jQuery(document).ready(function(){
 		}
 	});
 
-	jQuery("#reviewIconFiles").filer({
+	var expImg = $("#expImg").val();
+    var FileforEdit = null;
+    if (expImg!=''){
+        FileforEdit = [
+            {
+                name: expImg,
+                size: 9453,
+                type: "image/jpg",
+                file: FileforEditUrl + expImg,
+                url: FileforEditUrl + expImg
+            }
+        ];
+    }
+
+	jQuery("#experienceIconFiles").filer({
 		limit: 5,
 		maxSize: null,
-		extensions: ["jpg", "jpeg", "png"],
+		extensions: ["jpg", "jpeg", "png","mov","mp4","3gp"],
 		changeInput: '<div class="jFiler-input-dragDrop"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Drag&Drop files here</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue">Browse Files</a></div></div>',
 		showThumbs: true,
 		theme: "dragdropbox",
@@ -244,7 +260,7 @@ jQuery(document).ready(function(){
 			dragContainer: null,
 		},
 		uploadFile: {
-			url: ImageUrl+"categories/uploadfile?action=uploadCatIcon",
+			url: ImageUrl+"experience/uploadfile?action=uploadExpIcon",
 			data: {'_token': $('meta[name="csrf-token"]').attr('content')},
 			type: 'POST',
 			enctype: 'multipart/form-data',
@@ -255,7 +271,13 @@ jQuery(document).ready(function(){
 				var parent = itemEl.find(".jFiler-jProgressBar").parent(),
 					new_file_name = res.data,
 					filerKit = inputEl.prop("jFiler");
-				jQuery("#catImg").val(new_file_name);
+					var varImgName = jQuery("#expImg").val();
+					if (varImgName == "") {
+						jQuery("#expImg").val(new_file_name);
+					} else {
+						jQuery("#expImg").val(varImgName + "," + new_file_name);
+					}
+				//jQuery("#catImg").val(new_file_name);
         		filerKit.files_list[id].name = new_file_name;
 
 				itemEl.find(".jFiler-jProgressBar").fadeOut("slow", function(){
@@ -314,4 +336,8 @@ jQuery(document).ready(function(){
 			}
 		}
 	});
+
+
+
+	
 });
