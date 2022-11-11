@@ -37,6 +37,7 @@ class ExperienceController extends BaseController
             $Experience->user_id = $request->user_id;
             $Experience->type = $request->type;
             $Experience->proccess_page = 'TypePage';
+            $Experience->estatus = 5;
             $Experience->save();
         }
         return $this->sendResponseSuccess("Added Experience Successfully");
@@ -179,10 +180,12 @@ class ExperienceController extends BaseController
     public function addExperienceAgeGroup(Request $request){
         $messages = [
             'age_id.required' =>'Please provide a age id.',
+            'duration.required' =>'Please provide a duration.',
         ];
 
         $validator = Validator::make($request->all(), [
             'age_id' => 'required',
+            'duration' => 'required',
         ], $messages);
 
         if ($validator->fails()) {
@@ -194,7 +197,7 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
-        $Experience->description = $request->description;
+        $Experience->duration = $request->duration;
         $Experience->age_limit = $request->age_id;
         $Experience->proccess_page = 'AgePage';
         $Experience->save();
@@ -513,6 +516,7 @@ class ExperienceController extends BaseController
         
         $Experience = Experience::find($request->experience_id);
         $Experience->proccess_page = 'CategoryAttributePage';
+        $Experience->estatus = 4;
         $Experience->save();
 
         return $this->sendResponseSuccess("Added Experience Category Attribute Successfully");

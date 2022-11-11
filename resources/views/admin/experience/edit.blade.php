@@ -275,7 +275,7 @@
         </label><br>
     
     @foreach($experience->scheduletime as $scheduletime)
-        <p>{{ $scheduletime->day }} :  {{ $scheduletime->time }}
+        <p>{{ $scheduletime->day }} :  {{  date('h:i A', strtotime($scheduletime->time)); }}
         </p>
    
     @endforeach

@@ -86,7 +86,9 @@ class ExperienceController extends Controller
                 foreach ($experiences as $experience)
                 {
                     $page_id = ProjectPage::where('route_url','admin.categories.list')->pluck('id')->first();
-
+                    if($experience->estatus==5){
+                        $estatus = 'Draft';
+                    }
                     if( $experience->estatus==1 && (getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id))) ){
                         $estatus = '<label class="switch"><input type="checkbox" id="ExperienceStatuscheck_'. $experience->id .'" onchange="chageExperienceStatus('. $experience->id .')" value="1" checked="checked"><span class="slider round"></span></label>';
                     }
