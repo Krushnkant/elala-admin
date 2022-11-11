@@ -87,7 +87,14 @@ class ExperienceController extends Controller
                 {
                     $page_id = ProjectPage::where('route_url','admin.categories.list')->pluck('id')->first();
                     if($experience->estatus==5){
-                        $estatus = 'Draft';
+                        $experience_status = getExperienceStatus($experience->estatus);
+                        $estatus = '<span class="'.$experience_status['class'].'">'.$experience_status['experience_status'].'</span>';
+                    }
+                    if($experience->estatus==4){
+                        $experience_status = getExperienceStatus($experience->estatus);
+                         $estatus = '<span class="'.$experience_status['class'].'">'.$experience_status['experience_status'].'</span> <br>';
+                         $estatus .= '<button type="button" class="btn mb-1 btn-success btn-xs" data-id="'.$experience->id.'" id="ApproveExperienceBtn">Approve</button>';
+                        $estatus .= '<button type="button" class="btn mb-1 btn-danger btn-xs" data-id="'.$experience->id.'" id="RejectExperienceBtn">Reject</button>';
                     }
                     if( $experience->estatus==1 && (getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id))) ){
                         $estatus = '<label class="switch"><input type="checkbox" id="ExperienceStatuscheck_'. $experience->id .'" onchange="chageExperienceStatus('. $experience->id .')" value="1" checked="checked"><span class="slider round"></span></label>';
@@ -324,5 +331,34 @@ class ExperienceController extends Controller
             return response()->json(['status' => '400']);
 
         }
+    }
+
+    public function change_experience_status(Request $request){
+        //dd($request->all());
+        if (isset($request->experience_id)) {
+            $experience = Experience::find($request->experience_id);
+            if (!$experience) {
+                return ['status' => 400];
+            }
+
+            if (isset($request->action) && $request->action == 'approve'){
+                $experience->estatus = 1;
+                $experience->save();
+                return ['status' => 200];
+            }
+
+            if (isset($request->action) && $request->action == 'reject'){
+                $experience->order_status = 3;
+                $experience->save();
+                $experience->delete();
+                return ['status' => 200];
+            }
+
+        }
+
+      
+
+
+        return ['status' => 400];
     }
 }

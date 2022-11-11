@@ -87,6 +87,7 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::get('changeexperiencestatus/{id}',[ExperienceController::class,'changeexperiencestatus'])->name('experience.changeexperiencestatus');
     Route::get('experience/{id}/delete',[ExperienceController::class,'deleteexperience'])->name('experience.delete');
     Route::post('experience/removefile',[ExperienceController::class,'removefile'])->name('experience.removefile');
+    Route::post('change_experience_status',[ExperienceController::class,'change_experience_status'])->name('experience.change_experience_status');
 });
 
 Route::group(['middleware'=>['auth']],function (){

@@ -404,6 +404,51 @@ $(document).on('change', '#is_bring_item', function() {
    
 });
 
+$('body').on('click', '#ApproveExperienceBtn', function () {
+    var experience_id = $(this).attr('data-id');
+    $.ajax ({
+        type:"POST",
+        url: '{{ url("admin/change_experience_status") }}',
+        data: {experience_id: experience_id, action: 'approve',  "_token": "{{csrf_token()}}"},
+        success: function(res) {
+            if(res['status'] == 200){
+                toastr.success("Experience Approved",'Success',{timeOut: 5000});
+            } else {
+                toastr.error("Please try again",'Error',{timeOut: 5000});
+            }
+        },
+        complete: function(){
+            experience_table();
+        },
+        error: function() {
+            toastr.error("Please try again",'Error',{timeOut: 5000});
+        }
+    });
+});
+
+$('body').on('click', '#RejectExperienceBtn', function () {
+
+    var experience_id = $(this).attr('data-id');
+    $.ajax ({
+        type:"POST",
+        url: '{{ url("admin/change_experience_status") }}',
+        data: {experience_id: experience_id, action: 'reject',  "_token": "{{csrf_token()}}"},
+        success: function(res) {
+            if(res['status'] == 200){
+                toastr.success("Experience Rejected",'Success',{timeOut: 5000});
+            } else {
+                toastr.error("Please try again",'Error',{timeOut: 5000});
+            }
+        },
+        complete: function(){
+            experience_table();
+        },
+        error: function() {
+            toastr.error("Please try again",'Error',{timeOut: 5000});
+        }
+    });
+});
+
 </script>
 <!-- category JS end -->
 @endsection

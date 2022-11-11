@@ -78,4 +78,18 @@ function compressImage($source, $destination, $quality) {
     return $destination; 
 }
 
+function getExperienceStatus($experience_status){
+    if($experience_status == 4){
+        $experience_status = "Pending";
+        $class = "text-primary";
+    }
+   
+    elseif($experience_status == 5){
+        $experience_status = "Draft";
+        $class = "text-info";
+    }
+   
+    return ['experience_status' => $experience_status, 'class' => $class];
+}
+
 
