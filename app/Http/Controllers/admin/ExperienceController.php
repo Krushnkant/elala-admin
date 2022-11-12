@@ -33,13 +33,11 @@ class ExperienceController extends Controller
             $columns = array(
                 0 => 'sr_no',
                 1 => 'name',
-                2 => 'title',
-                3 => 'category_name',
-                4 => 'time',
-                5 => 'price',
-                6 => 'estatus',
-                7 => 'created_at',
-                8 => 'action',
+                2 => 'time',
+                3 => 'price',
+                4 => 'estatus',
+                5 => 'created_at',
+                6 => 'action',
             );
 
             $tab_type = $request->tab_type;
@@ -146,10 +144,10 @@ class ExperienceController extends Controller
                     }
 
                     $price = '<span> Price: '.$experience->individual_rate.'/Person</span><br>'.'<span>Price: '.$experience->min_private_group_rate.'/Group</span>';
+                    $category_name = isset($experience->category)?$experience->category->category_name:"";
+                    $name = '<span style="font-size:15px">  '.$experience->title.'</span><br>'.'<span>'.$category_name.'</span><br>'.'<span>Experience By : '.$experience->user->full_name.'</span>';
                     
-                    $nestedData['name'] = $experience->user->full_name;
-                    $nestedData['title'] = $experience->title;
-                    $nestedData['category_name'] = isset($experience->category)?$experience->category->category_name:"";
+                    $nestedData['name'] = $name;
                     $nestedData['time'] = $experience->duration .' min';
                     $nestedData['price'] = $price;
                     $nestedData['estatus'] = $estatus;

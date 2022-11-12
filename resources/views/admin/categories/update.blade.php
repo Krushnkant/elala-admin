@@ -62,6 +62,9 @@
                                             <div class="row mt-3 mx-0"> 
                                                 <input type="hidden" value="{{$data->id}}" class="form-control input-flat pe-none" name="allreadycateids[]" />
                                                 <div class="col-12 col-sm-10 mb-3 mb-sm-0">
+                                                    <h4 class="col-12 pl-0">Text Box</h4>
+                                                </div>
+                                                <div class="col-12 col-sm-10 mb-3 mb-sm-0">
                                                     <input type="text" placeholder="Title" data="specific" data-id="{{ $key }}" id="{{$key_name_id}}" value="{{$data->title}}" class="form-control input-flat specReq" data-name="title" name="old_title[]" />
                                                     <label id="title-error" class="error invalid-feedback animated fadeInDown" for=""></label>
                                                 </div>
@@ -77,6 +80,16 @@
                                             @elseif($data->field_id == 2 || $data->field_id == 3)
                                             <div class="row mt-3 mx-0"> 
                                                 <input type="hidden" value="{{$data->id}}" class="form-control input-flat pe-none" name="allreadycateids[]" />
+                                                @if($data->field_id == 2)
+                                                <div class="col-12 col-sm-10 mb-3 mb-sm-0">
+                                                    <h4 class="col-12 pl-0">Check Box</h4>
+                                                </div>
+                                                @else
+                                                <div class="col-12 col-sm-10 mb-3 mb-sm-0">
+                                                    <h4 class="col-12 pl-0">Radio Box</h4>
+                                                </div>
+                                                @endif
+                                                
                                                 <div class="col-12 col-sm-10 mb-3 mb-sm-0">
                                                     <input type="text" placeholder="Title" data="specific" data-id="{{ $key }}" id="{{$key_name_id}}" value="{{$data->title}}" class="form-control input-flat specReq myClass" data-name="title" name="old_title[]" />
                                                     <label id="title-error" class="error invalid-feedback animated fadeInDown" for=""></label>
@@ -87,7 +100,7 @@
                                                 <div class="">
                                                     <input type="hidden" value="{{$data->field_id}}" class="form-control input-flat pe-none" name="old_field_type[]" />
                                                 </div>
-                                                <div class="optiondiv mt-3">
+                                                <div class="optiondiv mt-3 col-12 col-sm-10 pl-0">
                                                     <div class="row  mx-0 ">
                                                         <div class="col-2 col-sm-2 mt-2">
                                                             <button type="button" class="plus_btn btn btn-info" id="AddOption">Add Option</button>
@@ -107,9 +120,10 @@
                                                         </div>
                                                     </div>
                                                     @endforeach
+                                                 
                                                     
-                                                </div><hr class="mb-4 mt-4">
-                                            </div>
+                                                </div>
+                                            </div><hr class="mb-4 mt-4">
                                             
                                             @endif
                                         @endforeach
@@ -186,7 +200,7 @@ $(document).ready(function() {
                             '<button type="button"  class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>'+
                         '</div>'+
                     
-                    '<div class="optiondiv">'+
+                    '<div class="optiondiv col-12 col-sm-10 pl-0">'+
                         '<div class="row  mx-0 ">'+
                             '<div class="col-8 col-sm-8">'+
                                 '<input type="text" class="form-control input-flat pe-none"  id="'+inputkeyoption+'" name="field_options_'+count_sm+'[]" placeholder="option value" />'+
@@ -198,8 +212,8 @@ $(document).ready(function() {
                             
                             '</div>'+
                         '</div>'+
-                    '</div><hr class="mb-4 mt-4">'+
-                    '</div>';
+                    '</div>'+
+                    '</div><hr class="mb-4 mt-4">';
             $(".add-value-main").append(html);
            
         }else if(type == 1){

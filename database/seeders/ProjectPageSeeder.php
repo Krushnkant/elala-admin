@@ -74,8 +74,19 @@ class ProjectPageSeeder extends Seeder
             'icon_class' => 'fa fa-level-up',
             'route_url' => 'admin.experience.list',
             'is_display_in_menu' => 0,
-            'inner_routes' => 'admin.experience.list',
+            'inner_routes' => 'admin.experience.list,admin.allcategorylist,admin.experience.save,admin.experience.edit,admin.experience.changeexperiencestatus,admin.experience.delete,admin.experience.removefile,admin.experience.change_experience_status,admin.experience.uploadfile',
             'sr_no' => 3
+        ]);
+
+        ProjectPage::create([
+            'id' => 7,
+            'parent_menu' => 0,
+            'label' => 'Settings',
+            'icon_class' => 'fa fa-cog',
+            'route_url' => 'admin.settings.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.settings.list,admin.settings.edit',
+            'sr_no' => 4
         ]);
 
 

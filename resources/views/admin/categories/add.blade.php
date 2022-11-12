@@ -112,35 +112,47 @@ $(document).ready(function() {
         // }
         if(type == 2 || type == 3){
       
-            html += '<div class="row mt-3 mx-0">'+
-                        '<div class="col-12 col-sm-10 mb-3 ">'+
+            html += '<div class="row mt-3 mx-0">';
+                        if(type == 2){
+                    html += '<div class="col-12 col-sm-10 mb-3 mb-sm-0">'+
+                            '<h4 class="col-12 pl-0">Check Box</h4>'+
+                        '</div>';
+                        }else{
+                    html +='<div class="col-12 col-sm-10 mb-3 mb-sm-0">'+
+                            '<h4 class="col-12 pl-0">Radio Box</h4>'+
+                        '</div>';
+                        }
+                    html +='<div class="col-12 col-sm-10 mb-3 ">'+
                             '<input type="text" placeholder="Title" data="specific" data-id="'+count+'" id="'+inputkey+'" class="form-control input-flat specReq myClass" data-name="title" name="title[]" /><label id="title-error my-0" class="error invalid-feedback animated fadeInDown" for=""></label>'+
                         '</div>'+
                         '<div class="">'+
                             '<input type="hidden" value="'+type+'" class="form-control input-flat pe-none" name="field_type[]"  />'+
                         '</div>'+
                         '<div class="col-2 col-sm-2 text-center">'+
-                            '<button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>'+
+                            '<button type="button"  class="minus_btn bplus_btn btn btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>'+
                         '</div>'+
                     
-                    '<div class="optiondiv">'+
-                        '<div class="row  mx-0 ">'+
-                            '<div class="col-8 col-sm-8">'+
-                                '<input type="text" class="form-control input-flat pe-none "  id="'+inputkeyoption+'" name="field_options_'+count+'[]" placeholder="option value" />'+
-                            '</div>'+
-                            '<div class="ml-auto col-2 col-sm-2 ">'+
-                                '<button type="button" class="plus_btn btn btn-info" id="AddOption">Add Option</button>'+
-                            '</div>'+
-                            '<div class="ml-auto col-2 col-sm-2 ">'+
-                            
+                        '<div class="optiondiv col-12 col-sm-10 pl-0">'+
+                            '<div class="row  mx-0 ">'+
+                                '<div class="col-8 col-sm-8">'+
+                                    '<input type="text" class="form-control input-flat pe-none "  id="'+inputkeyoption+'" name="field_options_'+count+'[]" placeholder="option value" />'+
+                                '</div>'+
+                                '<div class="ml-auto col-2 col-sm-2 ">'+
+                                    '<button type="button" class="plus_btn btn btn-info" id="AddOption">Add Option</button>'+
+                                '</div>'+
+                                '<div class="ml-auto col-2 col-sm-2 ">'+
+                                
+                                '</div>'+
                             '</div>'+
                         '</div>'+
-                    '</div>'+
                     '</div><hr class="mb-4 mt-4">';
             $(".add-value-main").append(html);
            
         }else if(type == 1){
             html += '<div class="row mt-3 mx-0">'+
+                    '<div class="col-12 col-sm-10 mb-3 mb-sm-0">'+
+                        '<h4 class="col-12 pl-0">Text Box</h4>'+
+                    '</div>'+
                     '<div class="col-12 col-sm-10 mb-3 mb-sm-0">'+
                         '<input type="text" placeholder="Title" data="specific" id="'+inputkey+'" class="form-control input-flat specReq" data-name="title" name="title[]" /><label id="title-error my-0" class="error invalid-feedback animated fadeInDown" for=""></label>'+
                     '</div>'+
@@ -148,7 +160,7 @@ $(document).ready(function() {
                         '<input type="hidden" value="'+type+'" class="form-control input-flat pe-none" name="field_type[]"  />'+
                     '</div>'+
                     '<div class="col-2 col-sm-2 text-center">'+
-                        '<button type="button" class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>'+
+                        '<button type="button" class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>'+
                     '</div>'+
                 '</div><hr class="mb-4 mt-4">';
 
@@ -171,10 +183,10 @@ $(document).ready(function() {
       
         html += '<div class="row  mx-0 ">'+
                     '<div class="col-8 col-sm-8 mt-2">'+
-                        '<input type="text" value="" class="form-control input-flat pe-none"  id="'+inputkeyoption+'" name="field_options_'+count_s+'[]" placeholder="option value" />'+
+                        '<input type="text" value="" class="form-control input-flat pe-none" id="'+inputkeyoption+'" name="field_options_'+count_s+'[]" placeholder="option value" />'+
                     '</div>'+
                     '<div class="ml-auto col-2 col-sm-2 mt-2">'+
-                        '<button type="button"  class="minus_btn bplus_btn btn btn-dark field_btn"><i class="fa fa-trash-o"></i></button>'+
+                        '<button type="button"  class="minus_btn bplus_btn btn  btn-gray field_btn btn-sm text-danger"><i class="fa fa-trash-o"></i></button>'+
                     '</div>'+
                     '<div class="ml-auto col-2 col-sm-2 ">'+
                        

@@ -1,3 +1,6 @@
+<?php
+$settings = \App\Models\Settings::first();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>{{ isset($page) ? $page .' | Elala Admin' : 'Elala Admin' }}</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ URL('images/company/'.$settings->company_favicon) }}">
     <!-- Custom Stylesheet -->
     <link href="{{ asset('plugins/toastr/css/toastr.min.css')}}" rel="stylesheet">
     <link href="{{ asset('plugins/tables/css/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -65,7 +68,7 @@
                 <b class="logo-abbr"><img src="{{ asset('images/logo.png') }}" alt=""> </b>
                 <span class="logo-compact"><img src="{{ asset('images/logo-compact.png') }}" alt=""></span>
                 <span class="brand-title text-white">
-                Elala 
+                    Elala 
                     <!-- <img src="{{ url('public/images/logo-text.png') }}" alt=""> -->
                 </span>
             </a>

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController,CategoryController,CategoryAttributeController};
+use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController,CategoryController,CategoryAttributeController,SettingsController};
 use App\Http\Controllers\admin\{ExperienceController};
 
 
@@ -89,6 +89,10 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('experience/removefile',[ExperienceController::class,'removefile'])->name('experience.removefile');
     Route::post('change_experience_status',[ExperienceController::class,'change_experience_status'])->name('experience.change_experience_status');
     Route::post('experience/uploadfile',[ExperienceController::class,'uploadfile'])->name('experience.uploadfile');
+
+    Route::get('settings',[SettingsController::class,'index'])->name('settings.list');
+    Route::post('updateSetting',[SettingsController::class,'updateSetting'])->name('settings.updateSetting');
+    Route::get('settings/edit',[SettingsController::class,'editSettings'])->name('settings.edit');
 });
 
 Route::group(['middleware'=>['auth']],function (){

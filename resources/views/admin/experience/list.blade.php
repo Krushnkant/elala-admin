@@ -39,9 +39,7 @@
                                     <thead>
                                     <tr>
                                         <th>Sr. No</th>
-                                        <th>Name</th>
-                                        <th>Title</th>
-                                        <th>Category</th>
+                                        <th>Experience</th>
                                         <th>Time</th>
                                         <th>Price</th>
                                         <th>Status</th>
@@ -52,9 +50,7 @@
                                     <tfoot>
                                     <tr>
                                         <th>Sr. No</th>
-                                        <th>Name</th>
-                                        <th>Title</th>
-                                        <th>Category</th>
+                                        <th>Experience</th>
                                         <th>Time</th>
                                         <th>Price</th>
                                         <th>Status</th>
@@ -308,14 +304,12 @@ function experience_table(tab_type='',is_clearState=false){
         },
         'columnDefs': [
             { "width": "50px", "targets": 0 },
-            { "width": "120px", "targets": 1 },
-            { "width": "170px", "targets": 2 },
-            { "width": "70px", "targets": 3 },
-            { "width": "120px", "targets": 4 },
-            { "width": "120px", "targets": 5 },
-            { "width": "120px", "targets": 6 },
-            { "width": "120px", "targets": 7 },
-            { "width": "120px", "targets": 8 },
+            { "width": "180px", "targets": 1 },
+            { "width": "100px", "targets": 2 },
+            { "width": "100px", "targets": 3 },
+            { "width": "100px", "targets": 4 },
+            { "width": "80px", "targets": 5 },
+            { "width": "100px", "targets": 6 },
         ],
         "columns": [
             {data: 'sr_no', name: 'sr_no', class: "text-center", orderable: false,
@@ -323,9 +317,7 @@ function experience_table(tab_type='',is_clearState=false){
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            {data: 'name', name: 'name', orderable: false, searchable: false, class: "text-center"},
-            {data: 'title', name: 'title', orderable: false, searchable: false, class: "text-center"},
-            {data: 'category_name', name: 'category_name', class: "text-left", orderable: false, searchable: false,},
+            {data: 'name', name: 'name', orderable: false, searchable: false, class: "text-left"},
             {data: 'time', name: 'time', class: "text-left", orderable: false, searchable: false,},
             {data: 'price', name: 'price', class: "text-left", orderable: false, searchable: false,},
             {data: 'estatus', name: 'estatus', orderable: false, searchable: false, class: "text-center"},
