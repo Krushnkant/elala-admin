@@ -71,12 +71,19 @@ class UserController extends BaseController
         return $this->sendResponseSuccess("User Registered Successfully");
     }
 
-    public function city(){
+    public function city($text){
         $cities = City::select('cities.*','states.name as stete_name','countries.name as country_name')->leftJoin('states', function($join) {
             $join->on('states.id', '=', 'cities.state_id');
           })->leftJoin('countries', function($join) {
             $join->on('countries.id', '=', 'states.country_id');
-          }) ->get();
+          });
+
+          if ($text) {
+            $cities = $cities->where('cities.name', 'LIKE', "$text%");
+        }
+
+          
+        $cities = $cities->get();
         $cities_arr = array();
         foreach ($cities as $city){
             $temp = array();
