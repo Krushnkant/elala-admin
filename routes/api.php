@@ -46,3 +46,6 @@ Route::get('getExperiences', [ExperienceController::class,'getExperiences']);
 Route::group(['middleware' => 'auth:api'], function(){
     
 });
+
+Route::get('city',[UserController::class,'city']);
+Route::get('city1',[UserController::class,'city1']);

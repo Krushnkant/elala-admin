@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User};
+use App\Models\ {User,City,State,Country};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -70,4 +70,56 @@ class UserController extends BaseController
         $user->save();
         return $this->sendResponseSuccess("User Registered Successfully");
     }
+
+    public function city(){
+        $cities = City::select('cities.*','states.name as stete_name','countries.name as country_name')->leftJoin('states', function($join) {
+            $join->on('states.id', '=', 'cities.state_id');
+          })->leftJoin('countries', function($join) {
+            $join->on('countries.id', '=', 'states.country_id');
+          }) ->get();
+        $cities_arr = array();
+        foreach ($cities as $city){
+            $temp = array();
+            $temp['id'] = $city->id;
+            $temp['name'] = $city->name.','.$city->stete_name.','.$city->country_name;
+       
+            array_push($cities_arr,$temp);
+        }
+        return $this->sendResponseWithData($cities_arr,"City Retrieved Successfully.");
+    }
+
+    public function city1(){
+        $data = array();
+        $cities = City::get();
+        $cities_arr = array();
+        foreach ($cities as $city){
+            $temp = array();
+            $temp['id'] = $city->id;
+            $temp['name'] = $city->name;
+            array_push($cities_arr,$temp);
+        }
+
+        $states = State::get();
+        $state_arr = array();
+        foreach ($states as $state){
+            $temp = array();
+            $temp['id'] = $state->id;
+            $temp['name'] = $state->name;
+            array_push($state_arr,$temp);
+        }
+
+        $countries = State::get();
+        $countries_arr = array();
+        foreach ($countries as $country){
+            $temp = array();
+            $temp['id'] = $country->id;
+            $temp['name'] = $country->name;
+            array_push($countries_arr,$temp);
+        }
+
+        $data = array('city' => $cities_arr,'state' => $state_arr,'country' => $countries_arr);
+        return $this->sendResponseWithData($data,"City Retrieved Successfully.");
+    }
+
+
 }
