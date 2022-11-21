@@ -8,6 +8,7 @@ use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class ExperienceController extends BaseController
 {
@@ -34,7 +35,7 @@ class ExperienceController extends BaseController
             $Experience->save();
         }else{
             $Experience = new Experience();
-            $Experience->user_id = $request->user_id;
+            $Experience->user_id = Auth::user()->id;
             $Experience->type = $request->type;
             $Experience->proccess_page = 'TypePage';
             $Experience->estatus = 5;

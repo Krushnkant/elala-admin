@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
+
 class UserController extends BaseController
 {
     public function register_user(Request $request){
@@ -98,7 +99,6 @@ class UserController extends BaseController
     public function otherlist()
     {
         $data = array();
-
         $categories = Category::where('parent_category_id',0)->where('estatus',1)->orderBy('sr_no','asc')->get();
         $categories_arr = array();
         foreach ($categories as $category){
