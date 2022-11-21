@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User,City,State,Country};
+use App\Models\ {User,City,State,Country,Category,Language,AgeGroup};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -95,38 +95,42 @@ class UserController extends BaseController
         return $this->sendResponseWithData($cities_arr,"City Retrieved Successfully.");
     }
 
-    public function city1(){
+    public function otherlist()
+    {
         $data = array();
-        $cities = City::get();
-        $cities_arr = array();
-        foreach ($cities as $city){
+
+        $categories = Category::where('parent_category_id',0)->where('estatus',1)->orderBy('sr_no','asc')->get();
+        $categories_arr = array();
+        foreach ($categories as $category){
             $temp = array();
-            $temp['id'] = $city->id;
-            $temp['name'] = $city->name;
-            array_push($cities_arr,$temp);
+            $temp['id'] = $category->id;
+            $temp['name'] = $category->category_name;
+            $temp['category_thumb'] = $category->category_thumb;
+            $temp['child_category'] = getSubCategories($category->id);
+            array_push($categories_arr,$temp);
         }
 
-        $states = State::get();
-        $state_arr = array();
-        foreach ($states as $state){
+        $languages = Language::where('estatus',1)->orderBy('id','asc')->get();
+        $languages_arr = array();
+        foreach ($languages as $language){
             $temp = array();
-            $temp['id'] = $state->id;
-            $temp['name'] = $state->name;
-            array_push($state_arr,$temp);
+            $temp['id'] = $language->id;
+            $temp['name'] = $language->title;
+            array_push($languages_arr,$temp);
         }
 
-        $countries = State::get();
-        $countries_arr = array();
-        foreach ($countries as $country){
+        $agegroups = AgeGroup::where('estatus',1)->orderBy('id','asc')->get();
+        $agegroups_arr = array();
+        foreach ($agegroups as $agegroup){
             $temp = array();
-            $temp['id'] = $country->id;
-            $temp['name'] = $country->name;
-            array_push($countries_arr,$temp);
+            $temp['id'] = $agegroup->id;
+            $temp['name'] = $agegroup->from_age .' to '.$agegroup->to_age;
+            array_push($agegroups_arr,$temp);
         }
-
-        $data = array('city' => $cities_arr,'state' => $state_arr,'country' => $countries_arr);
-        return $this->sendResponseWithData($data,"City Retrieved Successfully.");
+        $data = array('categories' => $categories_arr,'languages' => $languages_arr,'agegroups_arr'=>$agegroups_arr);
+        return $this->sendResponseWithData($data,"Other List Retrieved Successfully.");
     }
+
 
 
 }

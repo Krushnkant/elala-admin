@@ -48,4 +48,4 @@ Route::group(['middleware' => 'auth:api'], function(){
 });
 
 Route::get('city/{text}',[UserController::class,'city']);
-Route::get('city1',[UserController::class,'city1']);
+Route::get('otherlist',[UserController::class,'otherlist']);

@@ -93,4 +93,17 @@ function getExperienceStatus($experience_status){
     return ['experience_status' => $experience_status, 'class' => $class];
 }
 
+function getSubCategories($id){
+    $category = \App\Models\Category::where('estatus',1)->where('parent_category_id',$id)->orderBy('sr_no','asc')->get();
+    $catArray = array();
+    foreach ($category as $cat){  
+        $temp['id'] = $cat->id;
+        $temp['name'] = $cat->category_name;
+        $temp['category_thumb'] = $cat->category_thumb;
+        $temp['child_category'] = getSubCategories($cat['id']);
+        array_push($catArray,$temp);
+    }
+    return $catArray;
+}
+
 
