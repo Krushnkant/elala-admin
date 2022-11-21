@@ -81,12 +81,34 @@ class ProjectPageSeeder extends Seeder
         ProjectPage::create([
             'id' => 7,
             'parent_menu' => 0,
+            'label' => 'Languages',
+            'icon_class' => 'fa fa-language',
+            'route_url' => 'admin.languages.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.languages.list,admin.languages.addorupdate,admin.alllanguageslist,admin.languages.edit,admin.languages.delete,admin.attributes.chageattributestatus',
+            'sr_no' => 4
+        ]);
+
+        ProjectPage::create([
+            'id' => 8,
+            'parent_menu' => 0,
+            'label' => 'Age Group',
+            'route_url' => 'admin.agegroups.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.agegroups.list,admin.agegroup.addorupdate,admin.allagegroupslist,admin.agegroup.changeagegroupstatus,admin.agegroup.edit,admin.agegroup.delete',
+            'icon_class' => 'fa fa-child',
+            'sr_no' => 5
+        ]);
+
+        ProjectPage::create([
+            'id' => 9,
+            'parent_menu' => 0,
             'label' => 'Settings',
             'icon_class' => 'fa fa-cog',
             'route_url' => 'admin.settings.list',
             'is_display_in_menu' => 0,
             'inner_routes' => 'admin.settings.list,admin.settings.edit',
-            'sr_no' => 4
+            'sr_no' => 6
         ]);
 
 

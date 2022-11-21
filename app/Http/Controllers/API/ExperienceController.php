@@ -570,12 +570,12 @@ class ExperienceController extends BaseController
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
 
-        $user = User::where('id',$request->user_id)->where('estatus',1)->where('role',3)->first();
+        $user = User::where('id',Auth::user()->id)->where('estatus',1)->where('role',3)->first();
         if (!$user){
             return $this->sendError("User Not Exist", "Not Found Error", []);
         }
 
-        $experiences = Experience::with('category')->where('user_id',$request->user_id)->orderBy('created_at','DESC')->get();
+        $experiences = Experience::with('category')->where('user_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
         $experiences_arr = array();
         foreach ($experiences as $experience){
             $temp = array();

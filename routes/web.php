@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController,CategoryController,CategoryAttributeController,SettingsController};
+use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController
+    ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController};
 use App\Http\Controllers\admin\{ExperienceController};
 
 
@@ -89,6 +90,23 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('experience/removefile',[ExperienceController::class,'removefile'])->name('experience.removefile');
     Route::post('change_experience_status',[ExperienceController::class,'change_experience_status'])->name('experience.change_experience_status');
     Route::post('experience/uploadfile',[ExperienceController::class,'uploadfile'])->name('experience.uploadfile');
+
+    //Language
+
+    Route::get('languages',[LanguageController::class,'index'])->name('languages.list');
+    Route::post('addorupdatelanguage',[LanguageController::class,'addorupdatelanguage'])->name('languages.addorupdate');
+    Route::post('alllanguageslist',[LanguageController::class,'alllanguageslist'])->name('alllanguageslist');
+    Route::get('language/{id}/edit',[LanguageController::class,'editlanguage'])->name('languages.edit');
+    Route::get('language/{id}/delete',[LanguageController::class,'deletelanguage'])->name('languages.delete');
+    Route::get('chagelanguagestatus/{id}',[LanguageController::class,'chagelanguagestatus'])->name('languages.chageattributestatus');
+
+    //Age Group
+    Route::get('agegroups',[AgeGroupController::class,'index'])->name('agegroups.list');
+    Route::post('addorupdateagegroups',[AgeGroupController::class,'addorupdateagegroups'])->name('agegroups.addorupdate');
+    Route::post('allagegroupslist',[AgeGroupController::class,'allagegroupslist'])->name('allagegroupslist');
+    Route::get('agegroups/{id}/edit',[AgeGroupController::class,'editagegroups'])->name('agegroups.edit');
+    Route::get('agegroups/{id}/delete',[AgeGroupController::class,'deleteagegroup'])->name('agegroups.delete');
+    Route::get('changeagegroupstatus/{id}',[AgeGroupController::class,'changeagegroupstatus'])->name('agegroups.chageattributestatus');
 
     Route::get('settings',[SettingsController::class,'index'])->name('settings.list');
     Route::post('updateSetting',[SettingsController::class,'updateSetting'])->name('settings.updateSetting');
