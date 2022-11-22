@@ -26,7 +26,7 @@ class ExperienceController extends BaseController
         }
 
         if(isset($request->experience_id) && $request->experience_id != 0){
-            $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+            $experience = Experience::where('id',$request->experience_id)->first();
             if (!$experience){
                 return $this->sendError("Experience Not Exist", "Not Found Error", []);
             } 
@@ -67,7 +67,7 @@ class ExperienceController extends BaseController
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
 
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -93,7 +93,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -120,7 +120,7 @@ class ExperienceController extends BaseController
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
 
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -142,7 +142,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -196,7 +196,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -218,7 +218,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -256,7 +256,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -309,7 +309,7 @@ class ExperienceController extends BaseController
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
 
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -343,7 +343,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -364,7 +364,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -409,7 +409,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -430,7 +430,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -471,7 +471,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -493,7 +493,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -535,7 +535,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -556,7 +556,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->where('estatus',1)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }

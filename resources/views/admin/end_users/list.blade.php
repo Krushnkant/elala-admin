@@ -17,7 +17,12 @@
                 <div class="card">
                     <div class="card-body">
                         {{-- <h4 class="card-title">Customer List</h4> --}}
-
+                        <div class="action-section">
+                            <?php $page_id = \App\Models\ProjectPage::where('route_url',\Illuminate\Support\Facades\Route::currentRouteName())->pluck('id')->first(); ?>
+                            @if(getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) )
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#EndUserModal" id="AddEndUserBtn"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                            @endif
+                        </div>
 
                         <div class="custom-tab-1">
                             <ul class="nav nav-tabs mb-3">
@@ -85,11 +90,7 @@
 @section('js')
 <!-- end_user list JS start -->
 <script type="text/javascript">
-$('#parent_user_id').select2({
-    width: '100%',
-    placeholder: "Select Referral Users",
-    allowClear: true
-}).trigger("change");
+
 
 $(document).ready(function() {
     end_user_page_tabs('',true);
