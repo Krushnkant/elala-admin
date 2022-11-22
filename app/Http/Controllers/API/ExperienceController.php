@@ -41,7 +41,11 @@ class ExperienceController extends BaseController
             $Experience->estatus = 5;
             $Experience->save();
         }
-        return $this->sendResponseSuccess("Added Experience Successfully");
+        $data =array();
+        $data = array(
+            "experience_id" => $Experience->id
+        );
+        return $this->sendResponseWithData($data,"Added Experience Successfully");
     }
 
     public function addExperienceLocation(Request $request){
