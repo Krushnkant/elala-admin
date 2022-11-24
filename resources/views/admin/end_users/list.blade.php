@@ -69,6 +69,85 @@
         </div>
     </div>
 
+    <div class="modal fade" id="EndUserModal">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form class="form-valide" action="" id="enduserform" method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formtitle">Add User</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="attr-cover-spin" class="cover-spin"></div>
+                        {{ csrf_field() }}
+                        <div class="form-group ">
+                            <label class="col-form-label" for="profilePic">Profile Image
+                            </label>
+                            <input type="file" class="form-control-file" id="profile_pic" onchange="" name="profile_pic">
+                            <div id="profilepic-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                            <img src="{{ asset('images/default_avatar.jpg') }}" class="" id="profilepic_image_show" height="50px" width="50px" style="margin-top: 5px;width:50px;">
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-form-label" for="full_name">Full Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control input-flat" id="full_name" name="full_name" placeholder="">
+                            <div id="fullname-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-form-label" for="mobile_no">Mobile No <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control input-flat" id="mobile_no" name="mobile_no" placeholder="">
+                            <div id="mobileno-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-form-label" for="email">E-mail <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" class="form-control input-flat" id="email" name="email" placeholder="">
+                            <div id="email-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-form-label" for="password">Password <span class="text-danger">*</span>
+                            </label>
+                            <input type="password" class="form-control input-flat" id="password" name="password" placeholder="">
+                            <div id="password-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-form-label" for="gender">Gender
+                            </label>
+                            <div>
+                                <label class="radio-inline mr-3"><input type="radio" name="gender" value="1" checked> Female</label>
+                                <label class="radio-inline mr-3"><input type="radio" name="gender" value="2"> Male</label>
+                                <label class="radio-inline mr-3"><input type="radio" name="gender" value="3"> Other</label>
+                            </div>
+                            <div id="gender-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-form-label" for="dob">Date of Birth <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control custom_date_picker" id="dob" name="dob" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd" data-date-end-date="0d"> <span class="input-group-append"><span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span></span>
+                                <div id="dob-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-form-label" for="bio">Bio <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control" id="bio" name="bio"></textarea>
+                            <div id="bio-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
+                        </div>
+                       
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="user_id" id="user_id">
+                        <button type="button" class="btn btn-outline-primary" id="save_newEndUserBtn">Save & New <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>
+                        <button type="button" class="btn btn-primary" id="save_closeEndUserBtn">Save & Close <i class="fa fa-circle-o-notch fa-spin loadericonfa" style="display:none;"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="DeleteEndUserModal">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -227,7 +306,7 @@ function save_user(btn,btn_type){
                     $('#gender-error').html("");
                     $('#email-error').html("");
                     $('#password-error').html("");
-                    var default_image = "{{ url('public/images/default_avatar.jpg') }}";
+                    var default_image = "{{ url('images/default_avatar.jpg') }}";
                     $('#profilepic_image_show').attr('src', default_image);
                     $("#first_name").focus();
                     if(res.action == 'add'){
@@ -278,7 +357,7 @@ $('#profile_pic').change(function(){
     var validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
     if ($.inArray(fileType, validImageTypes) < 0) {
         $('#profilepic-error').show().text("Please provide a Valid Extension Image(e.g: .jpg .png)");
-        var default_image = "{{ url('public/images/default_avatar.jpg') }}";
+        var default_image = "{{ url('images/default_avatar.jpg') }}";
         $('#profilepic_image_show').attr('src', default_image);
     }
     else {
@@ -297,7 +376,7 @@ $('#adhar_front').change(function(){
     var validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
     if ($.inArray(fileType, validImageTypes) < 0) {
         $('#adhar_front-error').show().text("Please provide a Valid Extension Image(e.g: .jpg .png)");
-        var default_image = "{{ url('public/images/default_avatar.jpg') }}";
+        var default_image = "{{ url('images/default_avatar.jpg') }}";
         $('#adhar_front_show').attr('src', default_image);
     }
     else {
@@ -316,7 +395,7 @@ $('#adhar_back').change(function(){
     var validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
     if ($.inArray(fileType, validImageTypes) < 0) {
         $('#adhar_back-error').show().text("Please provide a Valid Extension Image(e.g: .jpg .png)");
-        var default_image = "{{ url('public/images/default_avatar.jpg') }}";
+        var default_image = "{{ url('images/default_avatar.jpg') }}";
         $('#adhar_back_show').attr('src', default_image);
     }
     else {
@@ -344,17 +423,12 @@ $('#EndUserModal').on('hidden.bs.modal', function () {
     $('#gender-error').html("");
     $('#email-error').html("");
     $('#password-error').html("");
+    $('#bio-error').html("");
  
     
-    var default_image = "{{ url('public/images/default_avatar.jpg') }}";
+    var default_image = "{{ url('images/default_avatar.jpg') }}";
     $('#profilepic_image_show').attr('src', default_image);
-    $("input[name='is_premium']").attr('checked', false);
-    $("input[name='is_premium']").val(0);
-    $("#is_premium_div").show();
-    $("#email_div").hide();
-    $("#password_div").hide();
-    $("#adhar_div").hide();
-    $("#adhar_photo_div").hide();
+   
     //location.reload();
     //end_user_page_tabs(tab_type,true);
 });
@@ -452,8 +526,7 @@ $('body').on('click', '#editEndUserBtn', function () {
  
     //$("#parent_user_id option[value='"+ user_id +"']").remove();
     
-    $.get("{{ url('admin/end_users') }}" +'/' + user_id +'/edit', function (data) {
-        //console.log(data);
+    $.get("{{ url('admin/users') }}" +'/' + user_id +'/edit', function (data) {
         
         $('#EndUserModal').find('.modal-title').html("Edit Customer");
         $('#EndUserModal').find('#save_closeEndUserBtn').attr("data-action","update");
@@ -462,71 +535,21 @@ $('body').on('click', '#editEndUserBtn', function () {
         $('#EndUserModal').find('#save_newEndUserBtn').attr("data-id",user_id);
         $('#user_id').val(data.id);
         if(data.profile_pic==null){
-            var default_image = "{{ url('public/images/default_avatar.jpg') }}";
+            var default_image = "{{ url('images/default_avatar.jpg') }}";
             $('#profilepic_image_show').attr('src', default_image);
         }
         else{
-            var profile_pic = "{{ url('public/images/profile_pic') }}" +"/" + data.profile_pic;
+            var profile_pic =  data.profile_pic;
             $('#profilepic_image_show').attr('src', profile_pic);
         }
 
-        if(data.adhar_front==null){
-            var default_image = "{{ url('public/images/default_avatar.jpg') }}";
-            $('#adhar_front_show').attr('src', default_image);
-        }
-        else{
-            var adhar_front = "{{ url('public/images/adhar_front') }}" +"/" + data.adhar_front;
-            $('#adhar_front_show').attr('src', adhar_front);
-        }
-
-        if(data.adhar_back==null){
-            var default_image = "{{ url('public/images/default_avatar.jpg') }}";
-            $('#profilepic_image_show').attr('src', default_image);
-        }
-        else{
-            var adhar_back = "{{ url('public/images/adhar_back') }}" +"/" + data.adhar_back;
-            $('#adhar_back_show').attr('src', adhar_back);
-        }
-      
-        $('#first_name').val(data.first_name);
-        $('#last_name').val(data.last_name);
+        $('#full_name').val(data.full_name);
         $('#mobile_no').val(data.mobile_no);
         $('#dob').val(data.dob);
         $('#email').val(data.email);
         $('#password').val(data.decrypted_password);
-        $('#adhar_card_no').val(data.adhar_card_no);
+        $('#bio').val(data.bio);
         $("input[name=gender][value=" + data.gender + "]").prop('checked', true);
-        //$('option:selected', "#parent_user_id").remove();    
-        //alert(data.parent_user_id);
-        $("#parent_user_id option:selected").each(function () {
-               $(this).removeAttr('selected'); 
-        });
-        $("#parent_user_id option[value="+ data.parent_user_id + "]").attr("selected",true).trigger('change');;
-        //$("#parent_user_id").select2('val', data.parent_user_id);
-        $('#parent_user_id').select2({
-            width: '100%',
-            placeholder: "Select Referral Users",
-            allowClear: true
-        }).trigger('change');
-      
-        if(data.is_premium == 1){
-            $("input[name=is_premium]").attr('checked', true);
-            $("input[name=is_premium]").val(1);
-            $("#is_premium_div").hide();
-            $("#email_div").show();
-            $("#password_div").show();
-            $("#adhar_div").show();
-            $("#adhar_photo_div").show();
-        }
-        else{
-            $("input[name=is_premium]").attr('checked', false);
-            $("input[name=is_premium]").val(0);
-            $("#is_premium_div").show();
-            $("#email_div").hide();
-            $("#password_div").hide();
-            $("#adhar_div").hide();
-            $("#adhar_photo_div").hide();
-        }
     })
 });
 
@@ -574,38 +597,6 @@ $('body').on('click', '#RemoveEndUserSubmit', function (e) {
     });
 });
 
-$(document).on('change', '#is_premium', function(e) {
-    var action = $('#EndUserModal').find('#save_closeEndUserBtn').attr("data-action");
-
-    if ($(this).is(':checked')) {
-        $(this).val(1);
-        $(this).attr('checked', true);
-        $("#email_div").show();
-        $("#password_div").show();
-        $("#adhar_div").show();
-        $("#adhar_photo_div").show();
-    }
-    else {
-        $(this).val(0);
-        $(this).attr('checked', false);
-        $("#email_div").hide();
-        $("#password_div").hide();
-        $("#adhar_div").hide();
-        $("#adhar_photo_div").hide();
-    }
-});
-
-$('body').on('click', '.is_premium_user', function (e) {
-        var user_id = $(this).attr('data-id');
-        var url = "{{ url('admin/end_users_level') }}" + "/" + user_id;
-        window.open(url,"_blank");
-});
-
-$('body').on('click', '.viewUserMonthlyBtn', function () {
-    var id = $(this).attr('data-id');
-    var url = "{{ url('admin/viewClieldUser') }}" + "/" + id;
-    window.open(url,"_blank");
-});
 </script>
 <!-- end_user list JS end -->
 @endsection

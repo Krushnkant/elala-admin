@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\ {User,Experience,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute};
+use App\Models\ {User,Experience,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy};
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -594,6 +594,76 @@ class ExperienceController extends BaseController
         }
 
         return $this->sendResponseWithData($experiences_arr,"Experiences Retrieved Successfully.");
+    }
+
+
+    public function city($text){
+        $cities = City::select('cities.*','states.name as stete_name','countries.name as country_name')->leftJoin('states', function($join) {
+            $join->on('states.id', '=', 'cities.state_id');
+          })->leftJoin('countries', function($join) {
+            $join->on('countries.id', '=', 'states.country_id');
+          });
+
+          if ($text) {
+            $cities = $cities->where('cities.name', 'LIKE', "$text%");
+        }
+
+          
+        $cities = $cities->get();
+        $cities_arr = array();
+        foreach ($cities as $city){
+            $temp = array();
+            $temp['id'] = $city->id;
+            $temp['name'] = $city->name.','.$city->stete_name.','.$city->country_name;
+       
+            array_push($cities_arr,$temp);
+        }
+        return $this->sendResponseWithData($cities_arr,"City Retrieved Successfully.");
+    }
+
+    public function otherlist()
+    {
+        $data = array();
+        $categories = Category::where('parent_category_id',0)->where('estatus',1)->orderBy('sr_no','asc')->get();
+        $categories_arr = array();
+        foreach ($categories as $category){
+            $temp = array();
+            $temp['id'] = $category->id;
+            $temp['name'] = $category->category_name;
+            $temp['category_thumb'] = $category->category_thumb;
+            $temp['child_category'] = getSubCategories($category->id);
+            array_push($categories_arr,$temp);
+        }
+
+        $languages = Language::where('estatus',1)->orderBy('id','asc')->get();
+        $languages_arr = array();
+        foreach ($languages as $language){
+            $temp = array();
+            $temp['id'] = $language->id;
+            $temp['name'] = $language->title;
+            array_push($languages_arr,$temp);
+        }
+
+        $agegroups = AgeGroup::where('estatus',1)->orderBy('id','asc')->get();
+        $agegroups_arr = array();
+        foreach ($agegroups as $agegroup){
+            $temp = array();
+            $temp['id'] = $agegroup->id;
+            $temp['name'] = $agegroup->from_age .' to '.$agegroup->to_age;
+            array_push($agegroups_arr,$temp);
+        }
+
+        $policies = ExperienceCancellationPolicy::orderBy('id','asc')->get();
+        $policies_arr = array();
+        foreach ($policies as $policie){
+            $temp = array();
+            $temp['id'] = $policie->id;
+            $temp['title'] = $policie->title;
+            $temp['description'] = $policie->description;
+            array_push($policies_arr,$temp);
+        }
+        $data = array('categories' => $categories_arr,'languages' => $languages_arr,'agegroups_arr'=>$agegroups_arr,'policies_arr'=>$policies_arr);
+        return $this->sendResponseWithData($data,"Other List Retrieved Successfully.");
     }
 
     

@@ -123,7 +123,7 @@ class EndUserController extends Controller
                     }
 
                     if(isset($user->profile_pic) && $user->profile_pic!=null){
-                        $profile_pic = url('images/profile_pic/'.$user->profile_pic);
+                        $profile_pic = $user->profile_pic;
                     }
                     else{
                         $profile_pic = url('images/default_avatar.jpg');
@@ -154,7 +154,9 @@ class EndUserController extends Controller
                     }
 
                     $action='';
-                    
+                    if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
+                        $action .= '<button id="editEndUserBtn" class="btn btn-gray text-blue btn-sm" data-toggle="modal" data-target="#EndUserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+                    }
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_delete($page_id)) ){
                         $action .= '<button id="deleteEndUserBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteEndUserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
                     }
@@ -185,12 +187,12 @@ class EndUserController extends Controller
         $messages = [
             'profile_pic.image' =>'Please provide a Valid Extension Image(e.g: .jpg .png)',
             'profile_pic.mimes' =>'Please provide a Valid Extension Image(e.g: .jpg .png)',
-            'first_name.required' =>'Please provide a First Name',
-            'last_name.required' =>'Please provide a Last Name',
+            'full_name.required' =>'Please provide a Full Name',
             'mobile_no.required' =>'Please provide a Mobile No.',
             'dob.required' =>'Please provide a Date of Birth.',
             'email.required' =>'Please provide a valid E-mail address.',
             'password.required' =>'Please provide a Password.',
+            'bio.required' =>'Please provide a Bio.',
         ];
 
         if ($request->is_premium == 1){
@@ -199,8 +201,7 @@ class EndUserController extends Controller
                     'profile_pic' => 'image|mimes:jpeg,png,jpg',
                     'adhar_front' => 'image|mimes:jpeg,png,jpg',
                     'adhar_back' => 'image|mimes:jpeg,png,jpg',
-                    'first_name' => 'required',
-                    'last_name' => 'required',
+                    'full_name' => 'required',
                     //'mobile_no' => 'required|numeric|digits:10',
                     'adhar_card_no' => 'required|numeric|digits:12',
                     'dob' => 'required',
@@ -212,14 +213,14 @@ class EndUserController extends Controller
                         return $query->where('role', 3)->where('id','!=',$request->user_id)->where('estatus','!=',3);
                     })],
                     'password' => 'required',
+                    'bio' => 'required',
                 ], $messages);
           }else{
                 $validator = Validator::make($request->all(), [
                     'profile_pic' => 'image|mimes:jpeg,png,jpg',
                     'adhar_front' => 'required|image|mimes:jpeg,png,jpg',
                     'adhar_back' => 'required|image|mimes:jpeg,png,jpg',
-                    'first_name' => 'required',
-                    'last_name' => 'required',
+                    'full_name' => 'required',
                     //'mobile_no' => 'required|numeric|digits:10',
                     'adhar_card_no' => 'required|numeric|digits:12',
                     'dob' => 'required',
@@ -231,6 +232,7 @@ class EndUserController extends Controller
                         return $query->where('role', 3)->where('id','!=',$request->user_id)->where('estatus','!=',3);
                     })],
                     'password' => 'required',
+                    'bio' => 'required',
                 ], $messages);
 
           }
@@ -238,12 +240,12 @@ class EndUserController extends Controller
         else{
             $validator = Validator::make($request->all(), [
                 'profile_pic' => 'image|mimes:jpeg,png,jpg',
-                'first_name' => 'required',
-                'last_name' => 'required',
+                'full_name' => 'required',
                 'mobile_no' => ['required', 'numeric', 'digits:10',Rule::unique('users')->where(function ($query) use ($request) {
                     return $query->where('role', 3)->where('id','!=',$request->user_id)->where('estatus','!=',3);
                 })],
                 'dob' => 'required',
+                'bio' => 'required',
             ], $messages);
         }
 
@@ -260,56 +262,30 @@ class EndUserController extends Controller
             }
 
             $old_image = $user->profile_pic;
-            $old_adhar_front = $user->adhar_front;
-            $old_adhar_back = $user->adhar_back;
             $image_name = $old_image;
-
-            $old_is_premium = $user->is_premium;
-
-            $user->parent_user_id = isset($request->parent_user_id)?$request->parent_user_id:0;
-            $user->first_name = $request->first_name;
-            $user->last_name = $request->last_name;
-            $user->full_name = $request->first_name." ".$request->last_name;
+            $user->full_name = $request->full_name;
             $user->mobile_no = $request->mobile_no;
             $user->gender = $request->gender;
             $user->dob = $request->dob;
-            $user->is_premium = isset($request->is_premium)?$request->is_premium:0;
-            if ($user->is_premium == 1){
-                $user->email = $request->email;
-                $user->password = Hash::make($request->password);
-                $user->decrypted_password = $request->password;
-                $user->adhar_card_no = $request->adhar_card_no;
-            }
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->decrypted_password = $request->password;
+            $user->bio = $request->bio;
+                 
         }
         else{
             $action = "add";
             $user = new User();
-            $user->parent_user_id = isset($request->parent_user_id)?$request->parent_user_id:0;
-            $user->first_name = $request->first_name;
-            $user->last_name = $request->last_name;
-            $user->full_name = $request->first_name." ".$request->last_name;
+          
+            $user->full_name = $request->full_name;
             $user->mobile_no = $request->mobile_no;
             $user->gender = $request->gender;
             $user->dob = $request->dob;
             $user->role = 3;
-            
-            $user->is_premium = isset($request->is_premium)?$request->is_premium:0;
-            if ($user->is_premium == 1){
-                $user->email = $request->email;
-                
-                $user->password = Hash::make($request->password);
-                $user->decrypted_password = $request->password;
-                $user->adhar_card_no = $request->adhar_card_no;
-
-                
-            }
-            $premiumuserid = User::whereNotNull('premiumuserid')->where('role',3)->orderBy('id', 'DESC')->first();
-            $preserid = 1;
-            if($premiumuserid){
-                $preserid  = $premiumuserid->premiumuserid;
-            }
-            $user->premiumuserid = $preserid + 1;
-            $user->referral_id = Str::random(5);
+            $user->bio = $request->bio;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->decrypted_password = $request->password;
             $user->created_at = new \DateTime(null, new \DateTimeZone('Asia/Kolkata'));
             $image_name=null;
         }
@@ -327,67 +303,8 @@ class EndUserController extends Controller
             }
             $user->profile_pic = $image_name;
         }
-
-        if ($request->hasFile('adhar_front')) {
-            $image = $request->file('adhar_front');
-            $image_name = 'adhar_front' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('images/adhar_front');
-            $image->move($destinationPath, $image_name);
-            if(isset($old_adhar_front)) {
-                $old_adhar_front = public_path('images/adhar_front/' . $old_adhar_front);
-                if (file_exists($old_adhar_front)) {
-                    unlink($old_adhar_front);
-                }
-            }
-            $user->adhar_front = $image_name;
-        }
-
-        if ($request->hasFile('adhar_back')) {
-            $image = $request->file('adhar_back');
-            $image_name = 'adhar_back_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('images/adhar_back');
-            $image->move($destinationPath, $image_name);
-            if(isset($old_adhar_back)) {
-                $old_adhar_back = public_path('images/adhar_back/' . $old_adhar_back);
-                if (file_exists($old_adhar_back)) {
-                    unlink($old_adhar_back);
-                }
-            }
-            $user->adhar_back = $image_name;
-        }
-
         $user->save();
-        if ($user->is_premium == 1){
-            if(isset($request->action) && $request->action!="update"){
-                $levels = Level::get();
-                foreach ($levels as $level){
-                    if($user){
-                        $userlevel = new UserLevel();
-                        $userlevel->user_id = $user->id;
-                        $userlevel->level_id = $level->id;
-                        $userlevel->commission_percentage = $level->commission_percentage;
-                        $userlevel->no_child_users = $level->no_child_users;
-                        $userlevel->save();
-                    }
-                }
-            }
-
-            if(isset($old_is_premium) && $old_is_premium == 0){
-                $levels = Level::get();
-                foreach ($levels as $level){
-                    if($user){
-                        $userlevel = new UserLevel();
-                        $userlevel->user_id = $user->id;
-                        $userlevel->level_id = $level->id;
-                        $userlevel->commission_percentage = $level->commission_percentage;
-                        $userlevel->no_child_users = $level->no_child_users;
-                        $userlevel->save();
-                    }
-                }
-            }
-
-        }
-
+       
         return response()->json(['status' => '200', 'action' => $action]);
     }
 

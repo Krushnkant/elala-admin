@@ -46,8 +46,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('removeExperience', [ExperienceController::class,'removeExperience']);
     Route::get('getExperience', [ExperienceController::class,'getExperience']);
     Route::get('getExperiences', [ExperienceController::class,'getExperiences']);
-    Route::get('otherlist',[UserController::class,'otherlist']);
-    Route::get('city/{text}',[UserController::class,'city']);
+    Route::get('otherlist',[ExperienceController::class,'otherlist']);
+    Route::get('city/{text}',[ExperienceController::class,'city']);
     
 });
 

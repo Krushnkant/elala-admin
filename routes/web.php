@@ -54,6 +54,7 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('allEnduserlist',[EndUserController::class,'allEnduserlist'])->name('allEnduserlist');
     Route::get('changeEnduserstatus/{id}',[EndUserController::class,'changeEnduserstatus'])->name('end_users.changeEnduserstatus');
     Route::get('end_users/{id}/delete',[EndUserController::class,'deleteEnduser'])->name('end_users.delete');
+    //Route::get('end_users/{id}/edit',[EndUserController::class,'editenduser'])->name('end_users.edit');
 
     //designation route
     Route::get('designation',[DesignationController::class,'index'])->name('designation.list');
