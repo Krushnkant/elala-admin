@@ -72,5 +72,7 @@ class UserController extends BaseController
         return $this->sendResponseSuccess("User Registered Successfully");
     }
 
+    
+
 
 }

@@ -33,7 +33,7 @@ Route::get('admin',[AuthController::class,'index'])->name('admin.login');
 Route::post('adminpostlogin', [AuthController::class, 'postLogin'])->name('admin.postlogin');
 Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');
 Route::get('admin/403_page',[AuthController::class,'invalid_page'])->name('admin.403_page');
-
+Route::get('verify/{text}', [AuthController::class, 'verify_email']);
 
 Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'admin.'],function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');

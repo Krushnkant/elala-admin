@@ -286,6 +286,7 @@ class EndUserController extends Controller
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->decrypted_password = $request->password;
+            $user->is_verify = 1;
             $user->created_at = new \DateTime(null, new \DateTimeZone('Asia/Kolkata'));
             $image_name=null;
         }

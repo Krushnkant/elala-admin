@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\ {User,Experience,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy};
+use App\Models\ {User,Experience,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review};
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -41,10 +41,7 @@ class ExperienceController extends BaseController
             $Experience->estatus = 5;
             $Experience->save();
         }
-        $data =array();
-        $data = array(
-            "experience_id" => $Experience->id
-        );
+        $data = new ExperienceResource($Experience);
         return $this->sendResponseWithData($data,"Added Experience Successfully");
     }
 
@@ -566,14 +563,7 @@ class ExperienceController extends BaseController
     }
 
     public function getExperiences(Request $request){
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError($validator->errors(), "Validation Errors", []);
-        }
-
+       
         $user = User::where('id',Auth::user()->id)->where('estatus',1)->where('role',3)->first();
         if (!$user){
             return $this->sendError("User Not Exist", "Not Found Error", []);
@@ -664,6 +654,128 @@ class ExperienceController extends BaseController
         }
         $data = array('categories' => $categories_arr,'languages' => $languages_arr,'agegroups_arr'=>$agegroups_arr,'policies_arr'=>$policies_arr);
         return $this->sendResponseWithData($data,"Other List Retrieved Successfully.");
+    }
+
+
+    //////////////////
+
+
+
+    
+
+    public function getHomeExperiences(){
+       
+        $experiences = Experience::with(['media' => function($q) {
+                $q->where('type', '=', 'img'); 
+            }])->where('estatus',1)->get();
+        
+        $experiences_arr = array();
+        foreach ($experiences as $experience){
+            $temp = array();
+            $temp['id'] = $experience->id;
+            $temp['title'] = $experience->title;
+            $temp['location'] = $experience->location;
+            $temp['individual_rate'] = $experience->individual_rate;
+            $temp['duration'] = $experience->duration;
+            $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
+            $temp['rating'] = $experience->rating;
+            array_push($experiences_arr,$temp);
+        }
+
+        return $this->sendResponseWithData($experiences_arr,"Experiences Retrieved Successfully.");
+    }
+
+    public function ExperienceDetails($id){
+       
+        $experience = Experience::where('id',$id)->first();
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+       
+        $ProvideItem = ExperienceProvideItem::where('experience_id',$id)->get(['id','title']);
+        $BrindItem = ExperienceBrindItem::where('experience_id',$id)->get(['id','title']);
+        $Images = ExperienceMedia::where('experience_id',$id)->where('type','img')->get(['id','thumb']);
+        $Videos = ExperienceMedia::where('experience_id',$id)->where('type','video')->get(['id','thumb']);
+        $DiscountRate = ExperienceDiscountRate::where('experience_id',$id)->get(['id','from_member','to_member','discount']);
+        $ScheduleTime = ExperienceScheduleTime::where('experience_id',$id)->get(['id','day','time']);
+
+        $data =  [
+            'id' => $experience->id,
+            'type' => $experience->type,
+            'location' => $experience->location,
+            'latitude' => $experience->latitude,
+            'longitude' => $experience->longitude,
+            'category_id' => $experience->category_id,
+            'title' => $experience->category_id,
+            'description' => $experience->description,
+            'images' => $Images,
+            'videos' => $Videos,
+            'duration' => $experience->duration,
+            'age_limit' => explode(',',$experience->age_limit),
+            'provide_items' => $ProvideItem,
+            'is_bring_item' => $experience->is_bring_item,
+            'brind_items' => $BrindItem,
+            'is_meet_address' => $experience->is_meet_address,
+            'meet_address' => $experience->meet_address,
+            'meet_address_flat_no' => $experience->meet_address_flat_no,
+            'meet_city' => $experience->meet_city,
+            'meet_state' => $experience->meet_state,
+            'meet_country' => $experience->meet_country,
+            'pine_code' => $experience->pine_code,
+            'meet_latitude' => $experience->meet_latitude,
+            'meet_longitude' => $experience->meet_longitude,
+            'max_member_public_group_size' => $experience->max_member_public_group_size,
+            'max_member_private_group_size' => $experience->max_member_private_group_size,
+            'individual_rate' => $experience->individual_rate,
+            'min_private_group_rate' => $experience->min_private_group_rate,
+            'discount_rate' => $DiscountRate,
+            'schedule_time' => $ScheduleTime,
+            'cancellation_policy_id' => $experience->cancellation_policy_id,
+            'rating' => $experience->rating,
+            'estatus' => $experience->estatus,
+            'host' => User::where('id',$experience->user_id)->first()->toArray()
+        ];
+        
+        return $this->sendResponseWithData($data, 'Experience Details Retrieved successfully.');
+    }
+
+    public function getRelatedExperiences($id){
+       
+        $experiences = Experience::with(['media' => function($q) {
+                $q->where('type', '=', 'img'); 
+            }])->where('category_id',$id)->where('estatus',1)->get();
+        
+        $experiences_arr = array();
+        foreach ($experiences as $experience){
+            $temp = array();
+            $temp['id'] = $experience->id;
+            $temp['title'] = $experience->title;
+            $temp['location'] = $experience->location;
+            $temp['individual_rate'] = $experience->individual_rate;
+            $temp['duration'] = $experience->duration;
+            $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
+            $temp['rating'] = $experience->rating;
+            array_push($experiences_arr,$temp);
+        }
+
+        return $this->sendResponseWithData($experiences_arr,"Related Experiences Retrieved Successfully.");
+    }
+
+    public function getReviewExperiences($id){
+        $reviews = Review::with('user')->where('experience_id',$id)->where('estatus',1)->get();
+        $reviews_arr = array();
+        foreach ($reviews as $review){
+            $temp = array();
+            $temp['id'] = $review->id;
+            $temp['description'] = $review->description;
+            $temp['rating'] = $review->rating;
+            $temp['full_name'] = $review->user->full_name;
+            $temp['profile_image'] = isset($review->user->profile_pic)?$review->user->profile_pic:"";
+            $temp['created_at'] = $review->created_at;
+            array_push($reviews_arr,$temp);
+        }
+
+        return $this->sendResponseWithData($reviews_arr,"Review Experiences Retrieved Successfully.");
     }
 
     

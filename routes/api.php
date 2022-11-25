@@ -23,6 +23,10 @@ use App\Http\Controllers\API\UserController;
 
 Route::post('register_user',[UserController::class,'register_user']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('verify_otp', [AuthController::class, 'verify_otp']);
+Route::post('forgetpassword', [AuthController::class, 'forgetpassword']);
+Route::post('resetpassword', [AuthController::class, 'resetpassword']);
+
 
 
 Route::group(['middleware' => 'auth:api'], function(){
@@ -50,6 +54,13 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('city/{text}',[ExperienceController::class,'city']);
     
 });
+
+
+Route::get('getHomeExperiences', [ExperienceController::class,'getHomeExperiences']);
+Route::get('experienceDetails/{id}', [ExperienceController::class,'experienceDetails']);
+Route::get('getRelatedExperiences/{id}', [ExperienceController::class,'getRelatedExperiences']);
+Route::get('getReviewExperiences/{id}', [ExperienceController::class,'getReviewExperiences']);
+
 
 
 

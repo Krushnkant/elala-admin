@@ -56,6 +56,7 @@ class ExperienceResource extends JsonResource
             'discount_rate' => $DiscountRate,
             'schedule_time' => $ScheduleTime,
             'cancellation_policy_id' => $this->cancellation_policy_id,
+            'rating' => $this->rating,
             'estatus' => $this->estatus
         ];
     }

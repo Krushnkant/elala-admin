@@ -33,5 +33,22 @@ class Experience extends Model
     public function categoryattribute(){
         return $this->hasMany(ExperienceCategoryAttribute::class,'experience_id','id');
     }
+
+    
+
+    // public function getCountryAttribute(){
+    //     $country = Country::where('id',$this->attributes['country'])->pluck('name')->first();
+    //     return $country;
+    // }
+
+    // public function getStateAttribute(){
+    //     $State = State::where('id',$this->attributes['state'])->pluck('name')->first();
+    //     return $State;
+    // }
+
+    // public function getCityAttribute(){
+    //     $City = City::where('id',$this->attributes['city'])->pluck('name')->first();
+    //     return $City;
+    // }
   
 }

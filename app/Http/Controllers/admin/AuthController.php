@@ -66,4 +66,18 @@ class AuthController extends Controller
 
         return Redirect('admin');
     }
+
+    public function verify_email($text){
+        $id= decrypt($text);
+        $user = User::where('id',$id)->where('estatus',1)->first();
+        if ($user){
+            $user->is_verify = 1;
+            $user->save();
+            return response()->json(['status'=>200]);
+        }
+        else{
+            return response()->json(['status'=>400]);
+        }
+    }
+    
 }
