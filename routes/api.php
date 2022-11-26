@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ExperienceController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,10 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('getExperiences', [ExperienceController::class,'getExperiences']);
     Route::get('otherlist',[ExperienceController::class,'otherlist']);
     Route::get('city/{text}',[ExperienceController::class,'city']);
+
+    Route::post('createorder', [OrderController::class,'createorder']);
+    Route::post('getHostOrders', [OrderController::class,'getHostOrders']);
+    Route::post('getMyOrders', [OrderController::class,'getMyOrders']);
     
 });
 
@@ -61,6 +66,9 @@ Route::get('experienceDetails/{id}', [ExperienceController::class,'experienceDet
 Route::get('getRelatedExperiences/{id}', [ExperienceController::class,'getRelatedExperiences']);
 Route::get('getReviewExperiences/{id}', [ExperienceController::class,'getReviewExperiences']);
 Route::get('getAvailableTimeExperiences/{id}/{day}', [ExperienceController::class,'getAvailableTimeExperiences']);
+
+
+
 
 
 
