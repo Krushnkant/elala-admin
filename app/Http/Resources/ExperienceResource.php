@@ -31,7 +31,7 @@ class ExperienceResource extends JsonResource
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'category_id' => $this->category_id,
-            'title' => $this->category_id,
+            'title' => $this->title,
             'description' => $this->description,
             'images' => $Images,
             'videos' => $Videos,

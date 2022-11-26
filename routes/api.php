@@ -60,6 +60,7 @@ Route::get('getHomeExperiences', [ExperienceController::class,'getHomeExperience
 Route::get('experienceDetails/{id}', [ExperienceController::class,'experienceDetails']);
 Route::get('getRelatedExperiences/{id}', [ExperienceController::class,'getRelatedExperiences']);
 Route::get('getReviewExperiences/{id}', [ExperienceController::class,'getReviewExperiences']);
+Route::get('getAvailableTimeExperiences/{id}/{day}', [ExperienceController::class,'getAvailableTimeExperiences']);
 
 
 

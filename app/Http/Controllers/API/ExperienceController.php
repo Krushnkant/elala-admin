@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ExperienceController extends BaseController
 {
@@ -776,6 +777,25 @@ class ExperienceController extends BaseController
         }
 
         return $this->sendResponseWithData($reviews_arr,"Review Experiences Retrieved Successfully.");
+    }
+
+    public function getAvailableTimeExperiences($id,$day){
+        $times = ExperienceScheduleTime::where('experience_id',$id)->where('day',$day)->get();
+        $times_arr = array();
+        foreach ($times as $time){
+            $experience = Experience::where('id',$id)->first();
+            $temp = array();
+            $temp['id'] = $time->id;
+            $temp['experience_id'] = $time->experience_id;
+            $temp['day'] = $time->day;
+            $temp['time'] = $time->time;
+            $time1 = Carbon::parse($time->time);
+            $endTime = $time1->addMinutes($experience->duration);
+            $temp['end_time'] = $endTime->format('H:i:s');
+            array_push($times_arr,$temp);
+        }
+
+        return $this->sendResponseWithData($times_arr,"Available Time Experience Retrieved Successfully.");
     }
 
     
