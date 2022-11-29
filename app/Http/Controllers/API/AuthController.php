@@ -56,7 +56,10 @@ class AuthController extends BaseController
                     if($user != null){
                         if($user->is_verify == 1){
                             if (isset($user) && $data['password'] == $user->decrypted_password) {
-                                if (auth()->attempt($data)) {
+                                $data1 = array();
+                                $data1['email'] = $data['email'];
+                                $data1['password'] = $data['password'];
+                                if (auth()->attempt($data1)) {
                                     $token = auth()->user()->createToken('P00j@13579WebV#d@n%')->accessToken;
                                     $user['token'] = $token;
                                     // dump("user");
@@ -107,7 +110,10 @@ class AuthController extends BaseController
                 if($user != null){
                     if($user->is_verify == 1){
                         if (isset($user) && $data['password'] == $user->decrypted_password) {
-                            if (auth()->attempt($data)) {
+                                $data1 = array();
+                                $data1['mobile_no'] = $data['mobile_no'];
+                                $data1['password'] = $data['password'];
+                            if (auth()->attempt($data1)) {
                                 $token = auth()->user()->createToken('P00j@13579WebV#d@n%')->accessToken;
                                 $user['token'] = $token;
                                 // dump("user");

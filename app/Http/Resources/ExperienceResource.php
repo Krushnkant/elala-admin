@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime};
+use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage};
 
 
 class ExperienceResource extends JsonResource
@@ -23,6 +23,7 @@ class ExperienceResource extends JsonResource
         $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ScheduleTime = ExperienceScheduleTime::where('experience_id',$this->id)->get(['id','day','time']);
+        $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
 
         return [
             'id' => $this->id,
@@ -30,6 +31,7 @@ class ExperienceResource extends JsonResource
             'location' => $this->location,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
+            'languages' => $ExperienceLanguage,
             'category_id' => $this->category_id,
             'title' => $this->title,
             'description' => $this->description,
