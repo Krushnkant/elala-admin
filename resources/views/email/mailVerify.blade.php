@@ -19,7 +19,7 @@ $CompanyLogo = $setting['company_logo'];
                 <img src="{{ url('images/company/'.$CompanyLogo) }}" alt=""  style="width: 150px;">
             </div>
             <div style="text-align: center; background-color: #fff; padding: 50px;">
-                <div style="margin-bottom: 25px; font-weight: 900;font-size: 18px;">Thank you for contact us</div>
+                {{-- <div style="margin-bottom: 25px; font-weight: 900;font-size: 18px;">Thank you for contact us</div> --}}
                 <div style="margin-bottom: 25px;font-size: 13px;">
                     {{ $data['message1'] }}
                 </div>

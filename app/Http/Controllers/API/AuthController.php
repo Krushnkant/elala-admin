@@ -101,7 +101,8 @@ class AuthController extends BaseController
                         $user->save();
                         $id =  encrypt($user->id);
                         $data2 = [
-                            'message1' => url('verify/'.$id)
+                            //'message1' => url('verify/'.$id)
+                            'message1' => 'http://localhost:3000/create-password/'.$id
                         ]; 
                         $templateName = 'email.mailVerify';
                         $subject = 'Verify User Link';
