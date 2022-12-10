@@ -174,7 +174,7 @@ class AuthController extends BaseController
             $user->otp_created_at = null;
             $user->is_verify = 1;
             $user->save();
-            $user['token'] =  $user->createToken('MyApp')-> accessToken;
+            $user['token'] =  $user->createToken('P00j@13579WebV#d@n%p')-> accessToken;
             $data =  new UserResource($user);
             $final_data = array();
             array_push($final_data,$data);
