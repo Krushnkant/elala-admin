@@ -661,7 +661,7 @@ class ExperienceController extends BaseController
         }
 
         $policies = ExperienceCancellationPolicy::orderBy('id','asc')->get();
-        
+
         $policies_arr = array();
         foreach ($policies as $policie){
             $temp = array();
@@ -819,6 +819,45 @@ class ExperienceController extends BaseController
         }
 
         return $this->sendResponseWithData($times_arr,"Available Time Experience Retrieved Successfully.");
+    }
+
+
+    public function EditProfile(Request $request){
+        $messages = [
+            'mobile_no.required' =>'Please provide a Mobile No.',
+            'dob.required' =>'Please provide a Date of Birth.',
+            'email.required' =>'Please provide a e-mail address.',
+            'gender.required' =>'Please provide a gender.',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'dob' => 'required',
+            'gender' => 'required',
+            'email' => 'required',
+            'mobile_no' => 'required',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+
+        $user = User::find(Auth::user()->id);
+        $user->full_name = $request->name;
+        $user->mobile_no = $request->mobile_no;
+        $user->gender = $request->gender;
+        $user->dob = $request->dob;
+        $user->email = $request->email;
+
+        if ($request->hasFile('profile_pic')) {
+            $image = $request->file('profile_pic');
+            $image_name = 'profilePic_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('images/profile_pic');
+            $image->move($destinationPath, $image_name);
+            $user->profile_pic = $image_name;
+        }
+
+        $user->save();
+        return $this->sendResponseSuccess("User Registered Successfully");
     }
 
     
