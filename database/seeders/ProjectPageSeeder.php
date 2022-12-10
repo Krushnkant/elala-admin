@@ -56,6 +56,8 @@ class ProjectPageSeeder extends Seeder
             'inner_routes' => 'admin.designation.list,admin.designation.addorupdate,admin.allDesignationlist,admin.designation.changeDesignationstatus,admin.designation.edit,admin.designation.delete'
         ]);
 
+       
+
         ProjectPage::create([
             'id' => 5,
             'parent_menu' => 0,
@@ -103,13 +105,45 @@ class ProjectPageSeeder extends Seeder
         ProjectPage::create([
             'id' => 9,
             'parent_menu' => 0,
+            'label' => 'Cancellation Policy',
+            'route_url' => 'admin.policy.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.policy.list,admin.policy.addorupdate,admin.allpolicylist,admin.policy.chagepolicystatus,admin.policy.edit,admin.policy.delete',
+            'icon_class' => 'fa fa-shield',
+            'sr_no' => 6
+        ]);
+
+        ProjectPage::create([
+            'id' => 10,
+            'parent_menu' => 0,
             'label' => 'Settings',
             'icon_class' => 'fa fa-cog',
             'route_url' => 'admin.settings.list',
             'is_display_in_menu' => 0,
             'inner_routes' => 'admin.settings.list,admin.settings.edit',
-            'sr_no' => 6
+            'sr_no' => 7
         ]);
+
+        ProjectPage::create([
+            'id' => 11,
+            'parent_menu' => 0,
+            'label' => 'Orders',
+            'route_url' => null,
+            'icon_class' => 'icon-basket',
+            'is_display_in_menu' => 1,
+            'sr_no' => 1
+        ]);
+
+        ProjectPage::create([
+            'id' => 12,
+            'parent_menu' => 11,
+            'label' => 'Order',
+            'route_url' => 'admin.orders.list',
+            'is_display_in_menu' => 1,
+            'inner_routes' => 'admin.orders.list,admin.allOrderlist,admin.updateOrdernote,admin.orders.view,admin.orders.save,admin.change_order_status,admin.change_order_item_status,admin.orders.pdf,admin.orders.play_video'
+        ]);
+
+
 
 
         $users = User::where('role',"!=",1)->get();

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use App\Models\ {User,Order,ExperienceMedia};
+use App\Models\ {User,Order,ExperienceMedia,Experience};
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -52,11 +52,17 @@ class OrderController extends BaseController
             $last_order_id = "0001";
         }
 
+        $experience = Experience::where('id',$request->experience_id)->first();
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+
 
         $order = new Order();
         $order->user_id = Auth::user()->id;
         $order->custom_orderid = Carbon::now()->format('ymd') . $last_order_id;
         $order->experience_id = $request->experience_id;
+        $order->host_id = $experience->user_id;
         $order->booking_date = $request->booking_date;
         $order->schedule_time_id = $request->schedule_time_id;
         $order->adults = $request->adults_member;
@@ -142,5 +148,28 @@ class OrderController extends BaseController
         }
 
         return $this->sendResponseWithData($orders_arr,"Orders Retrieved Successfully.");
+    }
+
+    public function getOrderCalender($month,$years){
+       
+          
+        $number = cal_days_in_month(CAL_GREGORIAN, $month, $years);
+        $order_check = [];
+        for($i = 1; $i <= $number; $i++){
+            //dd($i.'-'.$month.'-'.$years);
+            $orderHost = Order::whereDay('booking_date', '=', $i)->whereMonth('booking_date', '=', $month)->whereYear('booking_date', '=', $years)->where('host_id', '=', Auth::user()->id)->get();
+            $orderHostCount = $orderHost->count();
+
+            $Myorder = Order::whereDay('booking_date', '=', $i)->whereMonth('booking_date', '=', $month)->whereYear('booking_date', '=', $years)->where('user_id', '=', Auth::user()->id)->get();
+            $MyorderCount = $Myorder->count();
+          
+            $order_check1['day'] = $i;
+            $order_check1['orderHost'] = $orderHostCount;
+            $order_check1['Myorder'] = $MyorderCount;
+            array_push($order_check, $order_check1); 
+           
+        }
+
+        return $this->sendResponseWithData($order_check,"Order Calender Retrieved Successfully.");
     }
 }

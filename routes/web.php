@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController
-    ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController};
+    ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController,CancellationPolicyController
+    ,OrderController};
 use App\Http\Controllers\admin\{ExperienceController};
 
 
@@ -99,7 +100,7 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('alllanguageslist',[LanguageController::class,'alllanguageslist'])->name('alllanguageslist');
     Route::get('language/{id}/edit',[LanguageController::class,'editlanguage'])->name('languages.edit');
     Route::get('language/{id}/delete',[LanguageController::class,'deletelanguage'])->name('languages.delete');
-    Route::get('chagelanguagestatus/{id}',[LanguageController::class,'chagelanguagestatus'])->name('languages.chageattributestatus');
+    Route::get('chagelanguagestatus/{id}',[LanguageController::class,'chagelanguagestatus'])->name('languages.chagelanguagestatus');
 
     //Age Group
     Route::get('agegroups',[AgeGroupController::class,'index'])->name('agegroups.list');
@@ -107,11 +108,25 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('allagegroupslist',[AgeGroupController::class,'allagegroupslist'])->name('allagegroupslist');
     Route::get('agegroups/{id}/edit',[AgeGroupController::class,'editagegroups'])->name('agegroups.edit');
     Route::get('agegroups/{id}/delete',[AgeGroupController::class,'deleteagegroup'])->name('agegroups.delete');
-    Route::get('changeagegroupstatus/{id}',[AgeGroupController::class,'changeagegroupstatus'])->name('agegroups.chageattributestatus');
+    Route::get('changeagegroupstatus/{id}',[AgeGroupController::class,'changeagegroupstatus'])->name('agegroups.chageagegroupstatus');
 
+    //Cancellation Policies
+
+    Route::get('policy',[CancellationPolicyController::class,'index'])->name('policy.list');
+    Route::post('addorupdatepolicy',[CancellationPolicyController::class,'addorupdatepolicy'])->name('policy.addorupdate');
+    Route::post('allpolicylist',[CancellationPolicyController::class,'allpolicylist'])->name('allpolicylist');
+    Route::get('policy/{id}/edit',[CancellationPolicyController::class,'editpolicy'])->name('policy.edit');
+    Route::get('policy/{id}/delete',[CancellationPolicyController::class,'deletepolicy'])->name('policy.delete');
+    Route::get('chagepolicystatus/{id}',[CancellationPolicyController::class,'chagepolicystatus'])->name('policy.chagepolicystatus'); 
+
+    //Setting 
     Route::get('settings',[SettingsController::class,'index'])->name('settings.list');
     Route::post('updateSetting',[SettingsController::class,'updateSetting'])->name('settings.updateSetting');
     Route::get('settings/edit',[SettingsController::class,'editSettings'])->name('settings.edit');
+
+    //Orders
+    Route::get('orders',[OrderController::class,'index'])->name('orders.list');
+    Route::post('allOrderlist',[OrderController::class,'allOrderlist'])->name('allOrderlist');
 });
 
 Route::group(['middleware'=>['auth']],function (){
