@@ -79,7 +79,17 @@ function compressImage($source, $destination, $quality) {
 }
 
 function getExperienceStatus($experience_status){
-    if($experience_status == 4){
+    if($experience_status == 1){
+        $experience_status = "Active";
+        $class = "text-primary";
+    }
+    elseif($experience_status == 2){
+        $experience_status = "Deactive";
+        $class = "text-primary";
+    }elseif($experience_status == 3){
+        $experience_status = "Delete";
+        $class = "text-primary";
+    }elseif($experience_status == 4){
         $experience_status = "Pending";
         $class = "text-primary";
     }elseif($experience_status == 5){

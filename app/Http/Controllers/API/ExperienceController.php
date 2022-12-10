@@ -587,6 +587,7 @@ class ExperienceController extends BaseController
         $experiences = Experience::with('category')->where('user_id',Auth::user()->id)->orderBy('created_at','DESC')->get();
         $experiences_arr = array();
         foreach ($experiences as $experience){
+            $status = getExperienceStatus($experience->estatus);
             $temp = array();
             $temp['id'] = $experience->id;
             $temp['title'] = $experience->title;
@@ -595,6 +596,7 @@ class ExperienceController extends BaseController
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['min_private_group_rate'] = $experience->min_private_group_rate;
             $temp['duration'] = $experience->duration;
+            $temp['status'] = $status['experience_status'];
             array_push($experiences_arr,$temp);
         }
 
