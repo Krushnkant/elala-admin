@@ -201,9 +201,9 @@ class AuthController extends BaseController
             $user->save();
             $user['token'] =  $user->createToken('P00j@13579WebV#d@n%p')->accessToken;
             $data =  new UserResource($user);
-            $final_data = array();
-            array_push($final_data,$data);
-            return $this->sendResponseWithData($final_data,'OTP verified successfully.');
+            // $final_data = array();
+            // array_push($final_data,$data);
+            return $this->sendResponseWithData($data,'OTP verified successfully.');
         }
         else{
             return $this->sendError('OTP verification Failed.', "verification Failed", []);
