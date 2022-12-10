@@ -124,7 +124,7 @@ class AuthController extends BaseController
                                 $data1 = array();
                                 $data1['mobile_no'] = $data['mobile_no'];
                                // $data1['password'] = $data['password'];
-                            if (auth()->attempt($data1)) {
+                            //if (auth()->attempt($data1)) {
                                 $token = auth()->user()->createToken('P00j@13579WebV#d@n%')->accessToken;
                                 $user['token'] = $token;
                                 // dump("user");
@@ -132,9 +132,9 @@ class AuthController extends BaseController
                                 $user['new_user'] = 0;
                                 $user['profile_completed'] = $user->is_completed;
                                 return $this->sendResponseWithData($user, "User successfully login");
-                            } else {
-                                return $this->sendError("User credentials invalid", "Unautherized user", []);
-                            }
+                            // } else {
+                            //     return $this->sendError("User credentials invalid", "Unautherized user", []);
+                            // }
                         // }else{
                         //     return $this->sendError("User password invalid", "Invalid Password", []);
                         // }
