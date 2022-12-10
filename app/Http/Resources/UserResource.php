@@ -25,7 +25,8 @@ class UserResource extends JsonResource
             'gender' => $this->gender,
             'dob' => $this->dob,
             'profile_pic' => isset($this->profile_pic) ? $this->profile_pic : asset('images/default_avatar.jpg'),
-            'bio' => $this->bio
+            'bio' => $this->bio,
+            'token' =>  isset($this->token)?$this->token:""
         ];
     }
 }

@@ -34,6 +34,9 @@ class AuthController extends BaseController
                     if($user != null){
                         $token = $user->createToken('P00j@13579WebV#d@n%p')->accessToken;
                         $user['token'] = $token;
+                        $user['new_user'] = 0;
+                        $user['profile_completed'] = $user->is_completed;
+                        
                         return $this->sendResponseWithData($user, "User successfully login");
                         
                     }else{
@@ -46,6 +49,8 @@ class AuthController extends BaseController
 
                         $token = $user->createToken('P00j@13579WebV#d@n%p')->accessToken;
                         $user['token'] = $token;
+                        $user['new_user'] = 1;
+                        $user['profile_completed'] = $user->is_completed;
                         return $this->sendResponseWithData($user, "User successfully login");
                     }
                 }
@@ -62,6 +67,8 @@ class AuthController extends BaseController
                                 if (auth()->attempt($data1)) {
                                     $token = auth()->user()->createToken('P00j@13579WebV#d@n%')->accessToken;
                                     $user['token'] = $token;
+                                    $user['new_user'] = 0;
+                                    $user['profile_completed'] = $user->is_completed;
                                     // dump("user");
                                     // dd($user);
                                     return $this->sendResponseWithData($user, "User successfully login");
@@ -79,6 +86,8 @@ class AuthController extends BaseController
                             $templateName = 'email.mailVerify';
                             $subject = 'Verify User Link';
                             Helpers::MailSending($templateName, $data2, $request->email, $subject);
+                            $user['new_user'] = 0;
+                            $user['profile_completed'] = $user->is_completed;
                             return $this->sendResponseWithData($user, "User Registered Successfully");
                         }
                     }else{
@@ -98,6 +107,8 @@ class AuthController extends BaseController
                         $subject = 'Verify User Link';
                         Helpers::MailSending($templateName, $data2, $request->email, $subject);
 
+                        $user['new_user'] = 1;
+                        $user['profile_completed'] = $user->is_completed;
                         // $token = auth()->user()->createToken('P00j@13579WebV#d@n%')->accessToken;
                         // $user['token'] = $token;
                         return $this->sendResponseWithData($user, "User Registered Successfully");
@@ -118,6 +129,8 @@ class AuthController extends BaseController
                                 $user['token'] = $token;
                                 // dump("user");
                                 // dd($user);
+                                $user['new_user'] = 0;
+                                $user['profile_completed'] = $user->is_completed;
                                 return $this->sendResponseWithData($user, "User successfully login");
                             } else {
                                 return $this->sendError("User credentials invalid", "Unautherized user", []);
@@ -131,8 +144,10 @@ class AuthController extends BaseController
                         $user->otp = $data['otp'];
                         $user->otp_created_at = Carbon::now();
                         $user->save();
-
+                        
                         send_sms($request->mobile_no, $data['otp']);
+                        $user['new_user'] = 0;
+                        $user['profile_completed'] = $user->is_completed;
                         return $this->sendResponseWithData($user, "User Registered Successfully");
                     }
                 }else{
@@ -149,6 +164,8 @@ class AuthController extends BaseController
                     $user->save();
 
                     send_sms($request->mobile_no, $data['otp']);
+                    $user['new_user'] = 1;
+                    $user['profile_completed'] = $user->is_completed;
                     return $this->sendResponseWithData($user, "User Registered Successfully");
 
                 }
@@ -174,7 +191,7 @@ class AuthController extends BaseController
             $user->otp_created_at = null;
             $user->is_verify = 1;
             $user->save();
-            $user['token'] =  $user->createToken('P00j@13579WebV#d@n%p')-> accessToken;
+            $user['token'] =  $user->createToken('P00j@13579WebV#d@n%p')->accessToken;
             $data =  new UserResource($user);
             $final_data = array();
             array_push($final_data,$data);

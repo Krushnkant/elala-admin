@@ -661,6 +661,7 @@ class ExperienceController extends BaseController
         }
 
         $policies = ExperienceCancellationPolicy::orderBy('id','asc')->get();
+        
         $policies_arr = array();
         foreach ($policies as $policie){
             $temp = array();
