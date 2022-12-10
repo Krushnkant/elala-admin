@@ -145,7 +145,8 @@ class ExperienceController extends Controller
 
                     $price = '<span> Price: '.$experience->individual_rate.'/Person</span><br>'.'<span>Price: '.$experience->min_private_group_rate.'/Group</span>';
                     $category_name = isset($experience->category)?$experience->category->category_name:"";
-                    $name = '<span style="font-size:15px">  '.$experience->title.'</span><br>'.'<span>'.$category_name.'</span><br>'.'<span>Experience By : '.$experience->user->full_name.'</span>';
+                    $full_name = isset($experience->user->full_name)?$experience->user->full_name:"";
+                    $name = '<span style="font-size:15px">  '.$experience->title.'</span><br>'.'<span>'.$category_name.'</span><br>'.'<span>Experience By : '.$full_name.'</span>';
                     
                     $nestedData['name'] = $name;
                     $nestedData['time'] = $experience->duration .' min';
