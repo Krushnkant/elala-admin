@@ -129,6 +129,13 @@ class AuthController extends BaseController
                                 // $user['token'] = $token;
                                 // dump("user");
                                 // dd($user);
+                                $data['otp'] =  mt_rand(100000,999999);
+                                $user = User::find($user->id);
+                                $user->otp = $data['otp'];
+                                $user->otp_created_at = Carbon::now();
+                                $user->save();
+                                
+                                send_sms($request->mobile_no, $data['otp']);
                                 $user['new_user'] = 0;
                                 $user['profile_completed'] = $user->is_completed;
                                 return $this->sendResponseWithData($user, "User successfully login");
