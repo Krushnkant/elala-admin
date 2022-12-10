@@ -120,10 +120,10 @@ class AuthController extends BaseController
                 
                 if($user != null){
                     if($user->is_verify == 1){
-                        //if (isset($user) && $data['password'] == $user->decrypted_password) {
+                        if (isset($user) && $data['password'] == $user->decrypted_password) {
                                 $data1 = array();
                                 $data1['mobile_no'] = $data['mobile_no'];
-                               // $data1['password'] = $data['password'];
+                                $data1['password'] = $data['password'];
                             if (auth()->attempt($data1)) {
                                 $token = auth()->user()->createToken('P00j@13579WebV#d@n%')->accessToken;
                                 $user['token'] = $token;
@@ -135,9 +135,9 @@ class AuthController extends BaseController
                             } else {
                                 return $this->sendError("User credentials invalid", "Unautherized user", []);
                             }
-                        // }else{
-                        //     return $this->sendError("User password invalid", "Invalid Password", []);
-                        // }
+                        }else{
+                            return $this->sendError("User password invalid", "Invalid Password", []);
+                        }
                     }else{
                         $data['otp'] =  mt_rand(100000,999999);
                         $user = User::find($user->id);
