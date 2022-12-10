@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\ {User,Experience,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review};
+use App\Models\ {User,Experience,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage};
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -76,6 +76,20 @@ class ExperienceController extends BaseController
         $Experience->longitude = $request->longitude;
         $Experience->proccess_page = 'LocationPage';
         $Experience->save();
+
+        $languages = explode(',',$request->language);
+        foreach($languages as $lans){
+
+            $ExperienceLanguage = ExperienceLanguage::where('experience_id',$request->experience_id)->where('language_id',$lans)->first();
+            if($ExperienceLanguage == ""){
+                $Language = New ExperienceLanguage();
+                $Language->experience_id = $request->experience_id;
+                $Language->language_id = $lans;
+                $Language->save();
+            }
+        }
+        
+
         return $this->sendResponseSuccess("Added Experience Location Successfully");
     }
 
@@ -699,7 +713,12 @@ class ExperienceController extends BaseController
         $Videos = ExperienceMedia::where('experience_id',$id)->where('type','video')->get(['id','thumb']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$id)->get(['id','from_member','to_member','discount']);
         $ScheduleTime = ExperienceScheduleTime::where('experience_id',$id)->get(['id','day','time']);
-
+        $ExperienceLanguage = ExperienceLanguage::with('language')->where('experience_id',$id)->get();
+        $lan_titles = array();
+        foreach($ExperienceLanguage as $ExLanguage){
+             $lan_titles[] = $ExLanguage->language->title;
+        }
+          $lan_string = implode(',',$lan_titles);
         $data =  [
             'id' => $experience->id,
             'type' => $experience->type,
@@ -731,6 +750,7 @@ class ExperienceController extends BaseController
             'min_private_group_rate' => $experience->min_private_group_rate,
             'discount_rate' => $DiscountRate,
             'schedule_time' => $ScheduleTime,
+            'experience_language' => $lan_string,
             'cancellation_policy_id' => $experience->cancellation_policy_id,
             'rating' => $experience->rating,
             'estatus' => $experience->estatus,

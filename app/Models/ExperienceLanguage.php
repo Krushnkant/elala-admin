@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ExperienceLanguage extends Model
 {
     use HasFactory;
+
+    public function language(){
+        return $this->hasOne(Language::class,'id','language_id');
+    }
 }
