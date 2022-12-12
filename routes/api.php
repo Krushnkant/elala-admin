@@ -60,7 +60,7 @@ Route::group(['middleware' => 'auth:api'], function(){
 
     Route::get('getOrderCalender/{month}/{year}', [OrderController::class,'getOrderCalender']);
 
-    Route::post('EditProfile', [ExperienceController::class,'EditProfile']);
+    Route::post('editProfile', [ExperienceController::class,'editProfile']);
     
 });
 

@@ -832,7 +832,7 @@ class ExperienceController extends BaseController
     }
 
 
-    public function EditProfile(Request $request){
+    public function editProfile(Request $request){
         $messages = [
             'mobile_no.required' =>'Please provide a Mobile No.',
             'dob.required' =>'Please provide a Date of Birth.',
