@@ -756,6 +756,7 @@ class ExperienceController extends BaseController
             'experience_language' => $lan_string,
             'cancellation_policy_id' => $experience->cancellation_policy_id,
             'rating' => $experience->rating,
+            'rating_member' => 1,
             'estatus' => $experience->estatus,
             'host' => User::where('id',$experience->user_id)->first()->toArray()
         ];
@@ -781,11 +782,13 @@ class ExperienceController extends BaseController
             $temp = array();
             $temp['id'] = $experience->id;
             $temp['title'] = $experience->title;
+            $temp['description'] = $experience->description;
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
             $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
             $temp['rating'] = $experience->rating;
+            $temp['rating_member'] = 1;
             array_push($experiences_arr,$temp);
         }
 
