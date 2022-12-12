@@ -59,7 +59,8 @@ class ExperienceResource extends JsonResource
             'schedule_time' => $ScheduleTime,
             'cancellation_policy_id' => $this->cancellation_policy_id,
             'rating' => $this->rating,
-            'estatus' => $this->estatus
+            'estatus' => $this->estatus,
+            'proccess_page' => $this->proccess_page,
         ];
     }
 }
