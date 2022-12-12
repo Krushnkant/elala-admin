@@ -764,10 +764,17 @@ class ExperienceController extends BaseController
     }
 
     public function getRelatedExperiences($id){
+
+        $experience = Experience::where('id',$id)->first();
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
        
         $experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
-            }])->where('category_id',$id)->where('estatus',1)->get();
+            }])->where('category_id',$experience->id)->where('estatus',1)->get();
+
+       
         
         $experiences_arr = array();
         foreach ($experiences as $experience){
