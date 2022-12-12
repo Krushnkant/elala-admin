@@ -786,7 +786,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
+            $temp['image'] = isset($experience->media[0])?url($experience->media[0]->thumb):"";
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = 1;
             array_push($experiences_arr,$temp);
@@ -867,7 +867,7 @@ class ExperienceController extends BaseController
         }
 
         $user->save();
-        return $this->sendResponseSuccess("User Registered Successfully");
+        return $this->sendResponseSuccess("User Profile Updated Successfully");
     }
 
     
