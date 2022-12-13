@@ -855,6 +855,7 @@ class ExperienceController extends BaseController
         $user->gender = $request->gender;
         $user->dob = $request->dob;
         $user->email = $request->email;
+        $user->is_completed = 1;
 
         if ($request->hasFile('profile_pic')) {
             $image = $request->file('profile_pic');
