@@ -560,6 +560,26 @@ class ExperienceController extends BaseController
         return $this->sendResponseSuccess("Remove Experience Successfully");
     }
 
+    public function removeMediaExperience(Request $request){
+        $validator = Validator::make($request->all(), [
+            'media_id' => 'required',
+        ]);
+        
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+        $ExperienceMedia = ExperienceMedia::where('id',$request->media_id)->first();
+        if (!$ExperienceMedia){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+
+        $ExperienceMedia = ExperienceMedia::find($request->media_id);
+        $ExperienceMedia->delete();
+
+        return $this->sendResponseSuccess("Remove Media Experience Successfully");
+    }
+
     public function getExperience(Request $request){
         $validator = Validator::make($request->all(), [
             'experience_id' => 'required',

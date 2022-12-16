@@ -73,7 +73,8 @@ class AuthController extends Controller
         if ($user){
             $user->is_verify = 1;
             $user->save();
-            return response()->json(['status'=>200]);
+            return redirect("https://elala.madnessmart.com/login-email");
+            //return response()->json(['status'=>200]);
         }
         else{
             return response()->json(['status'=>400]);

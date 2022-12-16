@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('getExperiences', [ExperienceController::class,'getExperiences']);
     Route::get('otherlist',[ExperienceController::class,'otherlist']);
     Route::get('city/{text}',[ExperienceController::class,'city']);
+    Route::get('removeMediaExperience', [ExperienceController::class,'removeMediaExperience']);
 
     Route::post('checkorderslot', [OrderController::class,'checkorderslot']);
 
