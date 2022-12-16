@@ -25,11 +25,12 @@ class AuthController extends BaseController
             if($data['register_by'] == 2 || $data['register_by'] == 1){
                 $validator = Validator::make($request->all(), [
                     'register_by' => 'required',
+                    'email' => 'required',
                 ]);
                 if($validator->fails()){
                     return $this->sendError($validator->errors(), "Validation Errors", []);
                 }else{
-                    $user = User::where('email', $data['email'])->where('is_verify', 1)->first();
+                    $user = User::where('email', $data['email'])->where('is_verify', 1)->where('role','!=',1)->first();
                     // dd($user->decrypted_password);
                     if($user != null){
                         $token = $user->createToken('P00j@13579WebV#d@n%p')->accessToken;
@@ -55,7 +56,13 @@ class AuthController extends BaseController
                     }
                 }
             }else if($data['register_by'] == 3){
-                $user = User::where('email', $data['email'])->first();
+                $validator = Validator::make($request->all(), [
+                    'email' => 'required',
+                ]);
+                if($validator->fails()){
+                    return $this->sendError($validator->errors(), "Validation Errors", []);
+                }
+                $user = User::where('email', $data['email'])->where('role','!=',1)->first();
                 // dd($user->decrypted_password);
                 
                     if($user != null){
@@ -116,7 +123,13 @@ class AuthController extends BaseController
                     }
                 
             }else{
-                $user = User::where('mobile_no', $data['mobile_no'])->first();
+                $validator = Validator::make($request->all(), [
+                    'mobile_no' => 'required',
+                ]);
+                if($validator->fails()){
+                    return $this->sendError($validator->errors(), "Validation Errors", []);
+                }
+                $user = User::where('mobile_no', $data['mobile_no'])->where('role','!=',1)->first();
                 
                 
                 if($user != null){
