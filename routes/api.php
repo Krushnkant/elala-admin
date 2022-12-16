@@ -54,6 +54,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('otherlist',[ExperienceController::class,'otherlist']);
     Route::get('city/{text}',[ExperienceController::class,'city']);
 
+    Route::post('checkorderslot', [OrderController::class,'checkorderslot']);
+
     Route::post('createorder', [OrderController::class,'createorder']);
     Route::post('getHostOrders', [OrderController::class,'getHostOrders']);
     Route::post('getMyOrders', [OrderController::class,'getMyOrders']);

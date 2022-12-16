@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use App\Models\ {User,Order,ExperienceMedia,Experience};
+use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot};
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -10,7 +10,40 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends BaseController
 {
-    public function createorder(Request $request){
+    public function checkorderslot(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'experience_id' => 'required',
+            'booking_date' => 'required',
+            'schedule_time_id' => 'required',
+            'total_member' => 'required'
+        ]);
+        if($validator->fails()){
+            return response()->json(['errors' => $validator->errors(),'status'=>'failed']);
+        }
+
+        $experience = Experience::where('id',$request->experience_id)->first();
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+        $max_member_size = $experience->max_member_public_group_size;
+        $avalable_member =  $max_member_size - $request->total_member;
+        if($avalable_member >= 0){
+            $order_slot = OrderSlot::where(['experience_id'=>$request->experience_id,'booking_date'=>$request->booking_date,'schedule_time_id'=>$request->schedule_time_id])->first();
+            if($order_slot){
+                if($max_member_size - ($request->total_member + $order_slot->total_member) < 0){
+                    return $this->sendError("Only ".$max_member_size - $order_slot->total_member." space available this time slot", "Space Not Available", []);
+                }
+            }else{
+                return $this->sendResponseSuccess("space available this time slot");
+            } 
+        }else{
+            return $this->sendError("Only ".$max_member_size." space available this time slot", "Space Not Available", []);
+        } 
+    }
+
+    public function createorder(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'experience_id' => 'required',
@@ -34,6 +67,23 @@ class OrderController extends BaseController
             return response()->json(['errors' => $validator->errors(),'status'=>'failed']);
         }
 
+        $experience = Experience::where('id',$request->experience_id)->first();
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+
+        $order_slot = OrderSlot::where(['experience_id'=>$request->experience_id,'booking_date'=>$request->booking_date,'schedule_time_id'=>$request->schedule_time_id])->first();
+        if($order_slot){
+            $order_slot->total_member = $order_slot->total_member + $request->total_member;
+        }else{
+            $order_slot = New OrderSlot();
+            $order_slot->experience_id = $request->experience_id;
+            $order_slot->booking_date = $request->booking_date;
+            $order_slot->schedule_time_id = $request->schedule_time_id;
+            $order_slot->total_member = $request->total_member;
+        }
+        $order_slot->save();
+
         $last_order_id = Order::orderBy('id','desc')->pluck('id')->first();
         if(isset($last_order_id)) {
             $last_order_id = $last_order_id + 1;
@@ -52,10 +102,7 @@ class OrderController extends BaseController
             $last_order_id = "0001";
         }
 
-        $experience = Experience::where('id',$request->experience_id)->first();
-        if (!$experience){
-            return $this->sendError("Experience Not Exist", "Not Found Error", []);
-        }
+        
 
 
         $order = new Order();

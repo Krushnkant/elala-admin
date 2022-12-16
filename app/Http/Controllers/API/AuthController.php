@@ -88,9 +88,9 @@ class AuthController extends BaseController
                         }else{
                             $id =  encrypt($user->id);
                             $data2 = [
-                                //'message1' => url('verify/'.$id)
+                                'message1' => url('verify/'.$id)
                                 // 'message1' => 'https://elala.madnessmart.com/create-password/'.$id
-                                'message1' => 'http://localhost:3000/create-password/'.$id
+                                //'message1' => 'http://localhost:3000/create-password/'.$id
                             ]; 
                             $templateName = 'email.mailVerify';
                             $subject = 'Verify User Link';
@@ -210,8 +210,8 @@ class AuthController extends BaseController
 
         $user = User::where('mobile_no',$request->mobile_no)->where('otp',$request->otp)->where('estatus',1)->first();
 
-        if ($user && isset($user['otp_created_at'])){
-            
+        if ($user && isset($user['otp_created_at']))
+        {
             $user->otp = null;
             $user->otp_created_at = null;
             $user->is_verify = 1;
