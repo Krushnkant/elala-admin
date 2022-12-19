@@ -33,6 +33,8 @@ class OrderController extends BaseController
             if($order_slot){
                 if($max_member_size - ($request->total_member + $order_slot->total_member) < 0){
                     return $this->sendError("Only ".$max_member_size - $order_slot->total_member." space available this time slot", "Space Not Available", []);
+                }else{
+                    return $this->sendResponseSuccess("space available this time slot");
                 }
             }else{
                 return $this->sendResponseSuccess("space available this time slot");
