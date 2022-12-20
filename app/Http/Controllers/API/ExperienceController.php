@@ -886,7 +886,7 @@ class ExperienceController extends BaseController
         }
 
         $user->save();
-        return $this->sendResponseSuccess("User Profile Updated Successfully");
+        return $this->sendResponseWithData($user,"User Profile Updated Successfully");
     }
 
     
