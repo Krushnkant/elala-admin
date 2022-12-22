@@ -78,15 +78,29 @@ class ExperienceController extends BaseController
         $Experience->save();
 
         $languages = explode(',',$request->language);
-        foreach($languages as $lans){
-
-            $ExperienceLanguage = ExperienceLanguage::where('experience_id',$request->experience_id)->where('language_id',$lans)->first();
-            if($ExperienceLanguage == ""){
-                $Language = New ExperienceLanguage();
-                $Language->experience_id = $request->experience_id;
-                $Language->language_id = $lans;
-                $Language->save();
+        $ExperienceLanguageOld = ExperienceLanguage::where('experience_id',$request->experience_id)->get()->pluck('language_id');
+        $deleteids = array();
+        foreach($ExperienceLanguageOld as $LanguageOld){
+            if(!in_array($LanguageOld,$ExperienceLanguageOld)){
+                $deleteids[] = $LanguageOld;
             }
+        }
+        
+        foreach($languages as $lans){
+            if(!in_array($lans,$ExperienceLanguageOld)){  
+                $ExperienceLanguage = ExperienceLanguage::where('experience_id',$request->experience_id)->where('language_id',$lans)->first();
+                if($ExperienceLanguage == ""){
+                    $Language = New ExperienceLanguage();
+                    $Language->experience_id = $request->experience_id;
+                    $Language->language_id = $lans;
+                    $Language->save();
+                }
+            }
+        }
+
+        foreach($deleteids as $deleteid){
+            $LanguageDelete = ExperienceLanguage::where('experience_id',$request->experience_id)->where('language_id',$deleteid)->first();
+            $LanguageDelete->delete();
         }
         
 
