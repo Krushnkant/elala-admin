@@ -148,7 +148,7 @@ class ExperienceController extends BaseController
     public function addExperienceMedia(Request $request){
         $validator = Validator::make($request->all(), [
             'images.*' => 'image|mimes:jpeg,png,jpg',
-            'video' => 'mimes:mp4,ogx,oga,ogv,ogg,webm',
+            //'video' => 'mimes:mp4,ogx,oga,ogv,ogg,webm',
         ]);
 
         if ($validator->fails()) {
