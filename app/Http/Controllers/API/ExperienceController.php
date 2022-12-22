@@ -79,13 +79,14 @@ class ExperienceController extends BaseController
 
         $languages = explode(',',$request->language);
         $ExperienceLanguageOld = ExperienceLanguage::where('experience_id',$request->experience_id)->get()->pluck('language_id')->toArray();
+     
         $deleteids = array();
         foreach($ExperienceLanguageOld as $LanguageOld){
-            if(!in_array($LanguageOld,$ExperienceLanguageOld)){
+            if(!in_array($LanguageOld,$languages)){
                 $deleteids[] = $LanguageOld;
             }
         }
-        
+      
         foreach($languages as $lans){
             if(!in_array($lans,$ExperienceLanguageOld)){  
                 $ExperienceLanguage = ExperienceLanguage::where('experience_id',$request->experience_id)->where('language_id',$lans)->first();
