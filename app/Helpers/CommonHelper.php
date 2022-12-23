@@ -134,4 +134,78 @@ function send_sms($mobile_no, $otp){
 //    echo $response;
 }
 
+function createSlug($title, $id = 0)
+{
+    $slug = str_slug($title);
+    $allSlugs = getRelatedSlugs($slug, $id);
+    if (! $allSlugs->contains('slug', $slug)){
+        return $slug;
+    }
+
+    $i = 1;
+    $is_contain = true;
+    do {
+        $newSlug = $slug . '-' . $i;
+        if (!$allSlugs->contains('slug', $newSlug)) {
+            $is_contain = false;
+            return $newSlug;
+        }
+        $i++;
+    } while ($is_contain);
+}
+
+function getRelatedSlugs($slug, $id = 0)
+{
+    return \App\Models\Experience::select('slug')->where('slug', 'like', $slug.'%')
+    ->where('id', '<>', $id)
+    ->get();
+}
+
+
+function checkExperienceStatus($new_status,$old_status){
+    $new_status = getStatuNumber($new_status);
+    $old_status = getStatuNumber($old_status);
+    $status = false;
+    if($new_status > $old_status){
+        $status = true;
+    }
+    return $status;
+}
+
+function getStatuNumber($experience_status){
+    $no = 0;
+    if($experience_status == "TypePage"){
+        $no = 1;
+    }else if($experience_status == "LocationPage"){
+        $no = 2;
+    }elseif($experience_status == "CategoryPage"){
+        $no = 3;
+    }elseif($experience_status == "DetailsPage"){
+        $no = 4;
+    }elseif($experience_status == "MediaPage"){
+        $no = 5;
+    }elseif($experience_status == "AgePage"){
+        $no = 6;
+    }elseif($experience_status == "ProvideItemPage"){
+        $no = 7;
+    }elseif($experience_status == "BrindItemPage"){
+        $no = 8;
+    }elseif($experience_status == "MeetLocationPage"){
+        $no = 9;
+    }elseif($experience_status == "GroupSizePage"){
+        $no = 10;
+    }elseif($experience_status == "ScheduleTimePage"){
+        $no = 11;
+    }elseif($experience_status == "PricePage"){
+        $no = 12;
+    }elseif($experience_status == "DiscountPage"){
+        $no = 13;
+    }elseif($experience_status == "CancelletionPolicyPage"){
+        $no = 14;
+    }elseif($experience_status == "CategoryAttributePage"){
+        $no = 15;
+    }
+   
+    return $no;
+}
 

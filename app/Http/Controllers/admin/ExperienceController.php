@@ -229,6 +229,7 @@ class ExperienceController extends Controller
         $experience->location = $request->location;
         //$experience->language_id = $request->language_id;
         $experience->title = $request->title;
+        $experience->slug = createSlug($request->slug);
         $experience->description = $request->description;
         $experience->duration = $request->duration;
         $experience->age_limit = implode(',',$request->age_limit);

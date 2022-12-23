@@ -27,6 +27,7 @@ class ExperienceResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'type' => $this->type,
             'location' => $this->location,
             'latitude' => $this->latitude,

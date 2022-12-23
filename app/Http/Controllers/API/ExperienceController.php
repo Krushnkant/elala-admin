@@ -74,7 +74,9 @@ class ExperienceController extends BaseController
         $Experience->location = $request->location;
         $Experience->latitude = $request->latitude;
         $Experience->longitude = $request->longitude;
-        $Experience->proccess_page = 'LocationPage';
+        if(checkExperienceStatus('LocationPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'LocationPage';
+        }
         $Experience->save();
 
         $languages = explode(',',$request->language);
@@ -127,7 +129,9 @@ class ExperienceController extends BaseController
     
         $Experience = Experience::find($request->experience_id);
         $Experience->category_id = $request->category_id;
-        $Experience->proccess_page = 'CategoryPage';
+        if(checkExperienceStatus('CategoryPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'CategoryPage';
+        }
         $Experience->save();
         $attributes_arr = array();
         if($Experience){
@@ -166,8 +170,11 @@ class ExperienceController extends BaseController
     
         $Experience = Experience::find($request->experience_id);
         $Experience->title = $request->title;
+        $Experience->slug = createSlug($request->slug);
         $Experience->description = $request->description;
-        $Experience->proccess_page = 'DetailsPage';
+        if(checkExperienceStatus('DetailsPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'DetailsPage';
+        }
         $Experience->save();
         return $this->sendResponseSuccess("Added Experience Details Successfully");
     }
@@ -214,7 +221,10 @@ class ExperienceController extends BaseController
         }
 
         $Experience = Experience::find($request->experience_id);
-        $Experience->proccess_page = 'MediaPage';
+        
+        if(checkExperienceStatus('MediaPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'MediaPage';
+        }
         $Experience->save();
         //$ExperienceMedia->proccess_page = 'MediaPage';
         
@@ -243,7 +253,9 @@ class ExperienceController extends BaseController
         $Experience = Experience::find($request->experience_id);
         $Experience->duration = $request->duration;
         $Experience->age_limit = $request->age_id;
-        $Experience->proccess_page = 'AgePage';
+        if(checkExperienceStatus('AgePage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'AgePage';
+        }
         $Experience->save();
         return $this->sendResponseSuccess("Added Experience Age Successfully");
     }
@@ -280,7 +292,10 @@ class ExperienceController extends BaseController
         }  
         
         $Experience = Experience::find($request->experience_id);
-        $Experience->proccess_page = 'ProvideItemPage';
+        
+        if(checkExperienceStatus('ProvideItemPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'ProvideItemPage';
+        }
         $Experience->save();
         
         return $this->sendResponseSuccess("Added Experience Item Successfully");
@@ -319,7 +334,9 @@ class ExperienceController extends BaseController
         
         $Experience = Experience::find($request->experience_id);
         $Experience->is_bring_item = 1;
-        $Experience->proccess_page = 'BrindItemPage';
+        if(checkExperienceStatus('BrindItemPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'BrindItemPage';
+        }
         $Experience->save();
         
         return $this->sendResponseSuccess("Added Experience Brind Item Successfully");
@@ -363,7 +380,10 @@ class ExperienceController extends BaseController
         $Experience->pine_code = $request->pine_code;
         $Experience->meet_latitude = $request->latitude;
         $Experience->meet_longitude = $request->longitude;
-        $Experience->proccess_page = 'MeetLocationPage';
+        
+        if(checkExperienceStatus('MeetLocationPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'MeetLocationPage';
+        }
         $Experience->save();
         return $this->sendResponseSuccess("Added Experience Meet Location Successfully");
     }
@@ -390,7 +410,10 @@ class ExperienceController extends BaseController
         $Experience = Experience::find($request->experience_id);
         $Experience->max_member_public_group_size = $request->max_member_public_group_size;
         $Experience->max_member_private_group_size = $request->max_member_private_group_size;
-        $Experience->proccess_page = 'GroupSizePage';
+        
+        if(checkExperienceStatus('GroupSizePage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'GroupSizePage';
+        }
         $Experience->save();
         return $this->sendResponseSuccess("Added Experience Group Size Successfully");
     }
@@ -428,7 +451,10 @@ class ExperienceController extends BaseController
         }  
         
         $Experience = Experience::find($request->experience_id);
-        $Experience->proccess_page = 'ScheduleTimePage';
+        
+        if(checkExperienceStatus('ScheduleTimePage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'ScheduleTimePage';
+        }
         $Experience->save();
         
         return $this->sendResponseSuccess("Added Experience Schedule Time Successfully");
@@ -456,7 +482,10 @@ class ExperienceController extends BaseController
         $Experience = Experience::find($request->experience_id);
         $Experience->individual_rate = $request->individual_rate;
         $Experience->min_private_group_rate = $request->min_private_group_rate;
-        $Experience->proccess_page = 'PricePage';
+        
+        if(checkExperienceStatus('PricePage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'PricePage';
+        }
         $Experience->save();
         return $this->sendResponseSuccess("Added Experience Price Successfully");
     }
@@ -496,7 +525,10 @@ class ExperienceController extends BaseController
         }  
         
         $Experience = Experience::find($request->experience_id);
-        $Experience->proccess_page = 'DiscountPage';
+        
+        if(checkExperienceStatus('DiscountPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'DiscountPage';
+        }
         $Experience->save();
 
         return $this->sendResponseSuccess("Added Experience Discount Price Successfully");
@@ -518,7 +550,11 @@ class ExperienceController extends BaseController
         
         $Experience = Experience::find($request->experience_id);
         $Experience->cancellation_policy_id = $request->cancellation_policy_id;
-        $Experience->proccess_page = 'CancelletionPolicyPage';
+        
+        if(checkExperienceStatus('CancelletionPolicyPage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'CancelletionPolicyPage';
+        }
+        $Experience->estatus = 4;
         $Experience->save();
 
         return $this->sendResponseSuccess("Added Experience Cancelletion Policy Successfully");
@@ -559,8 +595,9 @@ class ExperienceController extends BaseController
         }  
         
         $Experience = Experience::find($request->experience_id);
-        $Experience->proccess_page = 'CategoryAttributePage';
-        $Experience->estatus = 4;
+        if(checkExperienceStatus('CategoryAttributePage',$Experience->proccess_page)){
+            $Experience->proccess_page = 'CategoryAttributePage';
+        }
         $Experience->save();
 
         return $this->sendResponseSuccess("Added Experience Category Attribute Successfully");
@@ -728,14 +765,14 @@ class ExperienceController extends BaseController
 
     
 
-    public function getHomeExperiences(){
-       
-        $experiences = Experience::with(['media' => function($q) {
+    public function getHomeExperiences(Request $request){
+        $limit = isset($request->limit)?$request->limit:20;
+        $treding_experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
             }])->where('estatus',1)->get();
         
-        $experiences_arr = array();
-        foreach ($experiences as $experience){
+        $treding_experiences_arr = array();
+        foreach ($treding_experiences as $experience){
             $temp = array();
             $temp['id'] = $experience->id;
             $temp['title'] = $experience->title;
@@ -744,10 +781,31 @@ class ExperienceController extends BaseController
             $temp['duration'] = $experience->duration;
             $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
             $temp['rating'] = $experience->rating;
-            array_push($experiences_arr,$temp);
+            array_push($treding_experiences_arr,$temp);
         }
 
-        return $this->sendResponseWithData($experiences_arr,"Experiences Retrieved Successfully.");
+
+        $experiences_near_you = Experience::with(['media' => function($q) {
+            $q->where('type', '=', 'img'); 
+        }])->where('estatus',1)->paginate($limit);
+    
+        $experiences_near_you_arr = array();
+        foreach ($experiences_near_you as $experience){
+            $temp = array();
+            $temp['id'] = $experience->id;
+            $temp['title'] = $experience->title;
+            $temp['location'] = $experience->location;
+            $temp['individual_rate'] = $experience->individual_rate;
+            $temp['duration'] = $experience->duration;
+            $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
+            $temp['rating'] = $experience->rating;
+            array_push($experiences_near_you_arr,$temp);
+        }
+
+        $data['treding_places'] = $treding_experiences_arr;
+        $data['experiences_near_you'] = $experiences_near_you_arr;
+
+        return $this->sendResponseWithData($data,"Experiences Retrieved Successfully.");
     }
 
     public function ExperienceDetails($id){
@@ -874,46 +932,6 @@ class ExperienceController extends BaseController
         }
 
         return $this->sendResponseWithData($times_arr,"Available Time Experience Retrieved Successfully.");
-    }
-
-
-    public function editProfile(Request $request){
-        $messages = [
-            'mobile_no.required' =>'Please provide a Mobile No.',
-            'dob.required' =>'Please provide a Date of Birth.',
-            'email.required' =>'Please provide a e-mail address.',
-            'gender.required' =>'Please provide a gender.',
-        ];
-
-        $validator = Validator::make($request->all(), [
-            'dob' => 'required',
-            'gender' => 'required',
-            'email' => 'required',
-            'mobile_no' => 'required',
-        ], $messages);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors(), "Validation Errors", []);
-        }
-
-        $user = User::find(Auth::user()->id);
-        $user->full_name = $request->name;
-        $user->mobile_no = $request->mobile_no;
-        $user->gender = $request->gender;
-        $user->dob = $request->dob;
-        $user->email = $request->email;
-        $user->is_completed = 1;
-
-        if ($request->hasFile('profile_pic')) {
-            $image = $request->file('profile_pic');
-            $image_name = 'profilePic_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('images/profile_pic');
-            $image->move($destinationPath, $image_name);
-            $user->profile_pic = $image_name;
-        }
-
-        $user->save();
-        return $this->sendResponseWithData($user,"User Profile Updated Successfully");
     }
 
     

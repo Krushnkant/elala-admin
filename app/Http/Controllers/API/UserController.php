@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends BaseController
@@ -71,7 +72,47 @@ class UserController extends BaseController
         $user->save();
         return $this->sendResponseSuccess("User Registered Successfully");
     }
+    
 
+    public function editProfile(Request $request){
+        $messages = [
+            'mobile_no.required' =>'Please provide a Mobile No.',
+            'dob.required' =>'Please provide a Date of Birth.',
+            'email.required' =>'Please provide a e-mail address.',
+            'gender.required' =>'Please provide a gender.',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'dob' => 'required',
+            'gender' => 'required',
+            'email' => 'required',
+            'mobile_no' => 'required',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+
+        $user = User::find(Auth::user()->id);
+        $user->full_name = $request->name;
+        $user->mobile_no = $request->mobile_no;
+        $user->gender = $request->gender;
+        $user->dob = $request->dob;
+        $user->email = $request->email;
+        $user->bio = isset($request->bio)?$request->bio:"";
+        $user->is_completed = 1;
+
+        if ($request->hasFile('profile_pic')) {
+            $image = $request->file('profile_pic');
+            $image_name = 'profilePic_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('images/profile_pic');
+            $image->move($destinationPath, $image_name);
+            $user->profile_pic = $image_name;
+        }
+
+        $user->save();
+        return $this->sendResponseWithData($user,"User Profile Updated Successfully");
+    }
     
 
 
