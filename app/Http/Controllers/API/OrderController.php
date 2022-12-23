@@ -134,7 +134,7 @@ class OrderController extends BaseController
     }
 
     public function getHostOrders(Request $request){
-       
+        $limit = isset($request->limit)?$request->limit:10;
         $orders = Order::leftJoin('experiences', function($join) {
             $join->on('experiences.id', '=', 'orders.experience_id');
           })->leftJoin('users', function($join) {
@@ -143,7 +143,13 @@ class OrderController extends BaseController
           if(isset($request->from_date) && $request->from_date != "" && isset($request->to_date) && $request->to_date != ""){
               $orders =  $orders->whereBetween('orders.booking_date', [$request->from_date, $request->to_date]);
           }
-          $orders =  $orders->where('experiences.user_id',Auth::user()->id)->get();
+          if(isset($search) && $search != ""){
+          $orders = $orders->where(function($query) use($search){
+            $query->where('custom_orderid','LIKE',"%{$search}%")
+                ->orWhere('booking_date', 'LIKE',"%{$search}%");
+            });
+          }
+          $orders =  $orders->where('experiences.user_id',Auth::user()->id)->paginate($limit);
         
         $orders_arr = array();
         foreach ($orders as $order){
@@ -167,7 +173,7 @@ class OrderController extends BaseController
     }
 
     public function getMyOrders(Request $request){
-       
+        $limit = isset($request->limit)?$request->limit:10;
         $orders = Order::leftJoin('experiences', function($join) {
             $join->on('experiences.id', '=', 'orders.experience_id');
           })->leftJoin('users', function($join) {
@@ -176,7 +182,13 @@ class OrderController extends BaseController
           if(isset($request->from_date) && $request->from_date != "" && isset($request->to_date) && $request->to_date != ""){
             $orders =  $orders->whereBetween('orders.booking_date', [$request->from_date, $request->to_date]);
           }
-          $orders =  $orders->where('orders.user_id',Auth::user()->id)->get();
+          if(isset($search) && $search != ""){
+            $orders = $orders->where(function($query) use($search){
+              $query->where('custom_orderid','LIKE',"%{$search}%")
+                  ->orWhere('booking_date', 'LIKE',"%{$search}%");
+              });
+            }
+          $orders =  $orders->where('orders.user_id',Auth::user()->id)->paginate($limit);
         
         $orders_arr = array();
         foreach ($orders as $order){
@@ -201,7 +213,6 @@ class OrderController extends BaseController
 
     public function getOrderCalender($month,$years){
        
-          
         $number = cal_days_in_month(CAL_GREGORIAN, $month, $years);
         $order_check = [];
         for($i = 1; $i <= $number; $i++){

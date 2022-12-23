@@ -762,9 +762,6 @@ class ExperienceController extends BaseController
     //////////////////
 
 
-
-    
-
     public function getHomeExperiences(Request $request){
         $limit = isset($request->limit)?$request->limit:20;
         $treding_experiences = Experience::with(['media' => function($q) {
@@ -865,7 +862,7 @@ class ExperienceController extends BaseController
             'rating' => $experience->rating,
             'rating_member' => 1,
             'estatus' => $experience->estatus,
-            'host' => User::where('id',$experience->user_id)->first()->toArray()
+            'host' => User::select()->where('id',$experience->user_id)->first()->toArray()
         ];
         
         return $this->sendResponseWithData($data, 'Experience Details Retrieved successfully.');
