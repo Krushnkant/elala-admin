@@ -152,7 +152,9 @@ class OrderController extends BaseController
                   ->orWhere('full_name', 'LIKE',"%{$search}%");
               });  
           }
-          $orders =  $orders->where('experiences.user_id',Auth::user()->id)->paginate($limit);
+          $orders =  $orders->where('experiences.user_id',Auth::user()->id);
+          $total_orders =  $orders->get();
+          $orders =  $orders->paginate($limit);
         
         $orders_arr = array();
         foreach ($orders as $order){
@@ -171,8 +173,9 @@ class OrderController extends BaseController
             
             array_push($orders_arr,$temp);
         }
-
-        return $this->sendResponseWithData($orders_arr,"Orders Retrieved Successfully.");
+        $data['orders'] = $orders_arr;
+        $data['total_order'] = count($total_orders);
+        return $this->sendResponseWithData($data,"Orders Retrieved Successfully.");
     }
 
     public function getMyOrders(Request $request){
@@ -194,7 +197,9 @@ class OrderController extends BaseController
                   ->orWhere('full_name', 'LIKE',"%{$search}%");
               });  
           }
-          $orders =  $orders->where('orders.user_id',Auth::user()->id)->paginate($limit);
+          $orders =  $orders->where('orders.user_id',Auth::user()->id);
+          $total_orders =  $orders->get();
+          $orders =  $orders->paginate($limit);
         
         $orders_arr = array();
         foreach ($orders as $order){
@@ -213,8 +218,9 @@ class OrderController extends BaseController
             
             array_push($orders_arr,$temp);
         }
-
-        return $this->sendResponseWithData($orders_arr,"Orders Retrieved Successfully.");
+        $data['orders'] = $orders_arr;
+        $data['total_order'] = count($total_orders);
+        return $this->sendResponseWithData($data,"Orders Retrieved Successfully.");
     }
 
     public function getOrderCalender($month,$years){
