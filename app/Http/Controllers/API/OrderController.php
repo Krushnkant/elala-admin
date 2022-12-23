@@ -143,11 +143,14 @@ class OrderController extends BaseController
           if(isset($request->from_date) && $request->from_date != "" && isset($request->to_date) && $request->to_date != ""){
               $orders =  $orders->whereBetween('orders.booking_date', [$request->from_date, $request->to_date]);
           }
-          if(isset($search) && $search != ""){
-          $orders = $orders->where(function($query) use($search){
-            $query->where('custom_orderid','LIKE',"%{$search}%")
-                ->orWhere('booking_date', 'LIKE',"%{$search}%");
-            });
+          if(isset($request->search) && $request->search != ""){
+            $search =$request->search;
+            $orders = $orders->where(function($query) use($search){
+              $query->where('custom_orderid','LIKE',"%{$search}%")
+                  ->orWhere('booking_date', 'LIKE',"%{$search}%")
+                  ->orWhere('title', 'LIKE',"%{$search}%")
+                  ->orWhere('full_name', 'LIKE',"%{$search}%");
+              });  
           }
           $orders =  $orders->where('experiences.user_id',Auth::user()->id)->paginate($limit);
         
@@ -186,9 +189,11 @@ class OrderController extends BaseController
             $search =$request->search;
             $orders = $orders->where(function($query) use($search){
               $query->where('custom_orderid','LIKE',"%{$search}%")
-                  ->orWhere('booking_date', 'LIKE',"%{$search}%");
-              });
-            }
+                  ->orWhere('booking_date', 'LIKE',"%{$search}%")
+                  ->orWhere('title', 'LIKE',"%{$search}%")
+                  ->orWhere('full_name', 'LIKE',"%{$search}%");
+              });  
+          }
           $orders =  $orders->where('orders.user_id',Auth::user()->id)->paginate($limit);
         
         $orders_arr = array();

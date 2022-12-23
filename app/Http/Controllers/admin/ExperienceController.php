@@ -91,8 +91,9 @@ class ExperienceController extends Controller
                 if (isset($experience_status)){
                     $experiences = $experiences->whereIn('estatus',$experience_status);
                 }
-                $experiences = $experiences->where('sr_no','LIKE',"%{$search}%")
+                $experiences = $experiences->where('id','LIKE',"%{$search}%")
                     ->orWhere('title', 'LIKE',"%{$search}%")
+                    ->orWhere('description', 'LIKE',"%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
