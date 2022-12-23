@@ -809,13 +809,13 @@ class ExperienceController extends BaseController
         return $this->sendResponseWithData($data,"Experiences Retrieved Successfully.");
     }
 
-    public function ExperienceDetails($id){
+    public function ExperienceDetails($slug){
        
-        $experience = Experience::where('id',$id)->first();
+        $experience = Experience::where('slug',$slug)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
-       
+        $id = $experience->id;
         $ProvideItem = ExperienceProvideItem::where('experience_id',$id)->get(['id','title']);
         $BrindItem = ExperienceBrindItem::where('experience_id',$id)->get(['id','title']);
         $Images = ExperienceMedia::where('experience_id',$id)->where('type','img')->get(['id','thumb']);
@@ -836,7 +836,7 @@ class ExperienceController extends BaseController
             'latitude' => $experience->latitude,
             'longitude' => $experience->longitude,
             'category_id' => $experience->category_id,
-            'title' => $experience->category_id,
+            'title' => $experience->title,
             'description' => $experience->description,
             'images' => $Images,
             'videos' => $Videos,
