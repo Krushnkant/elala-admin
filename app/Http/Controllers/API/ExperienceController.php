@@ -131,13 +131,13 @@ class ExperienceController extends BaseController
         $Experience->save();
         $attributes_arr = array();
         if($Experience){
-            $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$request->category_id)->get('id','field_id','title');
+            $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$request->category_id)->get();
             foreach ($categoryAttribute as $attribute){
                 $temp = array();
                 $temp['id'] = $attribute->id;
                 $temp['field_id'] = $attribute->field_id;
                 $temp['title'] = $attribute->title;
-                $temp['option'] = $experience->attr_optioin;
+                $temp['option'] = $attribute->attr_optioin;
                 array_push($attributes_arr,$temp);
             }
         }
