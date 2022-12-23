@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\ {User,Experience,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage};
+use App\Models\ {User,Experience,CategoryAttribute,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage};
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -129,7 +129,19 @@ class ExperienceController extends BaseController
         $Experience->category_id = $request->category_id;
         $Experience->proccess_page = 'CategoryPage';
         $Experience->save();
-        return $this->sendResponseSuccess("Added Experience Category Successfully");
+        $attributes_arr = array();
+        if($Experience){
+            $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$request->category_id)->get('id','field_id','title');
+            foreach ($categoryAttribute as $attribute){
+                $temp = array();
+                $temp['id'] = $attribute->id;
+                $temp['field_id'] = $attribute->field_id;
+                $temp['title'] = $attribute->title;
+                $temp['option'] = $experience->attr_optioin;
+                array_push($attributes_arr,$temp);
+            }
+        }
+        return $this->sendResponseWithData($attributes_arr,"Added Experience Category Successfully");
     }
 
     public function addExperienceDetails(Request $request){
