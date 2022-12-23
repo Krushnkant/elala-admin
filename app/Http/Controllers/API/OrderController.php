@@ -182,7 +182,8 @@ class OrderController extends BaseController
           if(isset($request->from_date) && $request->from_date != "" && isset($request->to_date) && $request->to_date != ""){
             $orders =  $orders->whereBetween('orders.booking_date', [$request->from_date, $request->to_date]);
           }
-          if(isset($search) && $search != ""){
+          if(isset($request->search) && $request->search != ""){
+            $search =$request->search;
             $orders = $orders->where(function($query) use($search){
               $query->where('custom_orderid','LIKE',"%{$search}%")
                   ->orWhere('booking_date', 'LIKE',"%{$search}%");
