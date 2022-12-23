@@ -806,7 +806,7 @@ class ExperienceController extends BaseController
         return $this->sendResponseWithData($data,"Experiences Retrieved Successfully.");
     }
 
-    public function ExperienceDetails($slug){
+    public function ExperienceDetails(Request $request,$slug){
        
         $experience = Experience::where('slug',$slug)->first();
         if (!$experience){
@@ -825,13 +825,11 @@ class ExperienceController extends BaseController
              $lan_titles[] = $ExLanguage->language->title;
         }
         $lan_string = implode(',',$lan_titles);
-
-        if(isset($user_id) && $user_id!=0 && $user_id!="") {
-            $wishlist = \App\Models\Wishlist::where('user_id',$user_id)->where('experience_id',$id)->first();
+        $is_in_wishlist = false;
+        if(isset($request->user_id) && $request->user_id!=0 && $request->user_id!="") {
+            $wishlist = \App\Models\Wishlist::where('user_id',$request->user_id)->where('experience_id',$id)->first();
             if ($wishlist){
                 $is_in_wishlist = true;
-            }else{
-                $is_in_wishlist = false;
             }
         }
 
