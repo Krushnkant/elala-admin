@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ExperienceController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\WishlistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +65,12 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('getOrderCalender/{month}/{year}', [OrderController::class,'getOrderCalender']);
 
     Route::post('editProfile', [UserController::class,'editProfile']);
+
+    Route::post('update_wishlist',[WishlistController::class,'update_wishlist']);
+    Route::get('wishlistitem_list',[WishlistController::class,'wishlistitem_list']);
+
+
+    Route::get('settings',[UserController::class,'settings']);
     
 });
 

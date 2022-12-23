@@ -4,6 +4,10 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\Experience;
+use App\Models\ProjectPage;
+use App\Models\User;
 
 class OrderController extends Controller
 {
@@ -64,7 +68,7 @@ class OrderController extends Controller
 
             if(empty($request->input('search.value')))
             {
-                $Orders = Order::with('order_item');
+                $Orders = Order::with('experience');
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
@@ -75,7 +79,7 @@ class OrderController extends Controller
             }
             else {
                 $search = $request->input('search.value');
-                $Orders = Order::with('order_item');
+                $Orders = Order::with('experience');
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
@@ -117,109 +121,32 @@ class OrderController extends Controller
                         $action .= '<button type="button" class="btn mb-1 btn-danger btn-xs" data-id="'.$Order->id.'" id="RejectReturnRequestBtn">Reject</button>';
                     }
 
-                    $order_info = '<span>Order ID: '.$Order->custom_orderid.'</span>';
-                    $order_info .= '<span>Total Order Cost: $ '.$Order->total_ordercost.'</span>';
-                    $order_info .= '<span>Total Items: '.count($Order->order_item).'</span>';
+                    $order_info = '<span>Booking ID: '.$Order->custom_orderid.'</span>';
+                    $order_info .= '<span>Total Order Cost: '.$Order->total_amount.'</span>';
 
-                    $delivery_address = json_decode($Order->delivery_address,true);
-                    $customer_info = $delivery_address['CustomerName'];
-                    // dump($customer_info);
-                    if($delivery_address['CustomerMobile'] != ""){
-                        $customer_info .= '<span><i class="fa fa-phone" aria-hidden="true"></i> '.$delivery_address['CustomerMobile'].'</span>';
-                    }else{
-                        $customer_info .= '<span><i class="fa fa-phone" aria-hidden="true"></i> '.$user_info->full_name.'</span>';
-                    }
-
-                    if($delivery_address['DelAddress1'] != ""){
-                        $customer_info .= '<span><i class="fa fa-map-marker" aria-hidden="true"></i> '.$delivery_address['DelAddress1'].'</span>';
-                    }else{
-                        $customer_info .= '<span><i class="fa fa-map-marker" aria-hidden="true"></i> '.$user_info->mobile_no.'</span>';
-                    }
+              
+                    $customer_info = '';
+                    
 
                     $NoteBoxDisplay = $Order->order_note;
                     if( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ) {
                         $NoteBoxDisplay = '<textarea class="custom-textareaBox orderNoteBox" id="orderNoteBox' . $Order->id . '" rows="4" data-id="' . $Order->id . '">' . $Order->order_note . '</textarea>';
                     }
 
-                    if(isset($Order->payment_status)) {
-                        $payment_status = getPaymentStatus($Order->payment_status);
-                        $payment_type = getPaymentType($Order->payment_type);
-                        $payment_status = '<span class="'.$payment_status['class'].'">'.$payment_status['payment_status'].'</span><span>'.$payment_type.'</span>';
-                    }
-
-                    if(isset($Order->order_status)) {
-                        $order_status = getOrderStatus($Order->order_status);
-                        $order_status = '<span class="'.$order_status['class'].'">'.$order_status['order_status'].'</span>';
-                    }
-
-                    if ($Order->order_status == 4 || $Order->order_status == 6){
-                        $returnreq_images = explode(",",$Order->order_return_imgs);
-                        $returnreq_images_paths = array_map(function ($val){
-                            return url($val);
-                        }, $returnreq_images);
-                        $returnreq_images_paths = "['".implode("','",$returnreq_images_paths)."']";
-                        $order_status .= '<span class="returnReqImgs" id="returnReqImgs_'.$Order->id.'">
-                                <a href="javascript:void(0)" class="btn btn-dark btn-sm"><i class="fa fa-image"></i></a>
-                                <script type="text/javascript">
-                                    $("#returnReqImgs_'.$Order->id.'").slickLightbox({images: '.$returnreq_images_paths.'});
-                                </script>
-                                </span>';
-                        $order_status .= '<button id="VideoBtn" class="btn btn-sm text-blue" data-id="'.$Order->id.'" data-toggle="modal" data-target="#ReturnReqVideoModal"><i class="fa fa-video-camera" aria-hidden="true"></i></button>';
-                    }
+                  
 
                     $date = '<span><b>Order Date:</b></span><span>'.date('d-m-Y h:i A', strtotime($Order->created_at)).'</span>';
                     if(isset($Order->delivery_date)){
                         $date .= '<span><b>Delivery Date:</b></span><span>'.$Order->delivery_date.'</span>';
                     }
 
-                    $table = '<table class="subclass text-center" cellpadding="6" cellspacing="0" border="0" style="padding-left:50px; width: 50%">';
-                    $item = 1;
-                    foreach ($Order->order_item as $order_item){
-                        $item_details = json_decode($order_item->item_details,true);
-
-                       
-                        
-                        $table .='<tr>';
-                        if(isset($item_details['ItemType']) && $item_details['ItemType'] == 0){
-                            if(isset($item_details['ProductImage'])){
-                                $table .='<td>'.$item.'</td><td class="multirow"><img src="'.url($item_details['ProductImage']).'" width="50px" height="50px"></td>';
-                            }
-                        }else if(isset($item_details['ItemType']) &&  $item_details['ItemType'] == 1){
-                            $table .='<td>'.$item.'</td><td class="multirow"><img src="'.url($item_details['ProductImage']).'" width="50px" height="50px"></td>';
-                        }else{
-                            $table .='<td>'.$item.'</td><td class="multirow"><img src="'.$item_details['DiamondImage'].'" width="50px" height="50px"><img src="'.url($item_details['ProductImage']).'" width="50px" height="50px"></td>';
-                        }
-                        $table .='<td class="multirow text-left">
-                                    <b>'.$item_details['ProductTitle'].'</b>';
-                        $orderItemPrice = '';
-                        if (isset($item_details['itemQuantity'])){
-                            $orderItemPrice = ' &times; '.$item_details['itemQuantity'].' Qty';
-                        }
-                        if (isset($item_details['orderItemPrice'])){
-                            $table .= '<td class="multirow text-right">Item Price: $ '.$item_details['orderItemPrice'].$orderItemPrice;
-                        }
-                        if (isset($item_details['SubDiscount'])){
-                            $table .= '<span>Sub Discount: $ '.$item_details['SubDiscount'].'</span>';
-                        }
-                        if (isset($item_details['totalItemAmount'])){
-                            $table .= '<span>total Amount: $ '.$item_details['totalItemAmount'].'</span>';
-                        }
-                        if (isset($item_details['itemPayableAmt'])){
-                            $table .= '<span>Payable Amount: $ '.$item_details['itemPayableAmt'].'</span></td>';
-                        }
-                        $table .= '</tr>';
-                        $item++;
-                    }
-                    $table .='</table>';
-
                     $nestedData['order_info'] = $order_info;
                     $nestedData['customer_info'] = $customer_info;
                     $nestedData['note'] = $NoteBoxDisplay;
-                    $nestedData['payment_status'] = $payment_status;
-                    $nestedData['order_status'] = $order_status;
+                    $nestedData['payment_status'] = "";
+                    $nestedData['order_status'] = "";
                     $nestedData['created_at'] = $date;
                     $nestedData['action'] = $action;
-                    $nestedData['table1'] = $table;
                     $data[] = $nestedData;
                 }
                 // dd();

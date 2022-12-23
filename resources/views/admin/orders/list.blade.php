@@ -13,7 +13,7 @@
         <div class="col p-md-0">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active"><a href="javascript:void(0)">Order List</a></li>
+                <li class="breadcrumb-item active"><a href="javascript:void(0)">Booking List</a></li>
             </ol>
         </div>
     </div>
@@ -23,7 +23,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Order List</h4>
+                        <h4 class="card-title">Booking List</h4>
 
                         {{-- <div class="custom-tab-1">
                             <ul class="nav nav-tabs mb-3">
@@ -50,7 +50,7 @@
                                 <tr>
                                     <th></th>
                                     <th>No</th>
-                                    <th>Order</th>
+                                    <th>Booking</th>
                                     <th>Customer</th>
                                     <th>Note</th>
                                     <th>Payment Status</th>
@@ -63,7 +63,7 @@
                                 <tr>
                                     <th></th>
                                     <th>No</th>
-                                    <th>Order</th>
+                                    <th>Booking</th>
                                     <th>Customer</th>
                                     <th>Note</th>
                                     <th>Payment Status</th>

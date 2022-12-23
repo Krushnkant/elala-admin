@@ -104,9 +104,6 @@ class OrderController extends BaseController
             $last_order_id = "0001";
         }
 
-        
-
-
         $order = new Order();
         $order->user_id = Auth::user()->id;
         $order->custom_orderid = Carbon::now()->format('ymd') . $last_order_id;

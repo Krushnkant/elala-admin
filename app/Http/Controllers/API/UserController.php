@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User};
+use App\Models\ {User,Settings};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -113,7 +113,15 @@ class UserController extends BaseController
         $user->save();
         return $this->sendResponseWithData($user,"User Profile Updated Successfully");
     }
-    
 
+    public function settings(){
+        
+        $Setting = Settings::first();
+        $data['company_name'] = $Setting->company_name;
+        $data['company_logo'] = isset($Setting->company_logo)?url('images/company/'.$Setting->company_logo):"";
+        $data['company_favicon'] = isset($Setting->company_favicon)?url('images/company/'.$Setting->company_favicon):"";
+          
+        return $this->sendResponseWithData($data,"Setting Data Retrieved Successfully.");
+    }
 
 }

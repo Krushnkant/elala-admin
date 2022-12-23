@@ -824,7 +824,17 @@ class ExperienceController extends BaseController
         foreach($ExperienceLanguage as $ExLanguage){
              $lan_titles[] = $ExLanguage->language->title;
         }
-          $lan_string = implode(',',$lan_titles);
+        $lan_string = implode(',',$lan_titles);
+
+        if(isset($user_id) && $user_id!=0 && $user_id!="") {
+            $wishlist = \App\Models\Wishlist::where('user_id',$user_id)->where('experience_id',$id)->first();
+            if ($wishlist){
+                $is_in_wishlist = true;
+            }else{
+                $is_in_wishlist = false;
+            }
+        }
+
         $data =  [
             'id' => $experience->id,
             'slug' => $experience->slug,
@@ -862,7 +872,9 @@ class ExperienceController extends BaseController
             'rating' => $experience->rating,
             'rating_member' => 1,
             'estatus' => $experience->estatus,
-            'host' => User::select()->where('id',$experience->user_id)->first()->toArray()
+            'host' => User::select()->where('id',$experience->user_id)->first()->toArray(),
+            'is_in_wishlist' => $is_in_wishlist
+            
         ];
         
         return $this->sendResponseWithData($data, 'Experience Details Retrieved successfully.');
