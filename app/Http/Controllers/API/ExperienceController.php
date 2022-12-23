@@ -775,6 +775,7 @@ class ExperienceController extends BaseController
         foreach ($treding_experiences as $experience){
             $temp = array();
             $temp['id'] = $experience->id;
+            $temp['slug'] = $experience->slug;
             $temp['title'] = $experience->title;
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
@@ -793,6 +794,7 @@ class ExperienceController extends BaseController
         foreach ($experiences_near_you as $experience){
             $temp = array();
             $temp['id'] = $experience->id;
+            $temp['slug'] = $experience->slug;
             $temp['title'] = $experience->title;
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
@@ -828,6 +830,7 @@ class ExperienceController extends BaseController
           $lan_string = implode(',',$lan_titles);
         $data =  [
             'id' => $experience->id,
+            'slug' => $experience->slug,
             'type' => $experience->type,
             'location' => $experience->location,
             'latitude' => $experience->latitude,
@@ -883,6 +886,7 @@ class ExperienceController extends BaseController
         foreach ($experiences as $experience){
             $temp = array();
             $temp['id'] = $experience->id;
+            $temp['slug'] = $experience->slug;
             $temp['title'] = $experience->title;
             $temp['description'] = $experience->description;
             $temp['location'] = $experience->location;

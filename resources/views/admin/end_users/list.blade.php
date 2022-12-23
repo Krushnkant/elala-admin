@@ -133,7 +133,7 @@
                         <div class="form-group ">
                             <label class="col-form-label" for="bio">Bio <span class="text-danger">*</span>
                             </label>
-                            <textarea class="form-control" id="bio" name="bio"></textarea>
+                            <textarea class="summernote" class="form-control" id="bio" name="bio"></textarea>
                             <div id="bio-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
                         </div>
                        
@@ -548,7 +548,8 @@ $('body').on('click', '#editEndUserBtn', function () {
         $('#dob').val(data.dob);
         $('#email').val(data.email);
         $('#password').val(data.decrypted_password);
-        $('#bio').val(data.bio);
+        //$('#bio').val(data.bio);
+        $('#bio').summernote('code', data.bio);
         $("input[name=gender][value=" + data.gender + "]").prop('checked', true);
     })
 });
@@ -595,6 +596,10 @@ $('body').on('click', '#RemoveEndUserSubmit', function (e) {
             toastr.error("Please try again",'Error',{timeOut: 5000});
         }
     });
+});
+
+$('#bio').summernote({
+    height: 50
 });
 
 </script>
