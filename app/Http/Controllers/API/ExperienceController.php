@@ -871,13 +871,13 @@ class ExperienceController extends BaseController
         return $this->sendResponseWithData($data, 'Experience Details Retrieved successfully.');
     }
 
-    public function getRelatedExperiences($id){
+    public function getRelatedExperiences($slug){
 
-        $experience = Experience::where('id',$id)->first();
+        $experience = Experience::where('slug',$slug)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
-       
+        $id = $experience->id;
         $experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
             }])->where('category_id',$experience->category_id)->where('id', '!=',$id)->where('estatus',1)->get();
@@ -901,7 +901,12 @@ class ExperienceController extends BaseController
         return $this->sendResponseWithData($experiences_arr,"Related Experiences Retrieved Successfully.");
     }
 
-    public function getReviewExperiences($id){
+    public function getReviewExperiences($slug){
+        $experience = Experience::where('slug',$slug)->first();
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+        $id = $experience->id;
         $reviews = Review::with('user')->where('experience_id',$id)->where('estatus',1)->get();
         $reviews_arr = array();
         foreach ($reviews as $review){
