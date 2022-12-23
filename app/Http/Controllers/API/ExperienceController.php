@@ -805,6 +805,15 @@ class ExperienceController extends BaseController
         $data['treding_places'] = $treding_experiences_arr;
         $data['experiences_near_you'] = $experiences_near_you_arr;
 
+        $Experience= Experience::get();
+
+        foreach($Experience as $Cat){
+            Experience::where('id', $Cat->id)
+                ->update([
+                    'slug' => createSlug($Cat->title)
+                    ]);
+        }
+
         return $this->sendResponseWithData($data,"Experiences Retrieved Successfully.");
     }
 

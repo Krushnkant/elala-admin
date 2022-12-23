@@ -34,7 +34,7 @@
                 <div class="form-group">
                     <label class="col-form-label" for="description">Details <span class="text-danger">*</span>
                     </label>
-                    <textarea id="description" name="description" class="form-control input-flat">{{ isset($experience)?($experience->description):'' }}</textarea>
+                    <textarea class="summernote" id="description" name="description" class="form-control input-flat">{{ isset($experience)?($experience->description):'' }}</textarea>
                     <div id="description-error" class="invalid-feedback animated fadeInDown" style="display: none;"></div>
                 </div>
         
