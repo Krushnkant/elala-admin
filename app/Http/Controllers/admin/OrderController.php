@@ -23,11 +23,10 @@ class OrderController extends Controller
                 0 =>'id',
                 1 =>'order_info',
                 2=> 'customer_info',
-                3=> 'note',
-                4=> 'payment_status',
-                5=> 'order_status',
-                6=> 'created_at',
-                7=> 'action',
+                3=> 'host',
+                4=> 'note',
+                5=> 'created_at',
+                6=> 'action',
             );
 
             $tab_type = $request->tab_type;
@@ -68,7 +67,7 @@ class OrderController extends Controller
 
             if(empty($request->input('search.value')))
             {
-                $Orders = Order::with('experience');
+                $Orders = Order::with('experience.user');
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
@@ -79,7 +78,7 @@ class OrderController extends Controller
             }
             else {
                 $search = $request->input('search.value');
-                $Orders = Order::with('experience');
+                $Orders = Order::with('experience.user');
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
@@ -105,13 +104,6 @@ class OrderController extends Controller
                     $page_id = ProjectPage::where('route_url','admin.orders.list')->pluck('id')->first();
 
                     $action = '';
-                   // $action .= '<button id="invoiceBtn" class="btn btn-gray text-blue btn-sm" onclick="getInvoiceData(\''.$Order->id.'\')"><i class="fa fa-print" aria-hidden="true"></i></button>';
-                    if($Order->tracking_url != ""){
-                        $action .= '<a href="'.$Order->tracking_url.'" id="" class="btn btn-gray text-dark btn-sm" ><i class="fa fa-truck" aria-hidden="true"></i></a>';
-                    }else{
-                        $action .= '<button id="editTrackingBtn" class="btn btn-gray text-dark btn-sm" data-toggle="modal" data-target="#TrackingModal" onclick="" data-id="' .$Order->id. '" ><i class="fa fa-truck" aria-hidden="true"></i></button>';
-                    }
-
                     if( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ) {
                         $action .= '<button id="ViewOrderBtn" target="blank" class="btn gradient-9 btn-sm" onclick="editOrder(' . $Order->id . ')"><i class="fa fa-eye" aria-hidden="true"></i></button>';
                     }
@@ -123,11 +115,7 @@ class OrderController extends Controller
 
                     $order_info = '<span>Booking ID: '.$Order->custom_orderid.'</span>';
                     $order_info .= '<span>Total Order Cost: '.$Order->total_amount.'</span>';
-
-              
-                    $customer_info = '';
-                    
-
+                    $customer_info = $user_info->full_name;
                     $NoteBoxDisplay = $Order->order_note;
                     if( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ) {
                         $NoteBoxDisplay = '<textarea class="custom-textareaBox orderNoteBox" id="orderNoteBox' . $Order->id . '" rows="4" data-id="' . $Order->id . '">' . $Order->order_note . '</textarea>';
@@ -135,16 +123,13 @@ class OrderController extends Controller
 
                   
 
-                    $date = '<span><b>Order Date:</b></span><span>'.date('d-m-Y h:i A', strtotime($Order->created_at)).'</span>';
-                    if(isset($Order->delivery_date)){
-                        $date .= '<span><b>Delivery Date:</b></span><span>'.$Order->delivery_date.'</span>';
-                    }
+                    $date = '<span><b>Booking Date:</b></span><span>'.date('d-m-Y', strtotime($Order->booking_date)).'</span>';
+                    
 
                     $nestedData['order_info'] = $order_info;
                     $nestedData['customer_info'] = $customer_info;
+                    $nestedData['host'] = $Order->experience->user->full_name;
                     $nestedData['note'] = $NoteBoxDisplay;
-                    $nestedData['payment_status'] = "";
-                    $nestedData['order_status'] = "";
                     $nestedData['created_at'] = $date;
                     $nestedData['action'] = $action;
                     $data[] = $nestedData;

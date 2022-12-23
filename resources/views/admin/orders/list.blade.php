@@ -48,26 +48,24 @@
                             <table id="Order" class="table zero-configuration customNewtable" style="width:100%">
                                 <thead>
                                 <tr>
-                                    <th></th>
+                                    
                                     <th>No</th>
                                     <th>Booking</th>
                                     <th>Customer</th>
+                                    <th>Host</th>
                                     <th>Note</th>
-                                    <th>Payment Status</th>
-                                    <th>Order Status</th>
                                     <th>Date</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
-                                    <th></th>
+                                    
                                     <th>No</th>
                                     <th>Booking</th>
                                     <th>Customer</th>
+                                    <th>Host</th>
                                     <th>Note</th>
-                                    <th>Payment Status</th>
-                                    <th>Order Status</th>
                                     <th>Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -225,17 +223,14 @@ function order_table(tab_type='',is_clearState=false){
         },
         'columnDefs': [
             { "width": "20px", "targets": 0 },
-            { "width": "50px", "targets": 1 },
-            { "width": "230px", "targets": 2 },
-            { "width": "230px", "targets": 3 },
-            { "width": "150px", "targets": 4 },
-            { "width": "120px", "targets": 5 },
-            { "width": "200px", "targets": 6 },
-            { "width": "120px", "targets": 7 },
-            { "width": "100px", "targets": 8 },
+            { "width": "110px", "targets": 1 },
+            { "width": "200px", "targets": 2 },
+            { "width": "200px", "targets": 3 },
+            { "width": "230px", "targets": 4 },
+            { "width": "150px", "targets": 5 },
+            { "width": "120px", "targets": 6 }
         ],
         "columns": [
-            {"className": 'details-control', "orderable": false, "data": null, "defaultContent": ''},
             {data: 'id', name: 'id', class: "text-center", orderable: false ,
                 render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
@@ -243,9 +238,8 @@ function order_table(tab_type='',is_clearState=false){
             },
             {data: 'order_info', name: 'order_info', orderable: false, class: "text-left multirow"},
             {data: 'customer_info', name: 'customer_info', orderable: false, class: "text-left multirow"},
+            {data: 'host', name: 'host', orderable: false, class: "text-left multirow"},
             {data: 'note', name: 'note', orderable: false, class: "text-center"},
-            {data: 'payment_status', name: 'payment_status', orderable: false, class: "text-center multirow"},
-            {data: 'order_status', name: 'order_status', orderable: false, class: "text-center"},
             {data: 'created_at', name: 'created_at', orderable: false, class: "text-left multirow"},
             {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
         ]
