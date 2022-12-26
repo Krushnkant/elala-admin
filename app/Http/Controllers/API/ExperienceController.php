@@ -832,6 +832,21 @@ class ExperienceController extends BaseController
                 $is_in_wishlist = true;
             }
         }
+        $Image_array = array();
+        foreach($Images as $Image){
+            $Image_array =  array(
+                'id' =>  $Image->id,
+                'thumb' => isset($Image->thumb)?url($Image->thumb):""
+            );
+        }
+
+        $Video_array = array();
+        foreach($Videos as $Video){
+            $Video_array =  array(
+                'id' =>  $Video->id,
+                'thumb' => isset($Video->thumb)?url($Video->thumb):""
+            );
+        }
 
         $data =  [
             'id' => $experience->id,
@@ -843,8 +858,8 @@ class ExperienceController extends BaseController
             'category_id' => $experience->category_id,
             'title' => $experience->title,
             'description' => $experience->description,
-            'images' => $Images,
-            'videos' => $Videos,
+            'images' => $Image_array,
+            'videos' => $Video_array,
             'duration' => $experience->duration,
             'age_limit' => explode(',',$experience->age_limit),
             'provide_items' => $ProvideItem,
