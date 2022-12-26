@@ -834,7 +834,7 @@ class ExperienceController extends BaseController
         }
         $Image_array = array();
         foreach($Images as $Image){
-            $Image_array =  array(
+            $Image_array[] =  array(
                 'id' =>  $Image->id,
                 'thumb' => isset($Image->thumb)?url($Image->thumb):""
             );
@@ -842,7 +842,7 @@ class ExperienceController extends BaseController
 
         $Video_array = array();
         foreach($Videos as $Video){
-            $Video_array =  array(
+            $Video_array[] =  array(
                 'id' =>  $Video->id,
                 'thumb' => isset($Video->thumb)?url($Video->thumb):""
             );
