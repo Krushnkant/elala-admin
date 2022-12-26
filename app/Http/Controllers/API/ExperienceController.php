@@ -170,7 +170,7 @@ class ExperienceController extends BaseController
     
         $Experience = Experience::find($request->experience_id);
         $Experience->title = $request->title;
-        $Experience->slug = createSlug($request->slug);
+        $Experience->slug = createSlug($request->title);
         $Experience->description = $request->description;
         if(checkExperienceStatus('DetailsPage',$Experience->proccess_page)){
             $Experience->proccess_page = 'DetailsPage';
