@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,ExperienceCategoryAttribute};
+use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,ExperienceCategoryAttribute,CategoryAttribute};
 
 
 class ExperienceResource extends JsonResource
@@ -24,7 +24,22 @@ class ExperienceResource extends JsonResource
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ScheduleTime = ExperienceScheduleTime::where('experience_id',$this->id)->get(['id','day','time']);
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
-        $ExperienceCategoryAttribute = ExperienceCategoryAttribute::where('experience_id',$this->id)->get(['cat_attr_id','value','type']);
+        
+
+        $attributes_arr = array();
+        if($this->category_id != "" && $this->category_id != 0){
+            $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$this->category_id)->get();
+            foreach ($categoryAttribute as $attribute){
+                $ExperienceCategoryAttribute = ExperienceCategoryAttribute::where('experience_id',$this->id)->where('cat_attr_id',$attribute->id)->first(['value']);
+                $temp = array();
+                $temp['id'] = $attribute->id;
+                $temp['field_id'] = $attribute->field_id;
+                $temp['title'] = $attribute->title;
+                $temp['value'] = isset($ExperienceCategoryAttribute->value)?$ExperienceCategoryAttribute->value:"";
+                $temp['option'] = $attribute->attr_optioin;
+                array_push($attributes_arr,$temp);
+            }
+        }
 
         return [
             'id' => $this->id,
