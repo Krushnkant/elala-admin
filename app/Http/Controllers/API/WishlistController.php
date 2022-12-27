@@ -4,8 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Wishlist;
+use App\Models\Experience;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends BaseController
 {
@@ -18,6 +21,17 @@ class WishlistController extends BaseController
         if($validator->fails()){
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
+
+        $experience = Experience::where('id',$request->experience_id)->first();
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+
+        $user = User::where('id',Auth::user()->id)->where('estatus',1)->where('role',3)->first();
+        if (!$user){
+            return $this->sendError("User Not Exist", "Not Found Error", []);
+        }
+           
 
         $Wishlist = Wishlist::where('user_id',$request->user_id)->where('experience_id',$request->experience_id)->first();
         if($Wishlist){
@@ -41,6 +55,11 @@ class WishlistController extends BaseController
 
         if($validator->fails()){
             return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+
+        $user = User::where('id',Auth::user()->id)->where('estatus',1)->where('role',3)->first();
+        if (!$user){
+            return $this->sendError("User Not Exist", "Not Found Error", []);
         }
 
         $Wishlists = Wishlist::with('experience')->where('user_id',$request->user_id)->orderBy('created_at','DESC')->get();
