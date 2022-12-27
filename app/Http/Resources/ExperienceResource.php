@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage};
+use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,ExperienceCategoryAttribute};
 
 
 class ExperienceResource extends JsonResource
@@ -24,6 +24,7 @@ class ExperienceResource extends JsonResource
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ScheduleTime = ExperienceScheduleTime::where('experience_id',$this->id)->get(['id','day','time']);
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
+        $ExperienceCategoryAttribute = ExperienceCategoryAttribute::where('experience_id',$this->id)->get(['cat_attr_id','value','type']);
 
         return [
             'id' => $this->id,
@@ -62,6 +63,7 @@ class ExperienceResource extends JsonResource
             'rating' => $this->rating,
             'estatus' => $this->estatus,
             'proccess_page' => $this->proccess_page,
+            'category_attribute' => $ExperienceCategoryAttribute,
         ];
     }
 }
