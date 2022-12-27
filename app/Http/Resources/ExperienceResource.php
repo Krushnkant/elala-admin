@@ -78,7 +78,7 @@ class ExperienceResource extends JsonResource
             'rating' => $this->rating,
             'estatus' => $this->estatus,
             'proccess_page' => $this->proccess_page,
-            'category_attribute' => $ExperienceCategoryAttribute,
+            'category_attribute' => $attributes_arr,
         ];
     }
 }
