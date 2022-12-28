@@ -70,11 +70,11 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('wishlistitem_list',[WishlistController::class,'wishlistitem_list']);
 
 
-    Route::get('settings',[UserController::class,'settings']);
+    
     
 });
 
-
+   Route::get('settings',[UserController::class,'settings']);
 Route::get('getHomeExperiences', [ExperienceController::class,'getHomeExperiences']);
 Route::get('experienceDetails/{id}', [ExperienceController::class,'experienceDetails']);
 Route::get('getRelatedExperiences/{id}', [ExperienceController::class,'getRelatedExperiences']);
