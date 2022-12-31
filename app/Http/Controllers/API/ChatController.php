@@ -103,11 +103,15 @@ class ChatController extends BaseController
 
             if ($auth_id != 0) {
                 $data['user_id'] = $auth_id;
-                $chat = Chat::create($data);
-                if ($chat != null) {
-                    return $this->sendResponseWithData($chat, "Add chat successfully");
+                if ((int)$data['receiver_id'] != $auth_id) {
+                    $chat = Chat::create($data);
+                    if ($chat != null) {
+                        return $this->sendResponseWithData($chat, "Add chat successfully");
+                    } else {
+                        return $this->sendError("Something want wrong", "Something want wrong", []);
+                    }
                 } else {
-                    return $this->sendError("Something want wrong", "Something want wrong", []);
+                    return $this->sendError("User Not Found", "User Not Found", []);
                 }
             } else {
                 return $this->sendError("User Not Found", "User Not Found", []);
