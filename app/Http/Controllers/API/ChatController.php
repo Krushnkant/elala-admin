@@ -153,7 +153,8 @@ class ChatController extends BaseController
     {
         $auth = Auth::guard()->user();
         $auth_id = $auth->id;
-        if ($auth_id == $user_id) {
+
+        if ($auth_id == (int)$user_id) {
             $get_all_chat = Chat::whereIn('user_id', [$user_id, $receiver_id])
                 ->whereIn('receiver_id', [$user_id, $receiver_id])
                 ->where('deleted_by', null)
