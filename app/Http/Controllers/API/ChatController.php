@@ -157,10 +157,9 @@ class ChatController extends BaseController
             $get_all_chat = Chat::whereIn('user_id', [$user_id, $receiver_id])
                 ->whereIn('receiver_id', [$user_id, $receiver_id])
                 ->where('deleted_by', null)
-                ->where('is_deleted', 0)
+                ->where('is_deleted', '0')
                 ->orderBy('id', 'ASC')
                 ->get();
-
             foreach ($get_all_chat as $key => $chat) {
                 $chat->tick = '2';
                 $chat->save();
