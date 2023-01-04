@@ -325,11 +325,14 @@ class OrderController extends BaseController
         $review_item->save();
 
         if($review_item){
-            $order = Order::find($request->order_id);
+            $experience = Experience::find($request->experience_id);
+            if($experience){
+                $avgStar = Review::avg('rating');
+                $experience->rating = $avgStar;
+                $experience->review_total_user = $experience->review_total_user + 1;
+                $experience->save();
+            }
         }
-
-        
-            
         return $this->sendResponseSuccess("Review Submitted Successfully");
     }
 }
