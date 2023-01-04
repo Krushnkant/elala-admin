@@ -133,7 +133,7 @@ class OrderController extends BaseController
 
     public function getHostOrders(Request $request){
         $limit = isset($request->limit)?$request->limit:10;
-        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','experiences.full_name')->leftJoin('experiences', function($join) {
+        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','users.full_name')->leftJoin('experiences', function($join) {
             $join->on('experiences.id', '=', 'orders.experience_id');
           })->leftJoin('users', function($join) {
             $join->on('orders.user_id', '=', 'users.id');
@@ -178,7 +178,7 @@ class OrderController extends BaseController
 
     public function getMyOrders(Request $request){
         $limit = isset($request->limit)?$request->limit:10;
-        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','experiences.full_name')->leftJoin('experiences', function($join) {
+        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','users.full_name')->leftJoin('experiences', function($join) {
             $join->on('experiences.id', '=', 'orders.experience_id');
           })->leftJoin('users', function($join) {
             $join->on('experiences.user_id', '=', 'users.id');
