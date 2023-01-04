@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot,Review};
+use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot,Review,User,ExperienceProvideItem,ExperienceBrindItem,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage};
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Support\Facades\Validator;
@@ -243,7 +243,7 @@ class OrderController extends BaseController
         return $this->sendResponseWithData($order_check,"Order Calender Retrieved Successfully.");
     }
 
-    public function getOrderDetails($id){
+    public function getOrderDetails($id,Request $request){
       
         $order = Order::where('id',$id)->first();
         if (!$order){
@@ -253,29 +253,81 @@ class OrderController extends BaseController
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
-        $datas = new ExperienceResource($experience);
-       // dd($datas->proccess_page);
-        // $orders_arr = array();
-       
-          
-        $temp = array();
-        $temp['id'] = $order->id;
-        $temp['experience_id'] = $order->experience_id;
-        $temp['custom_orderid'] = $order->custom_orderid;
-        $temp['booking_date'] = $order->booking_date;
-        $temp['schedule_time_id'] = $order->schedule_time_id;
-        $temp['total_member'] = $order->total_member;
-        $temp['total_amount'] = $order->total_amount;
-        $temp['title'] = $order->title;
-        $temp['full_name'] = $order->full_name;
-            
-        //     array_push($orders_arr,$temp);
-        //dd($datas);
 
-        $data['experience'] = $datas;
-        $data['order'] = $temp;
-     
-        return $this->sendResponseWithData($data,"Orders Deatails Retrieved Successfully.");
+        $ProvideItem = ExperienceProvideItem::where('experience_id',$experience->id)->get(['id','title']);
+        $BrindItem = ExperienceBrindItem::where('experience_id',$experience->id)->get(['id','title']);
+        $Images = ExperienceMedia::where('experience_id',$experience->id)->where('type','img')->get(['id','thumb']);
+        $Videos = ExperienceMedia::where('experience_id',$experience->id)->where('type','video')->get(['id','thumb']);
+
+        $ExperienceLanguage = ExperienceLanguage::with('language')->where('experience_id',$experience->id)->get();
+        $lan_titles = array();
+        foreach($ExperienceLanguage as $ExLanguage){
+             $lan_titles[] = $ExLanguage->language->title;
+        }
+        $lan_string = implode(',',$lan_titles);
+        $is_in_wishlist = false;
+        if(isset($request->user_id) && $request->user_id!=0 && $request->user_id!="") {
+            $wishlist = \App\Models\Wishlist::where('user_id',$request->user_id)->where('experience_id',$experience->id)->first();
+            if ($wishlist){
+                $is_in_wishlist = true;
+            }
+        }
+  
+        $experienceData =  [
+            'id' => $experience->id,
+            'slug' => $experience->slug,
+            'type' => $experience->type,
+            'location' => $experience->location,
+            'latitude' => $experience->latitude,
+            'longitude' => $experience->longitude,
+            'category_id' => $experience->category_id,
+            'title' => $experience->title,
+            'description' => $experience->description,
+            'images' => $Images,
+            'videos' => $Videos,
+            'duration' => $experience->duration,
+            'age_limit' => explode(',',$experience->age_limit),
+            'provide_items' => $ProvideItem,
+            'is_bring_item' => $experience->is_bring_item,
+            'brind_items' => $BrindItem,
+            'is_meet_address' => $experience->is_meet_address,
+            'meet_address' => $experience->meet_address,
+            'meet_address_flat_no' => $experience->meet_address_flat_no,
+            'meet_city' => $experience->meet_city,
+            'meet_state' => $experience->meet_state,
+            'meet_country' => $experience->meet_country,
+            'pine_code' => $experience->pine_code,
+            'meet_latitude' => $experience->meet_latitude,
+            'meet_longitude' => $experience->meet_longitude,
+            'max_member_public_group_size' => $experience->max_member_public_group_size,
+            'max_member_private_group_size' => $experience->max_member_private_group_size,
+            'individual_rate' => $experience->individual_rate,
+            'min_private_group_rate' => $experience->min_private_group_rate,
+            'experience_language' => $lan_string,
+            'cancellation_policy_id' => $experience->cancellation_policy_id,
+            'rating' => $experience->rating,
+            'rating_member' => $experience->review_total_user,
+            'estatus' => $experience->estatus,
+            'host' => User::select()->where('id',$experience->user_id)->first()->toArray(),
+            
+            'is_in_wishlist' => $is_in_wishlist
+        ];
+
+        $orderData = array();
+        $orderData['id'] = $order->id;
+        $orderData['experience_id'] = $order->experience_id;
+        $orderData['custom_orderid'] = $order->custom_orderid;
+        $orderData['booking_date'] = $order->booking_date;
+        $orderData['schedule_time_id'] = $order->schedule_time_id;
+        $orderData['total_member'] = $order->total_member;
+        $orderData['total_amount'] = $order->total_amount;
+        $orderData['experience'] = $experienceData;
+        $orderData['review'] = Review::select('id','rating','description')->where('order_id',$id)->first()->toArray();
+
+        //$data['order'] = $orderData;
+       //$data['experience'] = $experienceData;
+
+        return $this->sendResponseWithData($orderData,"Orders Deatails Retrieved Successfully.");
     }
 
     function add_review(Request $request){

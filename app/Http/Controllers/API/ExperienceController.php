@@ -779,6 +779,7 @@ class ExperienceController extends BaseController
             $temp['duration'] = $experience->duration;
             $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
             $temp['rating'] = $experience->rating;
+            $temp['rating_member'] = $experience->review_total_user;
             array_push($treding_experiences_arr,$temp);
         }
 
@@ -798,6 +799,7 @@ class ExperienceController extends BaseController
             $temp['duration'] = $experience->duration;
             $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
             $temp['rating'] = $experience->rating;
+            $temp['rating_member'] = $experience->review_total_user;
             array_push($experiences_near_you_arr,$temp);
         }
 
@@ -883,7 +885,7 @@ class ExperienceController extends BaseController
             'experience_language' => $lan_string,
             'cancellation_policy_id' => $experience->cancellation_policy_id,
             'rating' => $experience->rating,
-            'rating_member' => 1,
+            'rating_member' => $experience->review_total_user,
             'estatus' => $experience->estatus,
             'host' => User::select()->where('id',$experience->user_id)->first()->toArray(),
             'is_in_wishlist' => $is_in_wishlist

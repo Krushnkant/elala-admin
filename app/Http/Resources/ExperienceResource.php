@@ -76,6 +76,7 @@ class ExperienceResource extends JsonResource
             'schedule_time' => $ScheduleTime,
             'cancellation_policy_id' => $this->cancellation_policy_id,
             'rating' => $this->rating,
+            'rating_member' => $this->review_total_user,
             'estatus' => $this->estatus,
             'proccess_page' => $this->proccess_page,
             'category_attribute' => $attributes_arr,
