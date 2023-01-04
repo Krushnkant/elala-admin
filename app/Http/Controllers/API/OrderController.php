@@ -322,7 +322,7 @@ class OrderController extends BaseController
         $orderData['total_member'] = $order->total_member;
         $orderData['total_amount'] = $order->total_amount;
         $orderData['experience'] = $experienceData;
-        $orderData['review'] = Review::select('id','rating','description')->where('order_id',$id)->first()->toArray();
+        $orderData['review'] = Review::select('id','rating','description')->where('order_id',$id)->get()->toArray();
 
         //$data['order'] = $orderData;
        //$data['experience'] = $experienceData;
