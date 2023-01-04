@@ -249,7 +249,7 @@ class OrderController extends BaseController
         if (!$order){
             return $this->sendError("Order Not Exist", "Not Found Error", []);
         }
-        $experience = Experience::find($order->id);
+        $experience = Experience::find($order->experience_id);
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
