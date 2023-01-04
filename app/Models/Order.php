@@ -12,4 +12,8 @@ class Order extends Model
     public function experience(){
         return $this->hasOne(Experience::class,'id','experience_id');
     }
+
+    public function orderslot(){
+        return $this->hasOne(ExperienceScheduleTime::class,'id','schedule_time_id');
+    }
 }

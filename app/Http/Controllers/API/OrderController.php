@@ -245,7 +245,7 @@ class OrderController extends BaseController
 
     public function getOrderDetails($id,Request $request){
       
-        $order = Order::where('id',$id)->first();
+        $order = Order::with('orderslot')->where('id',$id)->first();
         if (!$order){
             return $this->sendError("Order Not Exist", "Not Found Error", []);
         }
@@ -312,17 +312,23 @@ class OrderController extends BaseController
             
             'is_in_wishlist' => $is_in_wishlist
         ];
-
         $orderData = array();
         $orderData['id'] = $order->id;
         $orderData['experience_id'] = $order->experience_id;
         $orderData['custom_orderid'] = $order->custom_orderid;
         $orderData['booking_date'] = $order->booking_date;
-        $orderData['schedule_time_id'] = $order->schedule_time_id;
+        $orderData['schedule_time'] =$order->orderslot->time;
+        $orderData['adults_member'] = $order->adults;
+        $orderData['children_member'] = $order->children;
+        $orderData['infants_member'] = $order->infants;
         $orderData['total_member'] = $order->total_member;
+        $orderData['adults_amount'] = $order->adults_amount;
+        $orderData['children_amount'] = $order->children_amount;
+        $orderData['infants_amount'] = $order->infants_amount;
         $orderData['total_amount'] = $order->total_amount;
         $orderData['experience'] = $experienceData;
         $orderData['review'] = Review::select('id','rating','description')->where('order_id',$id)->get()->toArray();
+        $orderData['create_date'] = $order->created_at;
 
         //$data['order'] = $orderData;
        //$data['experience'] = $experienceData;
