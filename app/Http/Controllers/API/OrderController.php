@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot};
+use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot,Review};
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExperienceResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -240,5 +241,91 @@ class OrderController extends BaseController
         }
 
         return $this->sendResponseWithData($order_check,"Order Calender Retrieved Successfully.");
+    }
+
+    public function getOrderDetails($id){
+      
+        $order = Order::where('id',$id)->first();
+        if (!$order){
+            return $this->sendError("Order Not Exist", "Not Found Error", []);
+        }
+        $experience = Experience::find($order->id);
+        if (!$experience){
+            return $this->sendError("Experience Not Exist", "Not Found Error", []);
+        }
+        $datas = new ExperienceResource($experience);
+       // dd($datas->proccess_page);
+        // $orders_arr = array();
+       
+          
+        $temp = array();
+        $temp['id'] = $order->id;
+        $temp['experience_id'] = $order->experience_id;
+        $temp['custom_orderid'] = $order->custom_orderid;
+        $temp['booking_date'] = $order->booking_date;
+        $temp['schedule_time_id'] = $order->schedule_time_id;
+        $temp['total_member'] = $order->total_member;
+        $temp['total_amount'] = $order->total_amount;
+        $temp['title'] = $order->title;
+        $temp['full_name'] = $order->full_name;
+            
+        //     array_push($orders_arr,$temp);
+        //dd($datas);
+
+        $data['experience'] = $datas;
+        $data['order'] = $temp;
+     
+        return $this->sendResponseWithData($data,"Orders Deatails Retrieved Successfully.");
+    }
+
+    function add_review(Request $request){
+       
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required',
+            'experience_id' => 'required',
+            'customer_id' => 'required',
+            'rating' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+
+        $order = Order::find($request->order_id);
+        //$old_order_status = $order->order_status;
+        if (!$order){
+            return $this->sendError("Order Item Not Exist", "Not Found Error", []);
+        }
+
+        $review_item = New Review();
+        // if($request->hasFile('review_images')) {
+        //     $review_images = array();
+        //     foreach ($request->file('review_images') as $image) {
+        //         $image_name = 'review_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
+        //         $destinationPath = public_path('images/review_images');
+        //         $image->move($destinationPath, $image_name);
+        //         array_push($review_images,'images/review_images/'.$image_name);
+        //     }
+
+        //     $review_item->review_imgs = implode(",",$review_images);
+        // }
+
+        // if ($request->hasFile('review_video')){
+        //     $image = $request->file('review_video');
+        //     $image_name = 'review_video_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
+        //     $destinationPath = public_path('images/review_videos');
+        //     $image->move($destinationPath, $image_name);
+        //     $review_item->review_video = 'images/review_videos/'.$image_name;
+        // }
+        $review_item->order_id = $request->order_id;
+        $review_item->experience_id = $request->experience_id;
+        $review_item->customer_id = $request->customer_id;
+        $review_item->description = $request->description;
+        $review_item->rating = $request->rating;
+        $review_item->save();
+
+        
+            
+        return $this->sendResponseSuccess("Review Submitted Successfully");
     }
 }

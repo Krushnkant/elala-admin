@@ -57,6 +57,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('createorder', [OrderController::class, 'createorder']);
     Route::post('getHostOrders', [OrderController::class, 'getHostOrders']);
     Route::post('getMyOrders', [OrderController::class, 'getMyOrders']);
+    Route::get('getOrderDetails/{id}', [OrderController::class, 'getOrderDetails']);
+
+    Route::post('add_review',[OrderController::class,'add_review']);
+    
 
     Route::get('getOrderCalender/{month}/{year}', [OrderController::class, 'getOrderCalender']);
 
