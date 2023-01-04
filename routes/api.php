@@ -69,6 +69,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('update_wishlist', [WishlistController::class, 'update_wishlist']);
     Route::get('wishlistitem_list', [WishlistController::class, 'wishlistitem_list']);
 
+    Route::post('addEditBank', [UserController::class, 'addEditBank']);
+    Route::get('getBank', [UserController::class, 'getBank']);
+
     // pooja
     Route::post('create-chat', [ChatController::class, 'CreateChat']);
     Route::get('get-all-chat/{id}', [ChatController::class, 'GetAllChat']);

@@ -834,22 +834,17 @@ class ExperienceController extends BaseController
                 $is_in_wishlist = true;
             }
         }
-        // $Image_array = array();
-        // foreach($Images as $Image){
-        //     $Image_array[] =  array(
-        //         'id' =>  $Image->id,
-        //         'thumb' => isset($Image->thumb)?url($Image->thumb):""
-        //     );
-        // }
-
-        // $Video_array = array();
-        // foreach($Videos as $Video){
-        //     $Video_array[] =  array(
-        //         'id' =>  $Video->id,
-        //         'thumb' => isset($Video->thumb)?url($Video->thumb):""
-        //     );
-        // }
-
+        $hostUsers = User::where('id',$experience->user_id)->first();
+        if($hostUsers){
+            $host['id'] = $hostUsers->id;
+            $host['full_name'] = $hostUsers->full_name;
+            $host['bio'] = $hostUsers->bio;
+            $host['profile_pic'] = $hostUsers->profile_pic;
+            $host['rating'] = hostRating($hostUsers->id);
+            $host['rating_member'] = hostReviewMember($hostUsers->id);
+        }else{
+            $host = "";
+        }
         $data =  [
             'id' => $experience->id,
             'slug' => $experience->slug,
@@ -887,7 +882,7 @@ class ExperienceController extends BaseController
             'rating' => $experience->rating,
             'rating_member' => $experience->review_total_user,
             'estatus' => $experience->estatus,
-            'host' => User::select()->where('id',$experience->user_id)->first()->toArray(),
+            'host' => $host,
             'is_in_wishlist' => $is_in_wishlist
             
         ];

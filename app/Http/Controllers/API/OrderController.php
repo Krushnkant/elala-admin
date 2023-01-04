@@ -272,6 +272,18 @@ class OrderController extends BaseController
                 $is_in_wishlist = true;
             }
         }
+
+        $hostUsers = User::where('id',$experience->user_id)->first();
+        if($hostUsers){
+            $host['id'] = $hostUsers->id;
+            $host['full_name'] = $hostUsers->full_name;
+            $host['bio'] = $hostUsers->bio;
+            $host['profile_pic'] = $hostUsers->profile_pic;
+            $host['rating'] = hostRating($hostUsers->id);
+            $host['rating_member'] = hostReviewMember($hostUsers->id);
+        }else{
+            $host = "";
+        }
   
         $experienceData =  [
             'id' => $experience->id,
@@ -308,8 +320,7 @@ class OrderController extends BaseController
             'rating' => $experience->rating,
             'rating_member' => $experience->review_total_user,
             'estatus' => $experience->estatus,
-            'host' => User::select()->where('id',$experience->user_id)->first()->toArray(),
-            
+            'host' => $host,
             'is_in_wishlist' => $is_in_wishlist
         ];
         $orderData = array();
@@ -355,7 +366,11 @@ class OrderController extends BaseController
             return $this->sendError("Order Item Not Exist", "Not Found Error", []);
         }
 
-        $review_item = New Review();
+        if($request->review_id > 0){
+            $review_item = Review::find($request->review_id);
+        }else{
+            $review_item = New Review();    
+        }
         // if($request->hasFile('review_images')) {
         //     $review_images = array();
         //     foreach ($request->file('review_images') as $image) {
@@ -375,6 +390,7 @@ class OrderController extends BaseController
         //     $image->move($destinationPath, $image_name);
         //     $review_item->review_video = 'images/review_videos/'.$image_name;
         // }
+
         $review_item->order_id = $request->order_id;
         $review_item->experience_id = $request->experience_id;
         $review_item->customer_id = $request->customer_id;
@@ -385,12 +401,20 @@ class OrderController extends BaseController
         if($review_item){
             $experience = Experience::find($request->experience_id);
             if($experience){
-                $avgStar = Review::avg('rating');
-                $experience->rating = $avgStar;
-                $experience->review_total_user = $experience->review_total_user + 1;
-                $experience->save();
+                if($request->review_id > 0){
+                    // $avgStar = Review::avg('rating');
+                    // $experience->rating = $avgStar;
+                    // $experience->save();
+                }else{
+                    $avgStar = Review::avg('rating');
+                    $experience->rating = $avgStar;
+                    $experience->review_total_user = $experience->review_total_user + 1;
+                    $experience->save();
+                }
             }
         }
         return $this->sendResponseSuccess("Review Submitted Successfully");
     }
+
+   
 }

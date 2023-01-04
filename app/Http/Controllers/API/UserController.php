@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User,Settings};
+use App\Models\ {User,Settings,Bank};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -122,6 +122,46 @@ class UserController extends BaseController
         $data['company_favicon'] = isset($Setting->company_favicon)?url('images/company/'.$Setting->company_favicon):"";
           
         return $this->sendResponseWithData($data,"Setting Data Retrieved Successfully.");
+    }
+
+    public function addEditBank(Request $request){
+        $messages = [
+            'bank_name.required' =>'Please provide a Bank Name.',
+            'account_no.required' =>'Please provide a Account Number.',
+            'account_holder_name.required' =>'Please provide a Account Holder Name.',
+            'ifsc_code.required' =>'Please provide a IFSC Code.',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'bank_name' => 'required',
+            'account_no' => 'required',
+            'account_holder_name' => 'required',
+            'ifsc_code' => 'required',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+        if($request->bank_id > 0){
+            $bank = Bank::find($request->bank_id);
+        }else{
+            $bank = New Bank();
+        }
+        
+        $bank->user_id = Auth::user()->id;
+        $bank->bank_name = $request->bank_name;
+        $bank->account_no = $request->account_no;
+        $bank->account_holder_name = $request->account_holder_name;
+        $bank->ifsc_code = $request->ifsc_code;
+        $bank->save();
+
+        return $this->sendResponseWithData($bank,"Bank Updated Successfully");
+    }
+
+    public function getBank(){
+        $user_id = Auth::user()->id;
+        $bank = Bank::where('user_id',$user_id)->first();
+        return $this->sendResponseWithData($bank,"Bank Deatails Retrieved Successfully.");
     }
 
 }

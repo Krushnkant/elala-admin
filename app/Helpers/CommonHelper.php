@@ -209,3 +209,14 @@ function getStatuNumber($experience_status){
     return $no;
 }
 
+function hostRating($id){
+    $ReviewRating = \App\Models\Experience::where('user_id',$id)->where('rating','>',0)->avg('rating');
+    //$ReviewRating = \App\Models\Review::whereIn('experience_id',$experiences)->avg('rating');
+    return round($ReviewRating, 2);
+}
+
+function hostReviewMember($id){
+    $ReviewRatingMember = \App\Models\Experience::where('user_id',$id)->where('review_total_user','>',0)->sum('review_total_user');
+    return $ReviewRatingMember;
+}
+
