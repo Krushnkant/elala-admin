@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User,Settings,Bank};
+use App\Models\ {User,Settings,Bank,TeamMember,Testimonial};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -162,6 +162,35 @@ class UserController extends BaseController
         $user_id = Auth::user()->id;
         $bank = Bank::where('user_id',$user_id)->first();
         return $this->sendResponseWithData($bank,"Bank Deatails Retrieved Successfully.");
+    }
+
+    public function getTeamMember(){
+        $TeamMembers = TeamMember::where('estatus',1)->get();
+        $teammembers_arr = array();
+        foreach ($TeamMembers as $TeamMember){
+            $temp = array();
+            $temp['id'] = $TeamMember->id;
+            $temp['name'] = $TeamMember->name;
+            $temp['position'] = $TeamMember->position;
+            $temp['image'] = isset($TeamMember->image)?'images/teams/'.$TeamMember->image:"";
+            array_push($teammembers_arr,$temp);
+        }
+        return $this->sendResponseWithData($teammembers_arr,"Team Member Retrieved Successfully.");
+    }
+
+    public function getTestimonial(){
+        $Testimonials = Testimonial::where('estatus',1)->get();
+        $testimonials_arr = array();
+        foreach ($Testimonials as $Testimonial){
+            $temp = array();
+            $temp['id'] = $Testimonial->id;
+            $temp['name'] = $Testimonial->name;
+            $temp['country'] = $Testimonial->country;
+            $temp['description'] = $Testimonial->description;
+            $temp['image'] = isset($Testimonial->image)?'images/testimonials/'.$Testimonial->image:"";
+            array_push($testimonials_arr,$temp);
+        }
+        return $this->sendResponseWithData($testimonials_arr,"Testimonial Retrieved Successfully.");
     }
 
 }

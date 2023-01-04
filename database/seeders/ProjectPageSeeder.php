@@ -121,7 +121,7 @@ class ProjectPageSeeder extends Seeder
             'route_url' => 'admin.settings.list',
             'is_display_in_menu' => 0,
             'inner_routes' => 'admin.settings.list,admin.settings.edit',
-            'sr_no' => 7
+            'sr_no' => 100
         ]);
 
         ProjectPage::create([
@@ -141,6 +141,28 @@ class ProjectPageSeeder extends Seeder
             'route_url' => 'admin.orders.list',
             'is_display_in_menu' => 1,
             'inner_routes' => 'admin.orders.list,admin.allOrderlist,admin.updateOrdernote,admin.orders.view,admin.orders.save,admin.change_order_status,admin.change_order_item_status,admin.orders.pdf,admin.orders.play_video'
+        ]);
+
+        ProjectPage::create([
+            'id' => 13,
+            'parent_menu' => 0,
+            'label' => 'Team Members',
+            'icon_class' => 'fa fa-users',
+            'route_url' => 'admin.teammembers.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.teammembers.list,admin.teammembers.addorupdate,admin.allteamslist,admin.teammembers.changeteamstatus,admin.teammembers.edit,admin.teammembers.delete',
+            'sr_no' => 8
+        ]);
+
+        ProjectPage::create([
+            'id' => 14,
+            'parent_menu' => 0,
+            'label' => 'Testimonials',
+            'icon_class' => 'fa fa-quote-left',
+            'route_url' => 'admin.testimonials.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.testimonials.list,admin.testimonials.addorupdate,admin.alltestimonialslist,admin.testimonials.changetestimonialstatus,admin.testimonials.edit,admin.testimonials.delete',
+            'sr_no' => 9
         ]);
 
 

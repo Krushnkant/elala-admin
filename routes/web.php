@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController
     ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController,CancellationPolicyController
-    ,OrderController};
+    ,OrderController,TeamMemberController,TestimonialController};
 use App\Http\Controllers\admin\{ExperienceController};
 
 
@@ -127,6 +127,22 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     //Orders
     Route::get('orders',[OrderController::class,'index'])->name('orders.list');
     Route::post('allOrderlist',[OrderController::class,'allOrderlist'])->name('allOrderlist');
+
+    //team members
+    Route::get('teammembers',[TeamMemberController::class,'index'])->name('teammembers.list');
+    Route::post('allteamslist',[TeamMemberController::class,'allteamslist'])->name('allteamslist');
+    Route::get('changeteamstatus/{id}',[TeamMemberController::class,'changeteamstatus'])->name('teammembers.changeteamstatus');
+    Route::post('addorupdateteam',[TeamMemberController::class,'addorupdateteam'])->name('teammembers.addorupdateteam');
+    Route::get('teammembers/{id}/edit',[TeamMemberController::class,'editteam'])->name('teammembers.edit');
+    Route::get('teammembers/{id}/delete',[TeamMemberController::class,'deleteteam'])->name('teammembers.delete');
+
+    //testimonials
+    Route::get('testimonials',[TestimonialController::class,'index'])->name('testimonials.list');
+    Route::post('alltestimonialslist',[TestimonialController::class,'alltestimonialslist'])->name('alltestimonialslist');
+    Route::get('changetestimonialstatus/{id}',[TestimonialController::class,'changetestimonialstatus'])->name('testimonials.changetestimonialstatus');
+    Route::post('addorupdatetestimonial',[TestimonialController::class,'addorupdatetestimonial'])->name('testimonials.addorupdatetestimonial');
+    Route::get('testimonials/{id}/edit',[TestimonialController::class,'edittestimonial'])->name('testimonials.edit');
+    Route::get('testimonials/{id}/delete',[TestimonialController::class,'deletetestimonial'])->name('testimonials.delete');
 });
 
 Route::group(['middleware'=>['auth']],function (){
