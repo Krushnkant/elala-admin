@@ -281,6 +281,7 @@ class OrderController extends BaseController
             $host['profile_pic'] = $hostUsers->profile_pic;
             $host['rating'] = hostRating($hostUsers->id);
             $host['rating_member'] = hostReviewMember($hostUsers->id);
+            $host['created_at'] = $hostUsers->created_at;
         }else{
             $host = "";
         }
