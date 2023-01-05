@@ -366,32 +366,7 @@ class OrderController extends BaseController
         if (!$order){
             return $this->sendError("Order Item Not Exist", "Not Found Error", []);
         }
-
-        if($request->review_id > 0){
-            $review_item = Review::find($request->review_id);
-        }else{
-            $review_item = New Review();    
-        }
-        // if($request->hasFile('review_images')) {
-        //     $review_images = array();
-        //     foreach ($request->file('review_images') as $image) {
-        //         $image_name = 'review_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-        //         $destinationPath = public_path('images/review_images');
-        //         $image->move($destinationPath, $image_name);
-        //         array_push($review_images,'images/review_images/'.$image_name);
-        //     }
-
-        //     $review_item->review_imgs = implode(",",$review_images);
-        // }
-
-        // if ($request->hasFile('review_video')){
-        //     $image = $request->file('review_video');
-        //     $image_name = 'review_video_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-        //     $destinationPath = public_path('images/review_videos');
-        //     $image->move($destinationPath, $image_name);
-        //     $review_item->review_video = 'images/review_videos/'.$image_name;
-        // }
-
+        $review_item = New Review();    
         $review_item->order_id = $request->order_id;
         $review_item->experience_id = $request->experience_id;
         $review_item->customer_id = $request->customer_id;
@@ -399,21 +374,7 @@ class OrderController extends BaseController
         $review_item->rating = $request->rating;
         $review_item->save();
 
-        if($review_item){
-            $experience = Experience::find($request->experience_id);
-            if($experience){
-                if($request->review_id > 0){
-                    // $avgStar = Review::avg('rating');
-                    // $experience->rating = $avgStar;
-                    // $experience->save();
-                }else{
-                    $avgStar = Review::avg('rating');
-                    $experience->rating = $avgStar;
-                    $experience->review_total_user = $experience->review_total_user + 1;
-                    $experience->save();
-                }
-            }
-        }
+       
         return $this->sendResponseSuccess("Review Submitted Successfully");
     }
 

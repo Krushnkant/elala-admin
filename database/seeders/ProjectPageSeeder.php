@@ -145,25 +145,99 @@ class ProjectPageSeeder extends Seeder
 
         ProjectPage::create([
             'id' => 13,
-            'parent_menu' => 0,
+            'parent_menu' => 16,
             'label' => 'Team Members',
             'icon_class' => 'fa fa-users',
             'route_url' => 'admin.teammembers.list',
-            'is_display_in_menu' => 0,
+            'is_display_in_menu' => 1,
             'inner_routes' => 'admin.teammembers.list,admin.teammembers.addorupdate,admin.allteamslist,admin.teammembers.changeteamstatus,admin.teammembers.edit,admin.teammembers.delete',
             'sr_no' => 8
         ]);
 
         ProjectPage::create([
             'id' => 14,
-            'parent_menu' => 0,
+            'parent_menu' => 16,
             'label' => 'Testimonials',
             'icon_class' => 'fa fa-quote-left',
             'route_url' => 'admin.testimonials.list',
-            'is_display_in_menu' => 0,
+            'is_display_in_menu' => 1,
             'inner_routes' => 'admin.testimonials.list,admin.testimonials.addorupdate,admin.alltestimonialslist,admin.testimonials.changetestimonialstatus,admin.testimonials.edit,admin.testimonials.delete',
             'sr_no' => 9
         ]);
+
+        ProjectPage::create([
+            'id' => 15,
+            'parent_menu' => 0,
+            'label' => 'Review',
+            'route_url' => 'admin.review.list',
+            'icon_class' => 'fa fa-comment',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.review.list,admin.allReviewlist,admin.review.rejectstatus,admin.review.acceptstatus',
+            'sr_no' => 10
+        ]);
+
+        ProjectPage::create([
+            'id' => 16,
+            'parent_menu' => 0,
+            'label' => 'Page',
+            'route_url' => null,
+            'icon_class' => 'fa fa-file',
+            'is_display_in_menu' => 1,
+            'sr_no' => 11
+        ]);
+
+        ProjectPage::create([
+            'id' => 17,
+            'parent_menu' => 16,
+            'label' => 'About Us',
+            'route_url' => 'admin.infopage.about',
+            'is_display_in_menu' => 1,
+            'inner_routes' => 'admin.infopage.about,admin.infopage.edit,admin.infopage.update'
+        ]);
+
+        ProjectPage::create([
+            'id' => 18,
+            'parent_menu' => 16,
+            'label' => 'Contact Us',
+            'route_url' => 'admin.infopage.contact',
+            'is_display_in_menu' => 1,
+            'inner_routes' => 'admin.infopage.contact,admin.infopage.edit,admin.infopage.update'
+        ]);
+
+        ProjectPage::create([
+            'id' => 19,
+            'parent_menu' => 16,
+            'label' => 'Privacy Policy',
+            'route_url' => 'admin.infopage.privacy_policy',
+            'is_display_in_menu' => 1,
+            'inner_routes' => 'admin.infopage.privacy_policy,admin.infopage.edit,admin.infopage.update'
+        ]);
+
+        ProjectPage::create([
+            'id' => 20,
+            'parent_menu' => 16,
+            'label' => 'Terms Condition',
+            'route_url' => 'admin.infopage.terms_condition',
+            'is_display_in_menu' => 1,
+            'inner_routes' => 'admin.infopage.terms_condition,admin.infopage.edit,admin.infopage.update'
+        ]);
+
+        ProjectPage::create([
+            'id' => 21,
+            'parent_menu' => 16,
+            'label' => 'FAQ',
+            'route_url' => 'admin.faqs.list',
+            'icon_class' => 'icon-question',
+            'is_display_in_menu' => 1,
+            'inner_routes' => 'admin.faqs.list,admin.faq.add,admin.faq.save,admin.allFaqlist,admin.faq.edit,admin.faq.delete',
+            'sr_no' => 9
+        ]);
+
+        
+
+
+        
+
 
 
 

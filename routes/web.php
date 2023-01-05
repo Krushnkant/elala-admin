@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController
     ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController,CancellationPolicyController
     ,OrderController,TeamMemberController,TestimonialController};
-use App\Http\Controllers\admin\{ExperienceController};
+use App\Http\Controllers\admin\{ExperienceController,ReviewController,InfopageController,FaqController};
 
 
 /*
@@ -143,6 +143,28 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('addorupdatetestimonial',[TestimonialController::class,'addorupdatetestimonial'])->name('testimonials.addorupdatetestimonial');
     Route::get('testimonials/{id}/edit',[TestimonialController::class,'edittestimonial'])->name('testimonials.edit');
     Route::get('testimonials/{id}/delete',[TestimonialController::class,'deletetestimonial'])->name('testimonials.delete');
+
+    //Review
+    Route::get('review',[ReviewController::class,'index'])->name('review.list');
+    Route::post('allReviewlist',[ReviewController::class,'allReviewlist'])->name('allReviewlist');
+    Route::get('rejectstatus/{id}',[ReviewController::class,'rejectstatus'])->name('review.rejectstatus');
+    Route::get('acceptstatus/{id}',[ReviewController::class,'acceptstatus'])->name('review.acceptstatus');
+
+    //Info Page
+    Route::get('aboutus',[InfopageController::class,'aboutus'])->name('infopage.about');
+    Route::get('infopage/edit',[InfopageController::class,'edit'])->name('infopage.edit');
+    Route::post('updateInfopage',[InfopageController::class,'update'])->name('infopage.update');
+    Route::get('contactus',[InfopageController::class,'contactus'])->name('infopage.contact');
+    Route::get('privacy_policy',[InfopageController::class,'privacy_policy'])->name('infopage.privacy_policy');
+    Route::get('terms_condition',[InfopageController::class,'terms_condition'])->name('infopage.terms_condition');
+
+    //Faq
+    Route::get('faqs',[FaqController::class,'index'])->name('faqs.list');
+    Route::get('faqs/create',[FaqController::class,'create'])->name('faq.add');
+    Route::post('faqs/save',[FaqController::class,'save'])->name('faqs.save');
+    Route::post('allFaqslist',[FaqController::class,'allFaqslist'])->name('allFaqsformlist');
+    Route::get('faq/{id}/edit',[FaqController::class,'editFaq'])->name('faq.edit');
+    Route::get('faq/{id}/delete',[FaqController::class,'deleteFaq'])->name('faq.delete');
 });
 
 Route::group(['middleware'=>['auth']],function (){

@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\{AuthController, ExperienceController, UserController, OrderController, WishlistController, ChatController};
+use App\Http\Controllers\API\{AuthController, ExperienceController, UserController, OrderController, WishlistController, ChatController,OtherController};
 
 /*
 |--------------------------------------------------------------------------
@@ -87,5 +87,8 @@ Route::get('getRelatedExperiences/{id}', [ExperienceController::class, 'getRelat
 Route::get('getReviewExperiences/{id}', [ExperienceController::class, 'getReviewExperiences']);
 Route::get('getAvailableTimeExperiences/{id}/{day}', [ExperienceController::class, 'getAvailableTimeExperiences']);
 
-Route::get('getTeamMember', [UserController::class, 'getTeamMember']);
-Route::get('getTestimonial', [UserController::class, 'getTestimonial']);
+Route::get('getTeamMember', [OtherController::class, 'getTeamMember']);
+Route::get('getTestimonial', [OtherController::class, 'getTestimonial']);
+Route::get('infopage', [OtherController::class, 'infopage']);
+Route::post('contact', [OtherController::class, 'contact']);
+Route::get('getFaq', [OtherController::class, 'getFaq']);
