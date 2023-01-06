@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\{AuthController, ExperienceController, UserController, OrderController, WishlistController, ChatController,OtherController};
+use App\Http\Controllers\API\{AuthController, ExperienceController, UserController, OrderController, WishlistController, ChatController,OtherController,PostController};
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +78,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('personal-chat/{user_id}/{receiver_id}', [ChatController::class, 'PersonalChat']);
     Route::get('unread-msg-count', [ChatController::class, 'UnreadMessageCount']);
     Route::get('get_all_unread_msg_count', [ChatController::class, 'GetAllUnreadMessageCount']);
+
+    Route::post('createPost', [PostController::class, 'create_post']);
+    Route::get('myPost', [PostController::class, 'get_my_posts']);
 });
 
 Route::get('settings', [UserController::class, 'settings']);
