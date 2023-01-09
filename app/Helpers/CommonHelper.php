@@ -220,3 +220,19 @@ function hostReviewMember($id){
     return $ReviewRatingMember;
 }
 
+function is_like($post_id){
+    $is_like = \App\Models\PostLike::where('user_id',\Illuminate\Support\Facades\Auth::user()->id)->where('post_id',$post_id)->first();
+    if ($is_like){
+        return true;
+    }
+    return false;
+}
+
+function is_commant($post_id){
+    $is_like = \App\Models\PostCommant::where('user_id',\Illuminate\Support\Facades\Auth::user()->id)->where('post_id',$post_id)->first();
+    if ($is_like){
+        return true;
+    }
+    return false;
+}
+

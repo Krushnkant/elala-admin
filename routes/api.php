@@ -80,9 +80,16 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('get_all_unread_msg_count', [ChatController::class, 'GetAllUnreadMessageCount']);
 
     Route::post('createPost', [PostController::class, 'create_post']);
-    Route::get('myPost', [PostController::class, 'get_my_posts']);
+    Route::post('myPost', [PostController::class, 'get_my_posts']);
 
-    Route::get('getUsers', [UserController::class, 'getUser']);
+    Route::post('likePost', [PostController::class, 'like_post']);
+    Route::get('likePostUser', [PostController::class, 'like_post_users']);
+
+    Route::post('commantPost', [PostController::class, 'commant_post']);
+    Route::get('commantPostUser', [PostController::class, 'commant_post_users']);
+   
+
+    
 });
 
 Route::get('settings', [UserController::class, 'settings']);
@@ -97,3 +104,6 @@ Route::get('getTestimonial', [OtherController::class, 'getTestimonial']);
 Route::get('infopage', [OtherController::class, 'infopage']);
 Route::post('contact', [OtherController::class, 'contact']);
 Route::get('getFaq', [OtherController::class, 'getFaq']);
+
+Route::post('allPost', [PostController::class, 'get_all_posts']);
+Route::get('getUsers', [UserController::class, 'getUser']);
