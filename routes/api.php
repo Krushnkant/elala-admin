@@ -81,6 +81,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::post('createPost', [PostController::class, 'create_post']);
     Route::get('myPost', [PostController::class, 'get_my_posts']);
+
+    Route::get('getUsers', [UserController::class, 'getUser']);
 });
 
 Route::get('settings', [UserController::class, 'settings']);

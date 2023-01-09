@@ -165,6 +165,12 @@ class UserController extends BaseController
         return $this->sendResponseWithData($bank,"Bank Deatails Retrieved Successfully.");
     }
 
+    public function getUser(){
+        $user_id = Auth::user()->id;
+        $users = User::where('id','<>',$user_id)->where('role',3)->get();
+        return $this->sendResponseWithData($users,"Users Retrieved Successfully.");
+    }
+
     
 
 }
