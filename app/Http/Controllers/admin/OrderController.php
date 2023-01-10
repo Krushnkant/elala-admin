@@ -69,7 +69,7 @@ class OrderController extends Controller
             }
             $totalFiltered = $totalData;
 
-            if(empty($request->input('search.value')))
+            if(empty($request->input('search.value')) && isset($request->host_filter) && $request->host_filter=="" && isset($request->start_date) && $request->start_date=="" && isset($request->end_date) && $request->end_date=="")
             {
                 $Orders = Order::with('experience.user','orderslot');
                 if (isset($order_status)){
@@ -83,9 +83,10 @@ class OrderController extends Controller
             else {
                 $search = $request->input('search.value');
                 $Orders = Order::with('experience.user','orderslot');
+                
                 if (isset($request->host_filter) && $request->host_filter!=""){
                     $host_filter = $request->host_filter;
-                    $Orders = $Orders->where('host_id', $host_filter);
+                    $Orders = $Orders->where('host_id', $host_filter)->orWhere('user_id', $host_filter);
                 }
                 if (isset($request->start_date) && $request->start_date!="" && isset($request->end_date) && $request->end_date!=""){
                     $start_date = $request->start_date;
@@ -98,8 +99,9 @@ class OrderController extends Controller
                 $Orders = $Orders->where(function($query) use($search){
                     $query->where('custom_orderid','LIKE',"%{$search}%")
                         ->orWhere('payment_type', 'LIKE',"%{$search}%");
-                    })
-                    ->offset($start)
+                    });
+                    
+                    $Orders = $Orders->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
                     ->get();

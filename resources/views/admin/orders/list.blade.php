@@ -46,7 +46,7 @@
                         <div class="action-section">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <select class="form-control comman-filter" id="host_filter">
+                                    <select class="form-control comman-filter" id="host_filter" name="host_filter">
                                         <option value=""></option>
                                         @foreach ($users as $user)
                                             <option value="{{ $user->id }}">{{ $user->full_name }}</option>
@@ -227,7 +227,7 @@ function order_table(tab_type='',is_clearState=false){
         $('#Order').DataTable().state.clear();
     }
 
-    var status_filter = $("#status_filter").val();
+    var host_filter = $("#host_filter").val();
     var start_date = $("#start_date").val();
     var end_date = $("#end_date").val();
 
@@ -247,7 +247,7 @@ function order_table(tab_type='',is_clearState=false){
             "url": "{{ url('admin/allOrderlist') }}",
             "dataType": "json",
             "type": "POST",
-            "data":{ _token: '{{ csrf_token() }}',status_filter,start_date,end_date},
+            "data":{ _token: '{{ csrf_token() }}',host_filter,start_date,end_date},
             // "dataSrc": ""
         },
         'columnDefs': [
@@ -274,6 +274,11 @@ function order_table(tab_type='',is_clearState=false){
         ]
     });
 }
+
+$('body').on('change', '.comman-filter', function () {
+    var tab_type = $(this).attr('data-tab');
+    order_table(tab_type,true);
+});
 
 function editOrder(orderId) {
     var url = "{{ url('admin/viewOrder') }}" + "/" + orderId;
