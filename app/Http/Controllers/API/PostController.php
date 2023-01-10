@@ -285,9 +285,5 @@ class PostController extends BaseController
         return $this->sendResponseWithData($postcommants_arr,"Post Commant User Retrieved Successfully.");
     }
 
-  
 
-
-
-   
 }

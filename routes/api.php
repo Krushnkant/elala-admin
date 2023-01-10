@@ -88,7 +88,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('commantPost', [PostController::class, 'commant_post']);
     Route::get('commantPostUser', [PostController::class, 'commant_post_users']);
    
-
+    Route::post('allPost', [PostController::class, 'get_all_posts']);
     
 });
 
@@ -105,5 +105,5 @@ Route::get('infopage', [OtherController::class, 'infopage']);
 Route::post('contact', [OtherController::class, 'contact']);
 Route::get('getFaq', [OtherController::class, 'getFaq']);
 
-Route::post('allPost', [PostController::class, 'get_all_posts']);
+
 Route::get('getUsers', [UserController::class, 'getUser']);

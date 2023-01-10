@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Experience;
 use App\Models\ProjectPage;
 use App\Models\User;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -21,12 +22,12 @@ class OrderController extends Controller
         if ($request->ajax()) {
             $columns = array(
                 0 =>'id',
-                1 =>'order_info',
-                2=> 'customer_info',
-                3=> 'host',
-                4=> 'note',
-                5=> 'created_at',
-                6=> 'action',
+                1 =>'experience',
+                2 =>'order_info',
+                3=> 'customer_info',
+                4=> 'host',
+                5=> 'note',
+                6=> 'created_at'
             );
 
             $tab_type = $request->tab_type;
@@ -67,7 +68,7 @@ class OrderController extends Controller
 
             if(empty($request->input('search.value')))
             {
-                $Orders = Order::with('experience.user');
+                $Orders = Order::with('experience.user','orderslot');
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
@@ -78,7 +79,7 @@ class OrderController extends Controller
             }
             else {
                 $search = $request->input('search.value');
-                $Orders = Order::with('experience.user');
+                $Orders = Order::with('experience.user','orderslot');
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
@@ -99,39 +100,39 @@ class OrderController extends Controller
             {
                 foreach ($Orders as $Order)
                 {
+                    //dd($Order->orderslot);
                     $user_info = User::find($Order->user_id);
                     // dump($user_info);
                     $page_id = ProjectPage::where('route_url','admin.orders.list')->pluck('id')->first();
+                    if(isset($user_info->profile_pic) && $user_info->profile_pic!=null){
+                        $profile_pic = $user_info->profile_pic;
+                    }
+                    else{
+                        $profile_pic = url('images/default_avatar.jpg');
+                    }
 
-                    $action = '';
-                    if( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ) {
-                        $action .= '<button id="ViewOrderBtn" target="blank" class="btn gradient-9 btn-sm" onclick="editOrder(' . $Order->id . ')"><i class="fa fa-eye" aria-hidden="true"></i></button>';
+                    if(isset($Order->experience->user->profile_pic) && $Order->experience->user->profile_pic!=null){
+                        $host_pic = $Order->experience->user->profile_pic;
                     }
-                    
-                    if ( isset($Order->order_status) && $Order->order_status == 4 && (getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id))) ){
-                        $action .= '<button type="button" class="btn mb-1 btn-success btn-xs" data-id="'.$Order->id.'" id="ApproveReturnRequestBtn">Approve</button>';
-                        $action .= '<button type="button" class="btn mb-1 btn-danger btn-xs" data-id="'.$Order->id.'" id="RejectReturnRequestBtn">Reject</button>';
+                    else{
+                        $host_pic = url('images/default_avatar.jpg');
                     }
+
+                    $time1 = Carbon::parse($Order->orderslot->time);
+                    $endTime = $time1->addMinutes($Order->experience->duration);
+                    $end_time = $endTime->format('H:i:s');
 
                     $order_info = '<span>Booking ID: '.$Order->custom_orderid.'</span>';
                     $order_info .= '<span>Total Order Cost: '.$Order->total_amount.'</span>';
-                    $customer_info = $user_info->full_name;
-                    $NoteBoxDisplay = $Order->order_note;
-                    if( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ) {
-                        $NoteBoxDisplay = '<textarea class="custom-textareaBox orderNoteBox" id="orderNoteBox' . $Order->id . '" rows="4" data-id="' . $Order->id . '">' . $Order->order_note . '</textarea>';
-                    }
-
-                  
-
-                    $date = '<span><b>Booking Date:</b></span><span>'.date('d-m-Y', strtotime($Order->booking_date)).'</span>';
-                    
-
+                    $order_info .= '<span>Total Member: '.$Order->total_member.'</span>';
+                    $booking_date = '<span><b> Date : </b>'.date('d-m-Y', strtotime($Order->booking_date)).'</span>';
+                    $booking_date .= '<span><b> Slot : </b>'.$Order->orderslot->time.' to '.$end_time.'</span>';
+                    $nestedData['experience'] = $Order->experience->title;
                     $nestedData['order_info'] = $order_info;
-                    $nestedData['customer_info'] = $customer_info;
-                    $nestedData['host'] = $Order->experience->user->full_name;
-                    $nestedData['note'] = $NoteBoxDisplay;
-                    $nestedData['created_at'] = $date;
-                    $nestedData['action'] = $action;
+                    $nestedData['customer_info'] = '<span><img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$user_info->full_name.'</span>';
+                    $nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$Order->experience->user->full_name.'</span>';;
+                    $nestedData['booking'] = $booking_date;
+                    $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($Order->created_at));;
                     $data[] = $nestedData;
                 }
                 // dd();

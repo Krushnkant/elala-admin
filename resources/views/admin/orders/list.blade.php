@@ -50,24 +50,24 @@
                                 <tr>
                                     
                                     <th>No</th>
+                                    <th>Experience</th>
                                     <th>Booking</th>
                                     <th>Customer</th>
                                     <th>Host</th>
-                                    <th>Note</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
+                                    <th>Booking Date/Slot</th>
+                                    <th>Register Date</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
                                     
                                     <th>No</th>
+                                    <th>Experience</th>
                                     <th>Booking</th>
                                     <th>Customer</th>
                                     <th>Host</th>
-                                    <th>Note</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
+                                    <th>Booking Date/Slot</th>
+                                    <th>Register Date</th>
                                 </tr>
                                 </tfoot>
                             </table>
@@ -223,12 +223,12 @@ function order_table(tab_type='',is_clearState=false){
         },
         'columnDefs': [
             { "width": "20px", "targets": 0 },
-            { "width": "110px", "targets": 1 },
-            { "width": "200px", "targets": 2 },
-            { "width": "200px", "targets": 3 },
-            { "width": "230px", "targets": 4 },
+            { "width": "150px", "targets": 1 },
+            { "width": "130px", "targets": 2 },
+            { "width": "110px", "targets": 3 },
+            { "width": "110px", "targets": 4 },
             { "width": "150px", "targets": 5 },
-            { "width": "120px", "targets": 6 }
+            { "width": "150px", "targets": 6 }
         ],
         "columns": [
             {data: 'id', name: 'id', class: "text-center", orderable: false ,
@@ -236,12 +236,12 @@ function order_table(tab_type='',is_clearState=false){
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
+            {data: 'experience', name: 'experience', orderable: false, class: "text-left multirow"},
             {data: 'order_info', name: 'order_info', orderable: false, class: "text-left multirow"},
-            {data: 'customer_info', name: 'customer_info', orderable: false, class: "text-left multirow"},
-            {data: 'host', name: 'host', orderable: false, class: "text-left multirow"},
-            {data: 'note', name: 'note', orderable: false, class: "text-center"},
+            {data: 'customer_info', name: 'customer_info', orderable: false, class: "text-center multirow"},
+            {data: 'host', name: 'host', orderable: false, class: "text-center multirow"},
+            {data: 'booking', name: 'booking', orderable: false, class: "text-left multirow"},
             {data: 'created_at', name: 'created_at', orderable: false, class: "text-left multirow"},
-            {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
         ]
     });
 }
