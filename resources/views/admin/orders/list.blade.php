@@ -43,6 +43,25 @@
                                 </li>
                             </ul>
                         </div> --}}
+                        <div class="action-section">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <select class="form-control comman-filter" id="host_filter">
+                                        <option value=""></option>
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->full_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 input-group">
+                                    <input type="text" class="form-control custom_date_picker comman-filter" id="start_date" name="start_date" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-date-end-date="0d"> <span class="input-group-append"><span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span></span>
+                                </div>
+                                <div class="col-md-3 input-group">
+                                    <input type="text" class="form-control custom_date_picker comman-filter" id="end_date" name="end_date" placeholder="End Date" data-date-format="yyyy-mm-dd" data-date-end-date="0d"> <span class="input-group-append"><span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span></span>
+                                </div>
+                                
+                            </div>
+                        </div>
 
                         <div class="tab-pane fade show active table-responsive" id="ALL_orders_tab">
                             <table id="Order" class="table zero-configuration customNewtable" style="width:100%">
@@ -148,7 +167,11 @@ function get_orders_page_tabType(){
 
 $(document).ready(function() {
     order_table('',true);
-
+    $('#host_filter').select2({
+        width: '100%',
+        placeholder: "Select User",
+        allowClear: true
+    });
 
 
     $('#Order tbody').on('click', 'td.details-control', function () {
@@ -167,7 +190,9 @@ $(document).ready(function() {
     });
 
     //$(".orderNoteBox").on('change cut paste', function(e) {
-    $(document).on("change",".orderNoteBox",function() {    
+    $(document).on("change",".orderNoteBox",function() { 
+        
+        
         
         var orderNote = $(this).val();
         var orderid = $(this).attr('data-id');
@@ -202,6 +227,10 @@ function order_table(tab_type='',is_clearState=false){
         $('#Order').DataTable().state.clear();
     }
 
+    var status_filter = $("#status_filter").val();
+    var start_date = $("#start_date").val();
+    var end_date = $("#end_date").val();
+
     table = $('#Order').DataTable({
         "destroy": true,
         "processing": true,
@@ -218,7 +247,7 @@ function order_table(tab_type='',is_clearState=false){
             "url": "{{ url('admin/allOrderlist') }}",
             "dataType": "json",
             "type": "POST",
-            "data":{ _token: '{{ csrf_token() }}', tab_type: tab_type},
+            "data":{ _token: '{{ csrf_token() }}',status_filter,start_date,end_date},
             // "dataSrc": ""
         },
         'columnDefs': [

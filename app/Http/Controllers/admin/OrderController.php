@@ -15,7 +15,8 @@ class OrderController extends Controller
     private $page = "Orders";
 
     public function index(){
-        return view('admin.orders.list')->with('page',$this->page);
+        $users = User::where('role',3)->where('is_completed',1)->get();
+        return view('admin.orders.list',compact('users'))->with('page',$this->page);
     }
 
     public function allOrderlist(Request $request){
@@ -50,6 +51,8 @@ class OrderController extends Controller
                 $order_status = [7,8];
             }
 
+            
+
             $limit = $request->input('length');
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
@@ -80,6 +83,15 @@ class OrderController extends Controller
             else {
                 $search = $request->input('search.value');
                 $Orders = Order::with('experience.user','orderslot');
+                if (isset($request->host_filter) && $request->host_filter!=""){
+                    $host_filter = $request->host_filter;
+                    $Orders = $Orders->where('host_id', $host_filter);
+                }
+                if (isset($request->start_date) && $request->start_date!="" && isset($request->end_date) && $request->end_date!=""){
+                    $start_date = $request->start_date;
+                    $end_date = $request->end_date;
+                    $Orders = $Orders->whereRaw("DATE(booking_date) between '".$start_date."' and '".$end_date."'");
+                }
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
