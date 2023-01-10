@@ -167,7 +167,7 @@ class UserController extends BaseController
 
     public function getUser(){
         $user_id = Auth::user()->id;
-        $users = User::where('id','<>',$user_id)->where('role',3)->get(['full_name','profile_pic']);
+        $users = User::where('id','<>',$user_id)->where('role',3)->where('is_verify',1)->get(['full_name','profile_pic']);
         return $this->sendResponseWithData($users,"Users Retrieved Successfully.");
     }
 
