@@ -107,6 +107,7 @@ class PostController extends BaseController
             $temp['user'] = $post->user;
             $temp['total_like'] = $post->total_like;
             $temp['total_commant'] = $post->total_commant;
+            $temp['created_at'] = $post->created_at;
             array_push($posts_arr,$temp);
         }
 
@@ -146,6 +147,7 @@ class PostController extends BaseController
             $temp['user'] = $post->user;
             $temp['total_like'] = $post->total_like;
             $temp['total_commant'] = $post->total_commant;
+            $temp['created_at'] = $post->created_at;
             
             array_push($posts_arr,$temp);
         }
