@@ -269,7 +269,7 @@ class PostController extends BaseController
 
     public function commant_post_users(Request $request){
         
-        $postcommants = PostCommant::with('user')->orderBy('created_at','DESC')->get();
+        $postcommants = PostCommant::with('user')->where('parent_id',0)->orderBy('created_at','DESC')->get();
         $postcommants_arr = array();
         foreach ($postcommants as $postcommant){
             $temp = array();
@@ -279,10 +279,30 @@ class PostController extends BaseController
             $temp['profile_pic'] = $postcommant->user->profile_pic;
             $temp['commant'] = $postcommant->commant;
             $temp['created_at'] = $postcommant->created_at;
+            $temp['child_commant'] = $this->child_commant($postcommant->id);
             array_push($postcommants_arr,$temp);
         }
 
         return $this->sendResponseWithData($postcommants_arr,"Post Commant User Retrieved Successfully.");
+    }
+
+    public function child_commant($id){
+        
+        $postcommants = PostCommant::with('user')->where('parent_id',$id)->orderBy('created_at','DESC')->get();
+        $postcommants_arr = array();
+        foreach ($postcommants as $postcommant){
+            $temp = array();
+            $temp['id'] = $postcommant->id;
+            $temp['user_id'] = $postcommant->user->id;
+            $temp['full_name'] = $postcommant->user->full_name;
+            $temp['profile_pic'] = $postcommant->user->profile_pic;
+            $temp['commant'] = $postcommant->commant;
+            $temp['created_at'] = $postcommant->created_at;
+            $temp['child_commant'] = $this->child_commant($postcommant->id);
+            array_push($postcommants_arr,$temp);
+        }
+
+        return $postcommants_arr;
     }
 
 
