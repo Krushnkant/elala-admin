@@ -196,7 +196,6 @@ class PostController extends BaseController
     }
 
     public function like_post_users(Request $request){
-        dd($request->post_id);
         $postlikes = PostLike::with('user')->where('post_id',$request->post_id)->orderBy('created_at','DESC')->get();
         $postlikes_arr = array();
         foreach ($postlikes as $postlike){
