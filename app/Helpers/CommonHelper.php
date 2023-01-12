@@ -220,8 +220,11 @@ function hostReviewMember($id){
     return $ReviewRatingMember;
 }
 
-function is_like($post_id){
-    $is_like = \App\Models\PostLike::where('user_id',\Illuminate\Support\Facades\Auth::user()->id)->where('post_id',$post_id)->first();
+function is_like($post_id,$user_id = 0){
+    if($user_id == 0){
+       $user_id = \Illuminate\Support\Facades\Auth::user()->id;
+    }
+    $is_like = \App\Models\PostLike::where('user_id',$user_id)->where('post_id',$post_id)->first();
     if ($is_like){
         return true;
     }

@@ -131,7 +131,8 @@ class PostController extends BaseController
             $temp['description'] = $post->description;
             $temp['is_private'] = $post->is_private;
             if(isset(Auth::user()->id)){
-              $temp['is_like'] = is_like($post->id)?1:0;
+               $user_id = Auth::user()->id;
+              $temp['is_like'] = is_like($post->id,$user_id)?1:0;
             }else{
               $temp['is_like'] = 0; 
             }
