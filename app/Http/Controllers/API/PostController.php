@@ -196,7 +196,8 @@ class PostController extends BaseController
     }
 
     public function like_post_users(Request $request){
-        $postlikes = PostLike::with('user')->where('post_id',$request->post_id)->orderBy('created_at','DESC')->get();
+        $user_id = Auth::user()->id;
+        $postlikes = PostLike::with('user')->where('post_id',$request->post_id)->where('user_id',$user_id)->orderBy('created_at','DESC')->get();
         $postlikes_arr = array();
         foreach ($postlikes as $postlike){
             $temp = array();
@@ -269,8 +270,8 @@ class PostController extends BaseController
     }
 
     public function commant_post_users(Request $request){
-        
-        $postcommants = PostCommant::with('user')->where('post_id',$request->post_id)->where('parent_id',0)->orderBy('created_at','DESC')->get();
+        $user_id = Auth::user()->id;
+        $postcommants = PostCommant::with('user')->where('post_id',$request->post_id)->where('user_id',$user_id)->where('parent_id',0)->orderBy('created_at','DESC')->get();
         $postcommants_arr = array();
         foreach ($postcommants as $postcommant){
             $temp = array();

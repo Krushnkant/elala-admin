@@ -83,10 +83,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('myPost', [PostController::class, 'get_my_posts']);
 
     Route::post('likePost', [PostController::class, 'like_post']);
-    Route::get('likePostUser', [PostController::class, 'like_post_users']);
+    Route::post('likePostUser', [PostController::class, 'like_post_users']);
 
     Route::post('commantPost', [PostController::class, 'commant_post']);
-    Route::get('commantPostUser', [PostController::class, 'commant_post_users']);
+    Route::post('commantPostUser', [PostController::class, 'commant_post_users']);
    
    
     Route::get('getUsers', [UserController::class, 'getUser']);
