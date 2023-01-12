@@ -231,8 +231,11 @@ function is_like($post_id,$user_id = 0){
     return false;
 }
 
-function is_commant($post_id){
-    $is_like = \App\Models\PostCommant::where('user_id',\Illuminate\Support\Facades\Auth::user()->id)->where('post_id',$post_id)->first();
+function is_commant($post_id,$user_id = 0){
+    if($user_id == 0){
+        $user_id = \Illuminate\Support\Facades\Auth::user()->id;
+     }
+    $is_like = \App\Models\PostCommant::where('user_id',$user_id)->where('post_id',$post_id)->first();
     if ($is_like){
         return true;
     }
