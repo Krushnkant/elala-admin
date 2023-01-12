@@ -197,7 +197,7 @@ class PostController extends BaseController
 
     public function like_post_users(Request $request){
         
-        $postlikes = PostLike::with('user')->orderBy('created_at','DESC')->get();
+        $postlikes = PostLike::with('user')->where('post_id',$request->post_id)->orderBy('created_at','DESC')->get();
         $postlikes_arr = array();
         foreach ($postlikes as $postlike){
             $temp = array();
@@ -271,7 +271,7 @@ class PostController extends BaseController
 
     public function commant_post_users(Request $request){
         
-        $postcommants = PostCommant::with('user')->where('parent_id',0)->orderBy('created_at','DESC')->get();
+        $postcommants = PostCommant::with('user')->where('post_id',$request->post_id)->where('parent_id',0)->orderBy('created_at','DESC')->get();
         $postcommants_arr = array();
         foreach ($postcommants as $postcommant){
             $temp = array();
@@ -281,16 +281,16 @@ class PostController extends BaseController
             $temp['profile_pic'] = $postcommant->user->profile_pic;
             $temp['commant'] = $postcommant->commant;
             $temp['created_at'] = $postcommant->created_at;
-            $temp['child_commant'] = $this->child_commant($postcommant->id);
+            $temp['child_commant'] = $this->child_commant($request->post_id,$postcommant->id);
             array_push($postcommants_arr,$temp);
         }
 
         return $this->sendResponseWithData($postcommants_arr,"Post Commant User Retrieved Successfully.");
     }
 
-    public function child_commant($id){
+    public function child_commant($post_id,$id){
         
-        $postcommants = PostCommant::with('user')->where('parent_id',$id)->orderBy('created_at','DESC')->get();
+        $postcommants = PostCommant::with('user')->where('post_id',$post_id)->where('parent_id',$id)->orderBy('created_at','DESC')->get();
         $postcommants_arr = array();
         foreach ($postcommants as $postcommant){
             $temp = array();
@@ -300,7 +300,7 @@ class PostController extends BaseController
             $temp['profile_pic'] = $postcommant->user->profile_pic;
             $temp['commant'] = $postcommant->commant;
             $temp['created_at'] = $postcommant->created_at;
-            $temp['child_commant'] = $this->child_commant($postcommant->id);
+            $temp['child_commant'] = $this->child_commant($post_id,$postcommant->id);
             array_push($postcommants_arr,$temp);
         }
 
