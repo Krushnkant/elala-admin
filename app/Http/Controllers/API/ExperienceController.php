@@ -777,7 +777,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
+            $temp['image'] = isset($experience->media)?$experience->media->thumb:[];
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = $experience->review_total_user;
             array_push($treding_experiences_arr,$temp);
@@ -797,7 +797,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media[0])?$experience->media[0]->thumb:"";
+            $temp['image'] = isset($experience->media)?$experience->media->thumb:[];
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = $experience->review_total_user;
             array_push($experiences_near_you_arr,$temp);
