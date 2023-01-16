@@ -777,7 +777,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media)?$experience->media->thumb:[];
+            $temp['image'] = isset($experience->media)?$experience->media:[];
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = $experience->review_total_user;
             array_push($treding_experiences_arr,$temp);
