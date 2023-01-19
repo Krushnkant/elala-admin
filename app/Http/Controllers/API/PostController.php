@@ -80,6 +80,31 @@ class PostController extends BaseController
         return $this->sendResponseSuccess("Post Added Successfully");
     }
 
+    public function delete_post(Request $request){
+        $validator = Validator::make($request->all(), [
+            'post_id' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+
+        $post = Post::where('id',$request->post_id)->first();
+        if (!$post){
+            return $this->sendError("Post Not Exist", "Not Found Error", []);
+        }
+
+        $postcommant = PostCommant::where('post_id',$request->post_id)->delete();
+        $postlike = PostLike::where('post_id',$request->post_id)->delete();
+        $postmedia = PostMedia::where('post_id',$request->post_id)->delete();
+        $posttag = PostTag::where('post_id',$request->post_id)->delete();
+
+        $post->estatus = 3;
+        $post->save();
+        $post->delete();
+        return $this->sendResponseSuccess("Post Deleted Successfully.");
+    }
+
     public function get_my_posts(Request $request){
         $limit = isset($request->limit)?$request->limit:20;
         $user = User::where('id',Auth::user()->id)->where('estatus',1)->first();
@@ -310,6 +335,8 @@ class PostController extends BaseController
 
         return $postcommants_arr;
     }
+
+    
 
 
 }

@@ -81,6 +81,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::post('createPost', [PostController::class, 'create_post']);
     Route::post('myPost', [PostController::class, 'get_my_posts']);
+    Route::post('deletePost', [PostController::class, 'delete_post']);
 
     Route::post('likePost', [PostController::class, 'like_post']);
     Route::post('likePostUser', [PostController::class, 'like_post_users']);
