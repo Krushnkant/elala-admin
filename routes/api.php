@@ -91,6 +91,10 @@ Route::group(['middleware' => 'auth:api'], function () {
    
    
     Route::get('getUsers', [UserController::class, 'getUser']);
+    Route::get('paymentHistory', [OtherController::class, 'paymentHistory']);
+    Route::post('nextlastpayment', [OtherController::class, 'nextlastpayment']);
+    Route::post('pastpayment', [OtherController::class, 'pastpayment']);
+    Route::post('upcomingpayment', [OtherController::class, 'upcomingpayment']);
 });
 
 Route::get('settings', [UserController::class, 'settings']);

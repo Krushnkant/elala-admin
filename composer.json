@@ -8,6 +8,7 @@
         "php": "^7.3|^8.0",
         "doctrine/dbal": "^3.3",
         "doctrine/inflector": "^2.0",
+        "dymantic/laravel-instagram-feed": "*",
         "fruitcake/laravel-cors": "^2.0",
         "ghanuz/relations": "dev-master",
         "guzzlehttp/guzzle": "^7.4",

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot,Review,User,ExperienceProvideItem,ExperienceBrindItem,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage};
+use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot,Review,User,ExperienceProvideItem,ExperienceBrindItem,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,SingleOrdPayment,SupplierPayments};
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Support\Facades\Validator;
@@ -47,6 +47,7 @@ class OrderController extends BaseController
 
     public function createorder(Request $request)
     {
+        
 
         $validator = Validator::make($request->all(), [
             'experience_id' => 'required',
@@ -127,6 +128,39 @@ class OrderController extends BaseController
         $order->payment_mode = isset($request->payment_mode) ? $request->payment_mode : '';
         $order->payment_date = isset($request->payment_date) ? $request->payment_date : '';
         $order->save();
+        $days = 7;
+        if($order){
+           
+            $dt = Carbon::now()->addDays($days);
+            $dt =  $dt->toDateString();
+
+            $user = User::where('id',$experience->user_id)->first();
+            if($user){
+                $user->out_stand_amt = (int)$user->out_stand_amt + (int)$order->total_amount;
+                $user->save();  
+            }
+
+            $supplierPayments = SupplierPayments::where('payment_date',$dt)->where('host_id',$experience->user_id)->first();
+            if(!$supplierPayments){
+                $supplierPayments = new SupplierPayments();
+                $supplierPayments->host_id = $experience->user_id;
+                $supplierPayments->total_amt = $order->total_amount;
+                $supplierPayments->payment_date = $dt;
+                $supplierPayments->save();  
+            }else{
+                $supplierPayments->total_amt = (int)$supplierPayments->total_amt + (int)$order->total_amount;
+                $supplierPayments->save();
+            }
+            
+            if($supplierPayments){
+                $singleOrdPayment = new SingleOrdPayment();
+                $singleOrdPayment->payment_id = 1;
+                $singleOrdPayment->order_id = $order->id;
+                $singleOrdPayment->total_amt = $order->total_amount;
+                $singleOrdPayment->save();
+            }
+
+        }
 
         return $this->sendResponseSuccess("Order Submitted Successfully");
     }

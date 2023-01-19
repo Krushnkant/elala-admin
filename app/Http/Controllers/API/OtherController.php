@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{PageInfo,TeamMember,Testimonial,Faq};
+use App\Models\{PageInfo,TeamMember,Testimonial,Faq,SingleOrdPayment,SupplierPayments};
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OtherController extends BaseController
 {
@@ -75,4 +77,71 @@ class OtherController extends BaseController
         }
         return $this->sendResponseWithData($faqs_arr,"Testimonial Retrieved Successfully.");
     }
+
+    public function paymentHistory(Request $request){
+        //$data = array();
+        // $now = Carbon::now();
+        // $yesterday = Carbon::yesterday();
+        // $tomorrow = Carbon::tomorrow();
+  
+     
+        $NextSupplierPayments = SupplierPayments::whereDate('payment_date','>=', Carbon::today())->where('host_id', $user_id = Auth::user()->id)->where('payment_status', 0)->first(['id','total_amt','payment_date']);
+        // if(!$NextSupplierPayments){
+        //     $NextSupplierPayments = SupplierPayments::whereDate('payment_date', Carbon::tomorrow())->where('host_id', $user_id = Auth::user()->id)->first(['id','total_amt']);
+        // }
+        $Payment['nextPayment'] = $NextSupplierPayments;
+
+        $LastSupplierPayments = SupplierPayments::whereDate('payment_date','<=', Carbon::today())->where('host_id', $user_id = Auth::user()->id)->where('payment_status', 1)->first(['id','total_amt','payment_date']);
+        // if(!$LastSupplierPayments){
+        //     $LastSupplierPayments = SupplierPayments::whereDate('payment_date', Carbon::tomorrow())->where('host_id', $user_id = Auth::user()->id)->first(['id','total_amt']);
+        // }
+
+        $Payment['lastPayment'] = $LastSupplierPayments;
+        $PassLastSupplierPayments = SupplierPayments::whereDate('payment_date','<=', Carbon::today())->where('host_id', $user_id = Auth::user()->id)->where('payment_status', 1)->sum('total_amt');
+        $UpcomingLastSupplierPayments = SupplierPayments::whereDate('payment_date','>=', Carbon::today())->where('host_id', $user_id = Auth::user()->id)->where('payment_status', 0)->sum('total_amt');
+        $Payment['pastPayment'] = $PassLastSupplierPayments;
+        $Payment['upcomingPayment'] = $UpcomingLastSupplierPayments;
+        return $this->sendResponseWithData($Payment,"Payment Retrieved Successfully.");
+    }
+
+
+    public function nextlastpayment(Request $request){
+        $SingleOrdPayments = SingleOrdPayment::where('id',$request->payment_id)->get();
+        $SingleOrdPayments_arr = array();
+        foreach ($SingleOrdPayments as $SingleOrdPayment){
+            $temp = array();
+            $temp['payment_date'] = $SingleOrdPayment->id;
+            $temp['net_payment'] = $SingleOrdPayment->total_amt;
+            $temp['final_amount'] = $SingleOrdPayment->total_amt;
+            array_push($SingleOrdPayments_arr,$temp);
+        }
+        return $this->sendResponseWithData($SingleOrdPayments_arr,"Payment Retrieved Successfully.");
+    }
+
+    public function pastpayment(Request $request){
+        $SingleOrdPayments = SingleOrdPayment::whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->get();
+        $SingleOrdPayments_arr = array();
+        foreach ($SingleOrdPayments as $SingleOrdPayment){
+            $temp = array();
+            $temp['payment_date'] = $SingleOrdPayment->id;
+            $temp['net_payment'] = $SingleOrdPayment->total_amt;
+            $temp['final_amount'] = $SingleOrdPayment->total_amt;
+            array_push($SingleOrdPayments_arr,$temp);
+        }
+        return $this->sendResponseWithData($SingleOrdPayments_arr,"Payment Retrieved Successfully.");
+    }
+
+    public function upcomingpayment(Request $request){
+        $SingleOrdPayments = SingleOrdPayment::whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->get();
+        $SingleOrdPayments_arr = array();
+        foreach ($SingleOrdPayments as $SingleOrdPayment){
+            $temp = array();
+            $temp['payment_date'] = $SingleOrdPayment->id;
+            $temp['net_payment'] = $SingleOrdPayment->total_amt;
+            $temp['final_amount'] = $SingleOrdPayment->total_amt;
+            array_push($SingleOrdPayments_arr,$temp);
+        }
+        return $this->sendResponseWithData($SingleOrdPayments_arr,"Payment Retrieved Successfully.");
+    }
+
 }
