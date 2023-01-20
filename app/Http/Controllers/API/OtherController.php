@@ -119,7 +119,7 @@ class OtherController extends BaseController
     }
 
     public function pastpayment(Request $request){
-        $SingleOrdPayments = SingleOrdPayment::whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->get();
+        $SingleOrdPayments = SupplierPayments::whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->get();
         $SingleOrdPayments_arr = array();
         foreach ($SingleOrdPayments as $SingleOrdPayment){
             $temp = array();
@@ -128,11 +128,11 @@ class OtherController extends BaseController
             $temp['final_amount'] = $SingleOrdPayment->total_amt;
             array_push($SingleOrdPayments_arr,$temp);
         }
-        return $this->sendResponseWithData($SingleOrdPayments_arr,"Payment Retrieved Successfully.");
+        return $this->sendResponseWithData($SingleOrdPayments_arr,"Past Payment Retrieved Successfully.");
     }
 
     public function upcomingpayment(Request $request){
-        $SingleOrdPayments = SingleOrdPayment::whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->get();
+        $SingleOrdPayments = SupplierPayments::whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->get();
         $SingleOrdPayments_arr = array();
         foreach ($SingleOrdPayments as $SingleOrdPayment){
             $temp = array();
@@ -141,7 +141,7 @@ class OtherController extends BaseController
             $temp['final_amount'] = $SingleOrdPayment->total_amt;
             array_push($SingleOrdPayments_arr,$temp);
         }
-        return $this->sendResponseWithData($SingleOrdPayments_arr,"Payment Retrieved Successfully.");
+        return $this->sendResponseWithData($SingleOrdPayments_arr," Upcoming Payment Retrieved Successfully.");
     }
 
 }
