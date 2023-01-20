@@ -110,7 +110,7 @@ class OtherController extends BaseController
         $SingleOrdPayments_arr = array();
         foreach ($SingleOrdPayments as $SingleOrdPayment){
             $temp = array();
-            $temp['payment_date'] = $SingleOrdPayment->id;
+            $temp['payment_date'] = $SingleOrdPayment->payment_date;
             $temp['net_payment'] = $SingleOrdPayment->total_amt;
             $temp['final_amount'] = $SingleOrdPayment->total_amt;
             array_push($SingleOrdPayments_arr,$temp);
@@ -123,7 +123,7 @@ class OtherController extends BaseController
         $SingleOrdPayments_arr = array();
         foreach ($SingleOrdPayments as $SingleOrdPayment){
             $temp = array();
-            $temp['payment_date'] = $SingleOrdPayment->id;
+            $temp['payment_date'] = $SingleOrdPayment->payment_date;
             $temp['net_payment'] = $SingleOrdPayment->total_amt;
             $temp['final_amount'] = $SingleOrdPayment->total_amt;
             array_push($SingleOrdPayments_arr,$temp);
@@ -136,7 +136,7 @@ class OtherController extends BaseController
         $SingleOrdPayments_arr = array();
         foreach ($SingleOrdPayments as $SingleOrdPayment){
             $temp = array();
-            $temp['payment_date'] = $SingleOrdPayment->id;
+            $temp['payment_date'] = $SingleOrdPayment->payment_date;
             $temp['net_payment'] = $SingleOrdPayment->total_amt;
             $temp['final_amount'] = $SingleOrdPayment->total_amt;
             array_push($SingleOrdPayments_arr,$temp);
