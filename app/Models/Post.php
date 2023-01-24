@@ -29,4 +29,13 @@ class Post extends Model
     public function hosttag(){
         return $this->hasOne(User::class,'id','host_tag');
     }
+
+    public function postuser(){
+        return $this->hasOne(User::class,'id','user_id');
+    }
+    public function postimage(){
+        $instance = $this->hasOne(PostMedia::class,'post_id','id');
+        $instance->getQuery()->where('type',0);
+        return $instance;
+    }
 }

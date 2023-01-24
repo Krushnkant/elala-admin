@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\{AuthController, ExperienceController, UserController, OrderController, WishlistController, ChatController,OtherController,PostController};
+use App\Http\Controllers\API\{AuthController, ExperienceController, UserController, OrderController, WishlistController, ChatController,OtherController,PostController,PaymentController};
 
 /*
 |--------------------------------------------------------------------------
@@ -91,10 +91,11 @@ Route::group(['middleware' => 'auth:api'], function () {
    
    
     Route::get('getUsers', [UserController::class, 'getUser']);
-    Route::get('paymentHistory', [OtherController::class, 'paymentHistory']);
-    Route::post('nextlastpayment', [OtherController::class, 'nextlastpayment']);
-    Route::post('pastpayment', [OtherController::class, 'pastpayment']);
-    Route::post('upcomingpayment', [OtherController::class, 'upcomingpayment']);
+
+    Route::get('paymentHistory', [PaymentController::class, 'paymentHistory']);
+    Route::post('nextlastpayment', [PaymentController::class, 'nextlastpayment']);
+    Route::post('pastpayment', [PaymentController::class, 'pastpayment']);
+    Route::post('upcomingpayment', [PaymentController::class, 'upcomingpayment']);
 });
 
 Route::get('settings', [UserController::class, 'settings']);

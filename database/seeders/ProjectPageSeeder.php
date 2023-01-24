@@ -233,6 +233,16 @@ class ProjectPageSeeder extends Seeder
             'sr_no' => 9
         ]);
 
+        ProjectPage::create([
+            'id' => 22,
+            'parent_menu' => 16,
+            'label' => 'Post',
+            'icon_class' => 'fa fa-list-alt',
+            'route_url' => 'admin.posts.list',
+            'is_display_in_menu' => 1,
+            'inner_routes' => 'admin.posts.list,admin.posts.add,admin.posts.save,admin.allbloglist,admin.posts.changepoststatus,admin.posts.delete,admin.posts.edit,admin.posts.uploadfile,admin.posts.removefile',
+        ]);
+
         
 
 

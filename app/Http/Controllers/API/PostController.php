@@ -94,10 +94,17 @@ class PostController extends BaseController
             return $this->sendError("Post Not Exist", "Not Found Error", []);
         }
 
-        $postcommant = PostCommant::where('post_id',$request->post_id)->delete();
-        $postlike = PostLike::where('post_id',$request->post_id)->delete();
-        $postmedia = PostMedia::where('post_id',$request->post_id)->delete();
-        $posttag = PostTag::where('post_id',$request->post_id)->delete();
+        PostCommant::where('post_id',$request->post_id)->delete();
+        PostLike::where('post_id',$request->post_id)->delete();
+        PostTag::where('post_id',$request->post_id)->delete();
+        $postmedia = PostMedia::where('post_id',$request->post_id)->get();
+            foreach($postmedia as $media){
+                $image = public_path($media->name);
+                if (file_exists($image)) {
+                    unlink($image);
+                }
+                $media->delete();
+            }
 
         $post->estatus = 3;
         $post->save();

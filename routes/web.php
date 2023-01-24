@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController
     ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController,CancellationPolicyController
     ,OrderController,TeamMemberController,TestimonialController};
-use App\Http\Controllers\admin\{ExperienceController,ReviewController,InfopageController,FaqController};
+use App\Http\Controllers\admin\{ExperienceController,ReviewController,InfopageController,FaqController,PostController};
 
 use Illuminate\Support\Facades\Artisan;
 /*
@@ -165,6 +165,18 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('allFaqslist',[FaqController::class,'allFaqslist'])->name('allFaqsformlist');
     Route::get('faq/{id}/edit',[FaqController::class,'editFaq'])->name('faq.edit');
     Route::get('faq/{id}/delete',[FaqController::class,'deleteFaq'])->name('faq.delete');
+
+
+     //post route
+     Route::get('postslist/{id?}',[PostController::class,'index'])->name('posts.list');
+     Route::get('posts/create',[PostController::class,'create'])->name('posts.add');
+     Route::post('posts/save',[PostController::class,'save'])->name('posts.save');
+     Route::post('allpostlist',[PostController::class,'allpostlist'])->name('allpostlist');
+     Route::get('changepoststatus/{id}',[PostController::class,'changepoststatus'])->name('posts.changepoststatus');
+     Route::get('posts/{id}/delete',[PostController::class,'deletepost'])->name('posts.delete');
+     Route::get('posts/{id}/edit',[PostController::class,'editpost'])->name('posts.edit');
+     Route::post('posts/uploadfile',[PostController::class,'uploadfile'])->name('posts.uploadfile');
+     Route::post('posts/removefile',[PostController::class,'removefile'])->name('posts.removefile');
 });
 
 Route::group(['middleware'=>['auth']],function (){
