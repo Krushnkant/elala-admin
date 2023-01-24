@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
-class PaymentController extends Controller
+class PaymentController extends BaseController
 {
     public function paymentHistory(Request $request){
 
