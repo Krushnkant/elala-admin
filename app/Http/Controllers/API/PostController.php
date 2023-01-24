@@ -137,7 +137,7 @@ class PostController extends BaseController
             $temp['is_commant'] = is_commant($post->id)?1:0;
             $temp['posttags'] = $tag_array;
             $temp['postmedia'] = $post->postmedia;
-            $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag->full_name:"";
+            $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag:null;
             $temp['user'] = $post->user;
             $temp['total_like'] = $post->total_like;
             $temp['total_commant'] = $post->total_commant;
@@ -181,7 +181,7 @@ class PostController extends BaseController
             }
             $temp['posttags'] = $tag_array;
             $temp['postmedia'] = $post->postmedia;
-            $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag->full_name:"";
+            $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag:null;
             $temp['user'] = $post->user;
             $temp['total_like'] = $post->total_like;
             $temp['total_commant'] = $post->total_commant;

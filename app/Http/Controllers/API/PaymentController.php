@@ -31,8 +31,6 @@ class PaymentController extends BaseController
         $Payment['upcomingPayment'] = $UpcomingLastSupplierPayments;
         return $this->sendResponseWithData($Payment,"Payment Retrieved Successfully.");
     }
-
-
     public function nextlastpayment(Request $request){
         $limit = isset($request->limit)?$request->limit:10;
         $SingleOrdPayments = SingleOrdPayment::where('id',$request->payment_id)->paginate($limit);
