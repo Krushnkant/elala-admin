@@ -177,6 +177,11 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
      Route::get('posts/{id}/edit',[PostController::class,'editpost'])->name('posts.edit');
      Route::post('posts/uploadfile',[PostController::class,'uploadfile'])->name('posts.uploadfile');
      Route::post('posts/removefile',[PostController::class,'removefile'])->name('posts.removefile');
+
+     //login log route
+     Route::get('loginlog',[UserController::class,'loginlog'])->name('loginlog.list');
+     Route::post('allloginloglist',[UserController::class,'allloginloglist'])->name('allloginloglist');
+    
 });
 
 Route::group(['middleware'=>['auth']],function (){

@@ -243,6 +243,18 @@ class ProjectPageSeeder extends Seeder
             'inner_routes' => 'admin.posts.list,admin.posts.add,admin.posts.save,admin.allbloglist,admin.posts.changepoststatus,admin.posts.delete,admin.posts.edit,admin.posts.uploadfile,admin.posts.removefile',
         ]);
 
+        ProjectPage::create([
+            'id' => 23,
+            'parent_menu' => 0,
+            'label' => 'Login Log',
+            'icon_class' => 'fa fa-list-alt',
+            'route_url' => 'admin.loginlog.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.loginlog.list,admin.allloginloglist',
+            'sr_no' => 101
+        ]);
+
+
         
 
 

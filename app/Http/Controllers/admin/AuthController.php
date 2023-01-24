@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Stevebauman\Location\Facades\Location;
 use App\Models\User;
+use App\Models\UserLogin;
 
 class AuthController extends Controller
 {
@@ -38,6 +40,19 @@ class AuthController extends Controller
         if($user->estatus == 1){    
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
+                $position = Location::get($request->ip());
+                $user->last_login_date = new \DateTime(null, new \DateTimeZone('Asia/Kolkata'));
+                $user->save();
+
+                $userlogin = New UserLogin();
+                $userlogin->user_id =  $user->id;
+                $userlogin->ip_address =  $request->ip();
+                $userlogin->country =  isset($position->countryName)?$position->countryName:"";
+                $userlogin->state =  isset($position->regionName)?$position->regionName:"";
+                $userlogin->city =  isset($position->cityName)?$position->cityName:"";
+                $userlogin->browser =  isset($browser)?$browser:"";
+                $userlogin->created_at = new \DateTime(null, new \DateTimeZone('Asia/Kolkata'));
+                $userlogin->save();
     //            dd(Auth::user()->toArray());
                 return response()->json(['status'=>200]);
                 /*return redirect()->intended('admin/dashboard')

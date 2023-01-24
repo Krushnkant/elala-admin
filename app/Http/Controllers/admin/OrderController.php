@@ -20,6 +20,7 @@ class OrderController extends Controller
     }
 
     public function allOrderlist(Request $request){
+        //dd($request->all());
         if ($request->ajax()) {
             $columns = array(
                 0 =>'id',
@@ -68,8 +69,7 @@ class OrderController extends Controller
                 $totalData = Order::whereIn('order_status',$order_status)->count();
             }
             $totalFiltered = $totalData;
-
-            if(empty($request->input('search.value')) && isset($request->host_filter) && $request->host_filter=="" && isset($request->start_date) && $request->start_date=="" && isset($request->end_date) && $request->end_date=="")
+            if(empty($request->input('search.value')) &&  empty($request->host_filter)  && empty($request->start_date) && empty($request->end_date))
             {
                 $Orders = Order::with('experience.user','orderslot');
                 if (isset($order_status)){
@@ -78,7 +78,7 @@ class OrderController extends Controller
                 $Orders = $Orders->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
-                    ->get();
+                    ->get();  
             }
             else {
                 $search = $request->input('search.value');

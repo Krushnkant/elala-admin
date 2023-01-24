@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
         "srmklive/paypal": "~1.0",
+        "stevebauman/location": "^6.5",
         "symfony/psr-http-message-bridge": "^2.1"
     },
     "require-dev": {

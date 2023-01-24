@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserLogin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -37,6 +38,8 @@ class AuthController extends BaseController
                         $user['token'] = $token;
                         $user['new_user'] = 0;
                         $user['profile_completed'] = $user->is_completed;
+
+                        $this->user_login_log($user->id,$request);
                         
                         return $this->sendResponseWithData($user, "User successfully login");
                         
@@ -52,6 +55,8 @@ class AuthController extends BaseController
                         $user['token'] = $token;
                         $user['new_user'] = 1;
                         $user['profile_completed'] = $user->is_completed;
+
+                        $this->user_login_log($user->id,$request);
                         return $this->sendResponseWithData($user, "User successfully login");
                     }
                 }
@@ -78,6 +83,8 @@ class AuthController extends BaseController
                                     $user['profile_completed'] = $user->is_completed;
                                     // dump("user");
                                     // dd($user);
+
+                                    $this->user_login_log($user->id,$request);
                                     return $this->sendResponseWithData($user, "User successfully login");
                                 } else {
                                     return $this->sendError("User credentials invalid", "Unautherized user", []);
@@ -282,6 +289,29 @@ class AuthController extends BaseController
         return $this->sendError("User Not Exist", "Not Found Error", []);
     }
 
+
+    public function user_login_log($id,Request $request){
+        $user = User::where('id',$request->user_id)->where('estatus',1)->first();
+        if ($user)
+        {
+            $user->last_login_date = new \DateTime(null, new \DateTimeZone('Asia/Kolkata'));
+            $user->save(); 
+
+            $userlogin = New UserLogin();
+            $userlogin->user_id =  $user->id;
+            $userlogin->country =  isset($request->country)?$request->country:"";
+            $userlogin->state =  isset($request->state)?$request->state:"";
+            $userlogin->city =  isset($request->city)?$request->city:"";
+            $userlogin->latitude =  isset($request->latitude)?$request->latitude:"";
+            $userlogin->longitude =  isset($request->longitude)?$request->longitude:"";
+            $userlogin->created_at = new \DateTime(null, new \DateTimeZone('Asia/Kolkata'));
+            $userlogin->save();
+            return $this->sendResponseSuccess('log create successfully.');
+        }
+        else{
+            return $this->sendError('User Not Found.', "verification Failed", []);
+        }
+    }
     
 
 }

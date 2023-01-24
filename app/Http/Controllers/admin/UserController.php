@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\ProjectPage;
 use App\Models\User;
+use App\Models\UserLogin;
 use App\Models\UserPermission;
 use App\Models\DesignationPermission;
 use App\Models\Designation;
@@ -171,7 +172,7 @@ class UserController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-//            dd($columns[$request->input('order.0.column')]);
+
          
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
@@ -374,5 +375,138 @@ class UserController extends Controller
         }
 
         return response()->json(['status' => '200']);
+    }
+
+    public function loginlog(){
+        return view('admin.users.loginlog')->with('page',$this->page);
+    }
+
+    public function allloginloglist(Request $request){
+        if ($request->ajax()) {
+            $tab_type = $request->tab_type;
+            if ($tab_type == "active_user_tab"){
+                $estatus = 1;
+            }
+            elseif ($tab_type == "deactive_user_tab"){
+                $estatus = 2;
+            }
+
+            $columns = array(
+                0 =>'id',
+                1 =>'profile_pic',
+                2=> 'user_info',
+                3=> 'contact_info',
+                4=> 'created_at',
+            );
+
+            $totalData = UserLogin::count();
+
+            $totalFiltered = $totalData;
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+
+         
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+
+            if($order == "id"){
+                $order == "created_at";
+                $dir = 'desc';
+            }
+
+            if(empty($request->input('search.value')))
+            {
+                $users = UserLogin::with('user')->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order,$dir)
+                    ->get();
+            }
+            else {
+                $search = $request->input('search.value');
+                $users = UserLogin::with('user')->where(function($query) use($search){
+                      $query->where('id','LIKE',"%{$search}%")
+                            ->orWhere('created_at', 'LIKE',"%{$search}%");
+                      })
+                      ->offset($start)
+                      ->limit($limit)
+                      ->orderBy($order,$dir)
+                      ->get();
+
+                $totalFiltered = UserLogin::with('user')->where(function($query) use($search){
+                        $query->where('id','LIKE',"%{$search}%")
+                            ->orWhere('created_at', 'LIKE',"%{$search}%");
+                        })
+                        ->count();
+            }
+
+            $data = array();
+
+            if(!empty($users))
+            {
+//                $i=1;
+                foreach ($users as $userlog)
+                {
+                    $page_id = ProjectPage::where('route_url','admin.loginlog.list')->pluck('id')->first();
+                
+                    if(isset($userlog->user->profile_pic) && $userlog->user->profile_pic!=null){
+                        $profile_pic = $userlog->user->profile_pic;
+                    }
+                    else{
+                        $profile_pic = url('images/default_avatar.jpg');
+                    }
+
+                    if(isset($userlog->user->full_name)){
+                        $full_name = $userlog->user->full_name;
+                    }
+                    else{
+                        $full_name="";
+                    }
+
+                    $user_info = '';
+                    if (isset($full_name)){
+                        $user_info = '<span> ' .$full_name .'</span>';
+                    }
+                    if (isset($userlog->user->designation)){
+                        $user_info .= '<span> ' .$userlog->user->designation->title .'</span>';
+                    }
+
+                    $contact_info = '';
+                    if (isset($userlog->user->email)){
+                        $contact_info = '<span><i class="fa fa-envelope" aria-hidden="true"></i> ' .$userlog->user->email .'</span>';
+                    }
+                    if (isset($userlog->user->mobile_no)){
+                        $contact_info .= '<span><i class="fa fa-phone" aria-hidden="true"></i> ' .$userlog->user->mobile_no .'</span>';
+                    }
+
+                    $login_info = '';
+                    if (isset($userlog->user->email)){
+                        $login_info = '<span>' .$userlog->user->email .'</span>';
+                    }
+                    if (isset($userlog->user->password)){
+                        $login_info .= '<span>' .$userlog->user->decrypted_password .'</span>';
+                    }
+                    
+
+//                    $nestedData['id'] = $i;
+                    $nestedData['profile_pic'] = '<img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic">';
+                    $nestedData['user_info'] = $user_info;
+                    $nestedData['contact_info'] = $contact_info;
+                    $nestedData['created_at'] = date('Y-m-d H:i A', strtotime($userlog->created_at));
+                    $data[] = $nestedData;
+//                    $i=$i+1;
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data" => $data,
+            );
+
+//            return json_encode($json_data);
+            echo json_encode($json_data);
+        }
     }
 }
