@@ -79,7 +79,7 @@ class PostController extends BaseController
         }
         
         if(isset($request->deleteMedia) && count($request->deleteMedia) > 0){
-            PostMedia::whereId('id',$request->deleteMedia)->delete();
+            PostMedia::whereIn('id',$request->deleteMedia)->delete();
         }
 
         return $this->sendResponseSuccess("Post Added Successfully");
