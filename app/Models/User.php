@@ -75,4 +75,56 @@ class User extends Authenticatable
         $City = City::where('id',$this->attributes['city'])->pluck('name')->first();
         return $City;
     }
+
+    public function follow(User $user) {
+        if(!$this->isFollowing($user)) {
+             
+            $UserFollower = New UserFollower();
+            $UserFollower->user_id = auth()->id();
+            $UserFollower->following_id = $user->id;
+            $UserFollower->estatus = ($user->is_private == 1)?0:1;
+            $UserFollower->save();
+          
+            if(!$this->isFollowers($user)) {
+                if($user->is_private == 0){
+                    $UserFollower = New UserFollower();
+                    $UserFollower->user_id = $user->id;
+                    $UserFollower->following_id = auth()->id();
+                    $UserFollower->estatus = 2;
+                    $UserFollower->save();
+                }
+            }
+
+        }
+    }
+    
+    public function unfollow(User $user) {
+        $check =UserFollower::where('following_id',auth()->id())->where('user_id',$user->id)->first();
+        if(!$check){
+            UserFollower::where('user_id',auth()->id())->where('following_id',$user->id)->delete();
+        }else{
+            $UserFollstatus = UserFollower::where('user_id',auth()->id())->where('following_id',$user->id)->first();
+            if($UserFollstatus){
+                $UserFollstatus->estatus = 2;
+                $UserFollstatus->save();
+            }
+        }
+        //UserFollower::where('user_id',auth()->id())->where('following_id', $user->id)->delete();
+    }
+    
+    public function isFollowing(User $user) {
+        return $this->following()->where('users.id', $user->id)->exists();
+    }
+
+    public function isFollowers(User $user) {
+        return $this->followers()->where('users.id', $user->id)->exists();
+    }
+    
+    public function following() {
+        return $this->hasManyThrough(User::class, UserFollower::class, 'user_id', 'id', 'id', 'following_id');
+    }
+    
+    public function followers() {
+        return $this->hasManyThrough(User::class, UserFollower::class, 'following_id', 'id', 'id', 'user_id');
+    }
 }

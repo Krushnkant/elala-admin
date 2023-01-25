@@ -101,6 +101,7 @@ class UserController extends BaseController
         $user->email = $request->email;
         $user->bio = isset($request->bio)?$request->bio:"";
         $user->is_completed = 1;
+        $user->is_private = isset($request->is_private)?$request->is_private:0;
 
         if ($request->hasFile('profile_pic')) {
             $image = $request->file('profile_pic');

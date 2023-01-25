@@ -77,6 +77,11 @@ class PostController extends BaseController
                 $postmedia->save();
             }  
         }
+        
+        if(isset($request->deleteMedia) && count($request->deleteMedia) > 0){
+            PostMedia::whereId('id',$request->deleteMedia)->delete();
+        }
+
         return $this->sendResponseSuccess("Post Added Successfully");
     }
 
@@ -243,6 +248,7 @@ class PostController extends BaseController
             $temp['full_name'] = $postlike->user->full_name;
             $temp['profile_pic'] = $postlike->user->profile_pic;
             $temp['created_at'] = $postlike->created_at;
+            $temp['is_follow'] = is_follower(auth()->id(),$postlike->user->id);
             array_push($postlikes_arr,$temp);
         }
 

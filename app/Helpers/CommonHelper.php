@@ -242,3 +242,19 @@ function is_commant($post_id,$user_id = 0){
     return false;
 }
 
+function follower($user_id){
+    return $follower = \App\Models\UserFollower::where('following_id',$user_id)->get()->count();
+}
+
+function following($user_id){
+    return $follower = \App\Models\UserFollower::where('user_id',$user_id)->get()->count();
+}
+
+function is_follower($user_id,$follower_id){
+     $follower = \App\Models\UserFollower::where('user_id',$user_id)->where('following_id',$follower_id)->first();
+     if($follower){
+       $status = $follower->estatus;
+     }else{
+        $status = "";
+     }
+}
