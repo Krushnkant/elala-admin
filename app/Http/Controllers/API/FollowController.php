@@ -96,7 +96,7 @@ class FollowController extends BaseController
                 $temp['user_id'] = $userfollower->user_id;
                 $temp['full_name'] = $userfollower->user->full_name;
                 $temp['profile_pic'] = $userfollower->user->profile_pic;
-                $temp['is_follow'] = is_follower_random(auth()->id(),$userfollower->user_id);
+                $temp['is_follow'] = is_follower(auth()->id(),$userfollower->user_id);
                 array_push($userfollowers_arr,$temp);
             }
         }
