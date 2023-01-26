@@ -79,14 +79,26 @@ class FollowController extends BaseController
         }
         $userfollowers = $userfollowers->get();
         $userfollowers_arr = array();
-        foreach ($userfollowers as $userfollower){
-            $temp = array();
-            $temp['id'] = $userfollower->id;
-            $temp['user_id'] = $userfollower->user_id;
-            $temp['full_name'] = $userfollower->user->full_name;
-            $temp['profile_pic'] = $userfollower->user->profile_pic;
-            $temp['is_follow'] = is_follower(auth()->id(),$userfollower->user_id);
-            array_push($userfollowers_arr,$temp);
+        if(isset($request->type) && $request->type == "following"){
+            foreach ($userfollowers as $userfollower){
+                $temp = array();
+                $temp['id'] = $userfollower->id;
+                $temp['user_id'] = $userfollower->following_id;
+                $temp['full_name'] = $userfollower->follower->full_name;
+                $temp['profile_pic'] = $userfollower->follower->profile_pic;
+                $temp['is_follow'] = is_follower(auth()->id(),$userfollower->following_id);
+                array_push($userfollowers_arr,$temp);
+            }
+        }else{
+            foreach ($userfollowers as $userfollower){
+                $temp = array();
+                $temp['id'] = $userfollower->id;
+                $temp['user_id'] = $userfollower->user_id;
+                $temp['full_name'] = $userfollower->user->full_name;
+                $temp['profile_pic'] = $userfollower->user->profile_pic;
+                $temp['is_follow'] = is_follower(auth()->id(),$userfollower->user_id);
+                array_push($userfollowers_arr,$temp);
+            }
         }
         return $this->sendResponseWithData($userfollowers_arr,"Follow Retrieved Successfully.");
     }
