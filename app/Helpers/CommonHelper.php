@@ -253,8 +253,8 @@ function following($user_id){
 function is_follower($user_id,$follower_id){
      $follower = \App\Models\UserFollower::where('user_id',$user_id)->where('following_id',$follower_id)->first();
      if($follower){
-       $status = $follower->estatus;
+        return $status = $follower->estatus;
      }else{
-        $status = "";
+        return $status = "";
      }
 }
