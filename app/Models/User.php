@@ -77,6 +77,7 @@ class User extends Authenticatable
     }
 
     public function follow(User $user) {
+        
         if(!$this->isFollowing($user)) {
              
             $UserFollower = New UserFollower();
@@ -100,7 +101,17 @@ class User extends Authenticatable
                 return $status = "";
             }
         }else{
-            return $status = "test";
+
+            $UserFollower =UserFollower::where('user_id',auth()->id())->where('following_id',$user->id)->first();
+            $UserFollower->estatus = ($user->is_private == 1)?0:1;
+            $UserFollower->save();
+
+            if($UserFollower){
+                return $status = $UserFollower->estatus;
+            }else{
+                return $status = "";
+            }
+
         }
     }
     
