@@ -105,7 +105,7 @@ class FollowController extends BaseController
 
     public function getRandomUsers(Request $request){
         
-        $users = User::where('estatus',1)->where('is_completed',1)->inRandomOrder()->limit(10)->get();
+        $users = User::where('estatus',1)->where('is_completed',1)->where('id','<>',auth()->id())->inRandomOrder()->limit(10)->get();
         $users_arr = array();
         foreach ($users as $user){
             $temp = array();
