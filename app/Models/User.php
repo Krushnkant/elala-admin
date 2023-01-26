@@ -99,6 +99,8 @@ class User extends Authenticatable
             }else{
                 return $status = "";
             }
+        }else{
+            return $status = "test";
         }
     }
     
