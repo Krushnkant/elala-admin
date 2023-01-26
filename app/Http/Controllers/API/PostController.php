@@ -249,7 +249,7 @@ class PostController extends BaseController
             $temp['full_name'] = $postlike->user->full_name;
             $temp['profile_pic'] = $postlike->user->profile_pic;
             $temp['created_at'] = $postlike->created_at;
-            if(isset(auth()->id())){
+            if(Auth::user()) {
                 $temp['is_follow'] = is_follower_random(auth()->id(),$postlike->user->id);
             }else{
                 $temp['is_follow'] = "";
