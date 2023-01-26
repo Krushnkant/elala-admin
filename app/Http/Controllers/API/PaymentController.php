@@ -33,7 +33,7 @@ class PaymentController extends BaseController
     }
     public function nextlastpayment(Request $request){
         $limit = isset($request->limit)?$request->limit:10;
-        $SingleOrdPayments = SingleOrdPayment::where('id',$request->payment_id)->paginate($limit);
+        $SingleOrdPayments = SingleOrdPayment::where('payment_id',$request->payment_id)->paginate($limit);
         $SingleOrdPayments_arr = array();
         foreach ($SingleOrdPayments as $SingleOrdPayment){
             $temp = array();
@@ -69,6 +69,7 @@ class PaymentController extends BaseController
         $SingleOrdPayments_arr = array();
         foreach ($SingleOrdPayments as $SingleOrdPayment){
             $temp = array();
+            $temp['id'] = $SingleOrdPayment->id;
             $temp['payment_date'] = $SingleOrdPayment->payment_date;
             $temp['net_payment'] = $SingleOrdPayment->total_amt;
             $temp['final_amount'] = $SingleOrdPayment->total_amt;
@@ -78,4 +79,23 @@ class PaymentController extends BaseController
         $data['total_payment'] = count( SupplierPayments::whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->get());
         return $this->sendResponseWithData($data," Upcoming Payment Retrieved Successfully.");
     }
+
+    public function pastupcomingpayment(Request $request){
+        $limit = isset($request->limit)?$request->limit:10;
+        $SingleOrdPayments = SingleOrdPayment::with('order.experience')->where('payment_id',$request->payment_id)->paginate($limit);
+        $SingleOrdPayments_arr = array();
+        foreach ($SingleOrdPayments as $SingleOrdPayment){
+            $temp = array();
+            $temp['payment_date'] = $SingleOrdPayment->created_at;
+            $temp['net_payment'] = $SingleOrdPayment->total_amt;
+            $temp['final_amount'] = $SingleOrdPayment->total_amt;
+            $temp['order'] =     $SingleOrdPayment->order;
+            array_push($SingleOrdPayments_arr,$temp);
+        }
+        $data['payments'] = $SingleOrdPayments_arr;
+        $data['total_payment'] = count(SingleOrdPayment::where('id',$request->payment_id)->get());
+        return $this->sendResponseWithData($data,"Payment Retrieved Successfully.");
+    }
+
+    
 }

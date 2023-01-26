@@ -96,6 +96,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('nextlastpayment', [PaymentController::class, 'nextlastpayment']);
     Route::post('pastpayment', [PaymentController::class, 'pastpayment']);
     Route::post('upcomingpayment', [PaymentController::class, 'upcomingpayment']);
+    Route::post('pastupcomingpayment', [PaymentController::class, 'pastupcomingpayment']);
 
 
     Route::post("follow", [FollowController::class, 'follow']);
