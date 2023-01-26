@@ -251,7 +251,7 @@ function following($user_id){
 }
 
 function is_follower($user_id,$follower_id){
-     $follower = \App\Models\UserFollower::where('user_id',$user_id)->where('following_id',$follower_id)->first();
+     $follower = \App\Models\UserFollower::where('user_id',$follower_id)->where('following_id',$user_id)->first();
      if($follower){
         return $status = $follower->estatus;
      }else{
