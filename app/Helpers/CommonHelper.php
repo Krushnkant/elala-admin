@@ -258,3 +258,12 @@ function is_follower($user_id,$follower_id){
         return $status = "";
      }
 }
+
+function is_follower_random($user_id,$follower_id){
+    $follower = \App\Models\UserFollower::where('user_id',$user_id)->where('following_id',$follower_id)->first();
+    if($follower){
+       return $status = $follower->estatus;
+    }else{
+       return $status = "";
+    }
+}

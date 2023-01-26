@@ -86,7 +86,7 @@ class FollowController extends BaseController
                 $temp['user_id'] = $userfollower->following_id;
                 $temp['full_name'] = $userfollower->follower->full_name;
                 $temp['profile_pic'] = $userfollower->follower->profile_pic;
-                $temp['is_follow'] = is_follower(auth()->id(),$userfollower->following_id);
+                $temp['is_follow'] = is_follower_random(auth()->id(),$userfollower->following_id);
                 array_push($userfollowers_arr,$temp);
             }
         }else{
@@ -96,7 +96,7 @@ class FollowController extends BaseController
                 $temp['user_id'] = $userfollower->user_id;
                 $temp['full_name'] = $userfollower->user->full_name;
                 $temp['profile_pic'] = $userfollower->user->profile_pic;
-                $temp['is_follow'] = is_follower(auth()->id(),$userfollower->user_id);
+                $temp['is_follow'] = is_follower_random(auth()->id(),$userfollower->user_id);
                 array_push($userfollowers_arr,$temp);
             }
         }
@@ -112,7 +112,7 @@ class FollowController extends BaseController
             $temp['id'] = $user->id;
             $temp['full_name'] = $user->full_name;
             $temp['profile_pic'] = $user->profile_pic;
-            $temp['is_follow'] = is_follower(auth()->id(),$user->id);
+            $temp['is_follow'] = is_follower_random(auth()->id(),$user->id);
             array_push($users_arr,$temp);
         }
         return $this->sendResponseWithData($users_arr,"Random Users Retrieved Successfully.");
