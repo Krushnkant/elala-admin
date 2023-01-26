@@ -87,14 +87,18 @@ class User extends Authenticatable
           
             if(!$this->isFollowers($user)) {
                 if($user->is_private == 0){
-                    $UserFollower = New UserFollower();
-                    $UserFollower->user_id = $user->id;
-                    $UserFollower->following_id = auth()->id();
-                    $UserFollower->estatus = 2;
-                    $UserFollower->save();
+                    $UserFollowerBack = New UserFollower();
+                    $UserFollowerBack->user_id = $user->id;
+                    $UserFollowerBack->following_id = auth()->id();
+                    $UserFollowerBack->estatus = 2;
+                    $UserFollowerBack->save();
                 }
             }
-
+            if($UserFollower){
+                return $status = $UserFollower->estatus;
+            }else{
+                return $status = "";
+            }
         }
     }
     
@@ -105,11 +109,17 @@ class User extends Authenticatable
         }else{
             $UserFollstatus = UserFollower::where('user_id',auth()->id())->where('following_id',$user->id)->first();
             if($UserFollstatus){
+
                 $UserFollstatus->estatus = 2;
                 $UserFollstatus->save();
             }
         }
-        //UserFollower::where('user_id',auth()->id())->where('following_id', $user->id)->delete();
+        $checkstatus = UserFollower::where('user_id',auth()->id())->where('following_id',$user->id)->first();
+        if($checkstatus){
+            return $status = $checkstatus->estatus;
+         }else{
+            return $status = "";
+         }
     }
     
     public function isFollowing(User $user) {

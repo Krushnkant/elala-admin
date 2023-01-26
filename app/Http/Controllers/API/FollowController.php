@@ -12,16 +12,14 @@ class FollowController extends BaseController
    
     public function follow(Request $request) {
         $userToFollow = User::findOrFail(request('user_id'));
-        auth()->user()->follow($userToFollow);
-
-        return $this->sendResponseSuccess("User Follow Successfully");
+        $data = auth()->user()->follow($userToFollow);
+        return $this->sendResponseWithData($data,"User Follow Successfully");
     }
 
     public function unfollow(Request $request) {
         $userToUnfollow = User::findOrFail(request('user_id'));
-        auth()->user()->unfollow($userToUnfollow);
-
-        return $this->sendResponseSuccess("User Unfollow Successfully");
+        $data = auth()->user()->unfollow($userToUnfollow);
+        return $this->sendResponseWithData($data,"User Unfollow Successfully");
     }
 
     public function follow_request(Request $request) {
@@ -59,8 +57,14 @@ class FollowController extends BaseController
                 } 
             }
         }
-  
-        return $this->sendResponseSuccess("User Status Chnage Successfully");
+
+        $checkstatus = UserFollower::where('following_id',auth()->id())->where('user_id',$userToFollow->id)->first();
+        if($checkstatus){
+             $status = $checkstatus->estatus;
+         }else{
+             $status = "";
+         }
+        return $this->sendResponseWithData($status,"User Status Chnage Successfully");
     }
 
     public function getFollower(Request $request){
