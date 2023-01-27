@@ -116,13 +116,12 @@ class User extends Authenticatable
     }
     
     public function unfollow(User $user) {
-        $check =UserFollower::where('following_id',auth()->id())->where('user_id',$user->id)->first();
+        $check =UserFollower::where('following_id',auth()->id())->where('user_id',$user->id)->where('estatus',1)->first();
         if(!$check){
             UserFollower::where('user_id',auth()->id())->where('following_id',$user->id)->delete();
         }else{
             $UserFollstatus = UserFollower::where('user_id',auth()->id())->where('following_id',$user->id)->first();
             if($UserFollstatus){
-
                 $UserFollstatus->estatus = 2;
                 $UserFollstatus->save();
             }
