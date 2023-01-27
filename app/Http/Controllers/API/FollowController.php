@@ -36,6 +36,17 @@ class FollowController extends BaseController
                     $UserFollstatus->save();
                 }
             }
+        }elseif($request->follow_status == 5){
+            $check = UserFollower::where('following_id',auth()->id())->where('user_id',$userToFollow->id)->first();
+            if(!$check){
+                UserFollower::where('user_id',auth()->id())->where('following_id',$userToFollow->id)->delete();
+            }else{
+                $UserFollstatus = UserFollower::where('user_id',auth()->id())->where('following_id',$userToFollow->id)->first();
+                if($UserFollstatus){
+                    $UserFollstatus->estatus = 2;
+                    $UserFollstatus->save();
+                }
+            }
         }else{
             if($userToFollow){
                 $UserFollower =  UserFollower::where('following_id',auth()->id())->where('user_id',$userToFollow->id)->first();

@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="tab-pane fade show active table-responsive" id="ALL_payments_tab">
-                            <table id="Order" class="table zero-configuration customNewtable" style="width:100%">
+                            <table id="Payment" class="table zero-configuration customNewtable" style="width:100%">
                                 <thead>
                                 <tr>
                                     
@@ -79,7 +79,7 @@
                                 </thead>
                                 <tfoot>
                                 <tr>
-                                    
+
                                     <th>No</th>
                                     <th>Experience</th>
                                     <th>Booking</th>
@@ -166,7 +166,7 @@ function get_payments_page_tabType(){
 }
 
 $(document).ready(function() {
-    order_table('',true);
+    payment_table('',true);
     $('#host_filter').select2({
         width: '100%',
         placeholder: "Select User",
@@ -174,7 +174,7 @@ $(document).ready(function() {
     });
 
 
-    $('#Order tbody').on('click', 'td.details-control', function () {
+    $('#Payment tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
 
@@ -189,32 +189,7 @@ $(document).ready(function() {
         }
     });
 
-    //$(".orderNoteBox").on('change cut paste', function(e) {
-    $(document).on("change",".orderNoteBox",function() { 
-        
-        
-        
-        var orderNote = $(this).val();
-        var orderid = $(this).attr('data-id');
-        $('#ordercoverspin').show();
-        $.ajax ({
-            type:"POST",
-            url: '{{ url("admin/updateOrdernote") }}',
-            data: { _token: '{{ csrf_token() }}',orderid: orderid, orderNote: orderNote},
-            
-            success: function(res) {
-                if(res['status'] == 200){
-                    toastr.success("Order Note Updated",'Success',{timeOut: 5000});
-                } else {
-                    toastr.error("Please try again",'Error',{timeOut: 5000});
-                }
-            },
-            complete: function(){
-                $('#ordercoverspin').hide();
-                order_table('',true);
-            }
-        });
-    });
+
 });
 
 function format ( d ) {
@@ -222,16 +197,16 @@ function format ( d ) {
     return d.table1;
 }
 
-function order_table(tab_type='',is_clearState=false){
+function payment_table(tab_type='',is_clearState=false){
     if(is_clearState){
-        $('#Order').DataTable().state.clear();
+        $('#Payment').DataTable().state.clear();
     }
 
     var host_filter = $("#host_filter").val();
     var start_date = $("#start_date").val();
     var end_date = $("#end_date").val();
 
-    table = $('#Order').DataTable({
+    table = $('#Payment').DataTable({
         "destroy": true,
         "processing": true,
         "serverSide": true,
@@ -244,7 +219,7 @@ function order_table(tab_type='',is_clearState=false){
             }
         },
         "ajax":{
-            "url": "{{ url('admin/allOrderlist') }}",
+            "url": "{{ url('admin/allpaymentslist') }}",
             "dataType": "json",
             "type": "POST",
             "data":{ _token: '{{ csrf_token() }}',host_filter,start_date,end_date},
@@ -277,17 +252,14 @@ function order_table(tab_type='',is_clearState=false){
 
 $('body').on('change', '.comman-filter', function () {
     var tab_type = $(this).attr('data-tab');
-    order_table(tab_type,true);
+    payment_table(tab_type,true);
 });
 
-function editOrder(orderId) {
-    var url = "{{ url('admin/viewOrder') }}" + "/" + orderId;
-    window.open(url,"_blank");
-}
+
 
 $('body').on('click', '.payment_page_tabs', function () {
     var tab_type = $(this).attr('data-tab');
-    order_table(tab_type,true);
+    payment_table(tab_type,true);
 });
 
 $('body').on('click', '#ApproveReturnRequestBtn', function () {
@@ -308,7 +280,7 @@ $('body').on('click', '#ApproveReturnRequestBtn', function () {
         },
         complete: function(){
             $('#ordercoverspin').hide();
-            order_table(tab_type);
+            payment_table(tab_type);
         },
         error: function() {
             toastr.error("Please try again",'Error',{timeOut: 5000});
@@ -334,35 +306,12 @@ $('body').on('click', '#RejectReturnRequestBtn', function () {
         },
         complete: function(){
             $('#ordercoverspin').hide();
-            order_table(tab_type);
+            payment_table(tab_type);
         },
         error: function() {
             toastr.error("Please try again",'Error',{timeOut: 5000});
         }
     });
-});
-
-function getInvoiceData(order_id) {
-    var url = "{{ url('admin/payments/pdf') }}" + "/" + order_id;
-    window.open(url, "_blank");
-}
-
-$('body').on('click', '#VideoBtn', function () {
-    var order_id = $(this).attr('data-id');
-    $.get("{{ url('admin/payments') }}" +'/' + order_id +'/play_video', function (res) {
-        console.log(res);
-        $('#ReturnReqVideoModal').find('#ReturnReqVideo').attr('src',res['order_return_video']);
-        // $('#ReturnReqVideoModal').find('#ReturnReqVideo').attr('type',res['type']);
-    })
-});
-
-$('#ReturnReqVideoModal').on('hidden.bs.modal', function () {
-    $(this).find("#ReturnReqVideo").attr('src','');
-});
-
-$('body').on('click', '#editTrackingBtn', function () {
-    var order_id = $(this).attr('data-id');
-    $('#order_id').val(order_id);
 });
 
 
