@@ -27,20 +27,16 @@
 
                         <div class="custom-tab-1">
                             <ul class="nav nav-tabs mb-3">
-                                <li class="nav-item payment_page_tabs" data-tab="ALL_payments_tab"><a class="nav-link active show" data-toggle="tab" href="">ALL</a>
+                                <li class="nav-item payment_page_tabs" data-tab="next_payments_tab"><a class="nav-link active show" data-toggle="tab" href="">Next Payment</a>
                                 </li>
-                                <li class="nav-item payment_page_tabs" data-tab="NewOrder_payments_tab"><a class="nav-link" data-toggle="tab" href="">New Order</a>
+                                <li class="nav-item payment_page_tabs" data-tab="last_payments_tab"><a class="nav-link" data-toggle="tab" href="">Last Payment</a>
                                 </li>
-                                <li class="nav-item payment_page_tabs" data-tab="OutforDelivery_payments_tab"><a class="nav-link" data-toggle="tab" href="">Shipped</a>
+                                <li class="nav-item payment_page_tabs" data-tab="past_payments_tab"><a class="nav-link" data-toggle="tab" href="">Past Payment</a>
                                 </li>
-                                <li class="nav-item payment_page_tabs" data-tab="Delivered_payments_tab"><a class="nav-link" data-toggle="tab" href="">Delivered</a>
+                                <li class="nav-item payment_page_tabs" data-tab="upcoming_payments_tab"><a class="nav-link" data-toggle="tab" href="">Upcoming Payment</a>
                                 </li>
-                                <li class="nav-item payment_page_tabs" data-tab="ReturnRequest_payments_tab"><a class="nav-link" data-toggle="tab" href="">Return Request</a>
-                                </li>
-                                <li class="nav-item payment_page_tabs" data-tab="Returned_payments_tab"><a class="nav-link" data-toggle="tab" href="">Returned</a>
-                                </li>
-                                <li class="nav-item payment_page_tabs" data-tab="Cancelled_payments_tab"><a class="nav-link" data-toggle="tab" href="">Cancelled</a>
-                                </li>
+                               
+                              
                             </ul>
                         </div>
                         <div class="action-section">
@@ -67,25 +63,17 @@
                             <table id="Payment" class="table zero-configuration customNewtable" style="width:100%">
                                 <thead>
                                 <tr>
-                                    
                                     <th>No</th>
-                                    <th>Experience</th>
-                                    <th>Booking</th>
-                                    <th>Customer</th>
-                                    <th>Host</th>
-                                    <th>Booking Date/Slot</th>
+                                    <th>User</th>
+                                    <th>Amount</th>
                                     <th>Register Date</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
-
                                     <th>No</th>
-                                    <th>Experience</th>
-                                    <th>Booking</th>
-                                    <th>Customer</th>
-                                    <th>Host</th>
-                                    <th>Booking Date/Slot</th>
+                                    <th>User</th>
+                                    <th>Amount</th>
                                     <th>Register Date</th>
                                 </tr>
                                 </tfoot>
@@ -166,7 +154,8 @@ function get_payments_page_tabType(){
 }
 
 $(document).ready(function() {
-    payment_table('',true);
+    
+    payment_table('next_payments_tab',true);
     $('#host_filter').select2({
         width: '100%',
         placeholder: "Select User",
@@ -222,7 +211,7 @@ function payment_table(tab_type='',is_clearState=false){
             "url": "{{ url('admin/allpaymentslist') }}",
             "dataType": "json",
             "type": "POST",
-            "data":{ _token: '{{ csrf_token() }}',host_filter,start_date,end_date},
+            "data":{ _token: '{{ csrf_token() }}',tab_type,host_filter,start_date,end_date},
             // "dataSrc": ""
         },
         'columnDefs': [
@@ -230,9 +219,7 @@ function payment_table(tab_type='',is_clearState=false){
             { "width": "150px", "targets": 1 },
             { "width": "130px", "targets": 2 },
             { "width": "110px", "targets": 3 },
-            { "width": "110px", "targets": 4 },
-            { "width": "150px", "targets": 5 },
-            { "width": "150px", "targets": 6 }
+       
         ],
         "columns": [
             {data: 'id', name: 'id', class: "text-center", orderable: false ,
@@ -240,11 +227,8 @@ function payment_table(tab_type='',is_clearState=false){
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            {data: 'experience', name: 'experience', orderable: false, class: "text-left multirow"},
-            {data: 'order_info', name: 'order_info', orderable: false, class: "text-left multirow"},
-            {data: 'customer_info', name: 'customer_info', orderable: false, class: "text-center multirow"},
-            {data: 'host', name: 'host', orderable: false, class: "text-center multirow"},
-            {data: 'booking', name: 'booking', orderable: false, class: "text-left multirow"},
+            {data: 'user', name: 'user', orderable: false, class: "text-left multirow"},
+            {data: 'amount', name: 'amount', orderable: false, class: "text-left multirow"},
             {data: 'created_at', name: 'created_at', orderable: false, class: "text-left multirow"},
         ]
     });

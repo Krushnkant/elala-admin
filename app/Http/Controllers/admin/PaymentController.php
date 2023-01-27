@@ -24,36 +24,25 @@ class PaymentController extends Controller
         if ($request->ajax()) {
             $columns = array(
                 0 =>'id',
-                1 =>'experience',
-                2 =>'order_info',
-                3=> 'customer_info',
-                4=> 'host',
-                5=> 'note',
-                6=> 'created_at'
+                1 =>'user',
+                2 =>'amount',
+                3 => 'created_at'
             );
 
             $tab_type = $request->tab_type;
-            if ($tab_type == "NewOrder_orders_tab"){
-                $order_status = [1];
+            if ($tab_type == "next_payments_tab"){
+                $order_status = "next";
             }
-            elseif ($tab_type == "OutforDelivery_orders_tab"){
-                $order_status = [2];
+            elseif ($tab_type == "last_payments_tab"){
+                $order_status = "last";
             }
-            elseif ($tab_type == "Delivered_orders_tab"){
-                $order_status = [3];
+            elseif ($tab_type == "past_payments_tab"){
+                $order_status = "past";
             }
-            elseif ($tab_type == "ReturnRequest_orders_tab"){
-                $order_status = [4,5];
+            elseif ($tab_type == "upcoming_payments_tab"){
+                $order_status = "upcoming";
             }
-            elseif ($tab_type == "Returned_orders_tab"){
-                $order_status = [6];
-            }
-            elseif ($tab_type == "Cancelled_orders_tab"){
-                $order_status = [7,8];
-            }
-
-            
-
+          
             $limit = $request->input('length');
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
@@ -64,25 +53,44 @@ class PaymentController extends Controller
                 $dir = 'desc';
             }
 
-            $totalData = Order::count();
-            if (isset($order_status)){
-                $totalData = Order::whereIn('order_status',$order_status)->count();
+            $totalData = SupplierPayments::count();
+            if (isset($order_status) && $order_status == "next"){
+                $totalData = SupplierPayments::whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->groupBy('host_id')->orderBy('payment_date','ASC')->count();
+            }
+            if (isset($order_status) && $order_status == "last"){
+                $totalData = SupplierPayments::whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->groupBy('host_id')->orderBy('payment_date','ASC')->count();
+            }
+            if (isset($order_status) && $order_status == "past"){
+                $totalData = SupplierPayments::whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->orderBy('payment_date','ASC')->count();
+            }
+            if (isset($order_status) && $order_status == "upcoming"){
+                $totalData = SupplierPayments::whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->orderBy('payment_date','ASC')->count();
             }
             $totalFiltered = $totalData;
             if(empty($request->input('search.value')) &&  empty($request->host_filter)  && empty($request->start_date) && empty($request->end_date))
             {
-                $Orders = Order::with('experience.user','orderslot');
-                if (isset($order_status)){
-                    $Orders = $Orders->whereIn('order_status',$order_status);
+                $Orders = SupplierPayments::with('user');
+                if (isset($order_status) && $order_status == "next"){
+                    $Orders = $Orders->whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->groupBy('host_id')->orderBy('payment_date','ASC');
+                }
+                if (isset($order_status) && $order_status == "last"){
+                    $Orders = $Orders->whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->groupBy('host_id')->orderBy('payment_date','ASC');
+                }
+                if (isset($order_status) && $order_status == "past"){
+                    $Orders = $Orders->whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->orderBy('payment_date','ASC');
+                }
+                if (isset($order_status) && $order_status == "upcoming"){
+                    $Orders = $Orders->whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->orderBy('payment_date','ASC');
                 }
                 $Orders = $Orders->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
-                    ->get();  
+                    ->get();
+                      
             }
             else {
                 $search = $request->input('search.value');
-                $Orders = Order::with('experience.user','orderslot');
+                $Orders = SupplierPayments::with('user');
                 
                 if (isset($request->host_filter) && $request->host_filter!=""){
                     $host_filter = $request->host_filter;
@@ -93,12 +101,21 @@ class PaymentController extends Controller
                     $end_date = $request->end_date;
                     $Orders = $Orders->whereRaw("DATE(booking_date) between '".$start_date."' and '".$end_date."'");
                 }
-                if (isset($order_status)){
-                    $Orders = $Orders->whereIn('order_status',$order_status);
+                if (isset($order_status) && $order_status == "next"){
+                    $Orders = $Orders->whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->groupBy('host_id')->orderBy('payment_date','ASC');
+                }
+                if (isset($order_status) && $order_status == "last"){
+                    $Orders = $Orders->whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->groupBy('host_id')->orderBy('payment_date','ASC');
+                }
+                if (isset($order_status) && $order_status == "past"){
+                    $Orders = $Orders->whereDate('payment_date','<=', Carbon::today())->where('payment_status', 1)->orderBy('payment_date','ASC');
+                }
+                if (isset($order_status) && $order_status == "upcoming"){
+                    $Orders = $Orders->whereDate('payment_date','>=', Carbon::today())->where('payment_status', 0)->orderBy('payment_date','ASC');
                 }
                 $Orders = $Orders->where(function($query) use($search){
-                    $query->where('custom_orderid','LIKE',"%{$search}%")
-                        ->orWhere('payment_type', 'LIKE',"%{$search}%");
+                    $query->where('id','LIKE',"%{$search}%")
+                        ->orWhere('total_amt', 'LIKE',"%{$search}%");
                     });
                     
                     $Orders = $Orders->offset($start)
@@ -115,7 +132,7 @@ class PaymentController extends Controller
                 foreach ($Orders as $Order)
                 {
                     //dd($Order->orderslot);
-                    $user_info = User::find($Order->user_id);
+                    $user_info = User::find($Order->host_id);
                     // dump($user_info);
                     $page_id = ProjectPage::where('route_url','admin.orders.list')->pluck('id')->first();
                     if(isset($user_info->profile_pic) && $user_info->profile_pic!=null){
@@ -125,28 +142,11 @@ class PaymentController extends Controller
                         $profile_pic = url('images/default_avatar.jpg');
                     }
 
-                    if(isset($Order->experience->user->profile_pic) && $Order->experience->user->profile_pic!=null){
-                        $host_pic = $Order->experience->user->profile_pic;
-                    }
-                    else{
-                        $host_pic = url('images/default_avatar.jpg');
-                    }
+                 
 
-                    $time1 = Carbon::parse($Order->orderslot->time);
-                    $endTime = $time1->addMinutes($Order->experience->duration);
-                    $end_time = $endTime->format('H:i:s');
-
-                    $order_info = '<span>Booking ID: '.$Order->custom_orderid.'</span>';
-                    $order_info .= '<span>Total Order Cost: '.$Order->total_amount.'</span>';
-                    $order_info .= '<span>Total Member: '.$Order->total_member.'</span>';
-                    $booking_date = '<span><b> Date : </b>'.date('d-m-Y', strtotime($Order->booking_date)).'</span>';
-                    $booking_date .= '<span><b> Slot : </b>'.$Order->orderslot->time.' to '.$end_time.'</span>';
-                    $nestedData['experience'] = $Order->experience->title;
-                    $nestedData['order_info'] = $order_info;
-                    $nestedData['customer_info'] = '<span><img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$user_info->full_name.'</span>';
-                    $nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$Order->experience->user->full_name.'</span>';;
-                    $nestedData['booking'] = $booking_date;
-                    $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($Order->created_at));;
+                    $nestedData['user'] = '<span><img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$user_info->full_name.'</span>';
+                    $nestedData['amount'] = $Order->total_amt;
+                    $nestedData['created_at'] = date('d-m-Y', strtotime($Order->payment_date));
                     $data[] = $nestedData;
                 }
                 // dd();

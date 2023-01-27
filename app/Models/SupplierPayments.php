@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SupplierPayments extends Model
 {
     use HasFactory;
+    public function user(){
+        return $this->hasOne(order::class,'id','host_id');
+    }
 }

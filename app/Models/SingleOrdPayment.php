@@ -10,6 +10,6 @@ class SingleOrdPayment extends Model
     use HasFactory;
 
     public function order(){
-        return $this->hasOne(order::class,'id','order_id');
+        return $this->hasOne(Order::class,'id','order_id');
     }
 }
