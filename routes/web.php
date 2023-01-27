@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController
     ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController,CancellationPolicyController
     ,OrderController,TeamMemberController,TestimonialController};
-use App\Http\Controllers\admin\{ExperienceController,ReviewController,InfopageController,FaqController,PostController};
+use App\Http\Controllers\admin\{ExperienceController,ReviewController,InfopageController,FaqController,PostController,PaymentController};
 
 use Illuminate\Support\Facades\Artisan;
 /*
@@ -181,6 +181,10 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
      //login log route
      Route::get('loginlog',[UserController::class,'loginlog'])->name('loginlog.list');
      Route::post('allloginloglist',[UserController::class,'allloginloglist'])->name('allloginloglist');
+
+     //Payment
+    Route::get('payments',[PaymentController::class,'index'])->name('payments.list');
+    Route::post('allpaymentslist',[PaymentController::class,'allpaymentslist'])->name('allpaymentslist');
     
 });
 

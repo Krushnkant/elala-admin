@@ -254,6 +254,17 @@ class ProjectPageSeeder extends Seeder
             'sr_no' => 101
         ]);
 
+        ProjectPage::create([
+            'id' => 24,
+            'parent_menu' => 0,
+            'label' => 'Payments',
+            'icon_class' => 'fa fa-list-alt',
+            'route_url' => 'admin.payments.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.payments.list,admin.allpaymentslist',
+            'sr_no' => 101
+        ]);
+
 
         
 
