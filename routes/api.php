@@ -120,4 +120,5 @@ Route::post('contact', [OtherController::class, 'contact']);
 Route::get('getFaq', [OtherController::class, 'getFaq']);
 
 Route::post('allPost', [PostController::class, 'get_all_posts']);
+Route::post('viewProfile', [UserController::class, 'viewProfile']);
 

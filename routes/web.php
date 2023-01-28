@@ -185,6 +185,10 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
      //Payment
     Route::get('payments',[PaymentController::class,'index'])->name('payments.list');
     Route::post('allpaymentslist',[PaymentController::class,'allpaymentslist'])->name('allpaymentslist');
+    Route::get('payment/{id}/view',[PaymentController::class,'vieworder'])->name('posts.view');
+    Route::post('allpaymentorderslist',[PaymentController::class,'allpaymentorderslist'])->name('allpaymentorderslist');
+
+    Route::post('paymentsuccess',[PaymentController::class,'paymentsuccess'])->name('paymentsuccess');
     
 });
 

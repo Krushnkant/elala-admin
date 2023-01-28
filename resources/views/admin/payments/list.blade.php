@@ -50,31 +50,38 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 input-group">
-                                    <input type="text" class="form-control custom_date_picker comman-filter" id="start_date" name="start_date" placeholder="Start Date" data-date-format="yyyy-mm-dd" data-date-end-date="0d"> <span class="input-group-append"><span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span></span>
+                                    <input type="text" class="form-control custom_date_picker comman-filter" id="start_date" name="start_date" placeholder="Start Date" data-date-format="yyyy-mm-dd" > <span class="input-group-append"><span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span></span>
                                 </div>
                                 <div class="col-md-3 input-group">
-                                    <input type="text" class="form-control custom_date_picker comman-filter" id="end_date" name="end_date" placeholder="End Date" data-date-format="yyyy-mm-dd" data-date-end-date="0d"> <span class="input-group-append"><span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span></span>
+                                    <input type="text" class="form-control custom_date_picker comman-filter" id="end_date" name="end_date" placeholder="End Date" data-date-format="yyyy-mm-dd" > <span class="input-group-append"><span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span></span>
                                 </div>
-                                
+                                <div class="col-md-3 input-group">
+                                <button style="margin-bottom: 10px" class="btn btn-primary delete_all" data-url="{{ url('admin/paymentsuccess') }}">Payment All Selected</button> 
                             </div>
                         </div>
+                        </div>
+                        
 
                         <div class="tab-pane fade show active table-responsive" id="ALL_payments_tab">
                             <table id="Payment" class="table zero-configuration customNewtable" style="width:100%">
                                 <thead>
                                 <tr>
+                                    <th><input type="checkbox" id="master"></th>
                                     <th>No</th>
                                     <th>User</th>
                                     <th>Amount</th>
-                                    <th>Register Date</th>
+                                    <th>Payment Date</th>
+                                    <th>Order</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
+                                    <th></th>
                                     <th>No</th>
                                     <th>User</th>
                                     <th>Amount</th>
-                                    <th>Register Date</th>
+                                    <th>Payment Date</th>
+                                    <th>Order</th>
                                 </tr>
                                 </tfoot>
                             </table>
@@ -138,6 +145,97 @@
 @endsection
 
 @section('js')
+
+<script type="text/javascript">  
+    $(document).ready(function () {  
+  
+        $('#master').on('click', function(e) {  
+         if($(this).is(':checked',true))    
+         {  
+            $(".sub_chk").prop('checked', true);    
+         } else {    
+            $(".sub_chk").prop('checked',false);    
+         }    
+        });  
+  
+        $('.delete_all').on('click', function(e) {  
+  
+            var allVals = [];    
+            $(".sub_chk:checked").each(function() {    
+                allVals.push($(this).attr('data-id'));  
+            });    
+  
+            if(allVals.length <=0)    
+            {    
+                alert("Please select row.");    
+            }  else {    
+  
+                var check = confirm("Are you sure you want to delete this row?");    
+                if(check == true){    
+  
+                    var join_selected_values = allVals.join(",");   
+                   
+                    $.ajax({  
+                        url: $(this).data('url'),  
+                        type: 'post',  
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},  
+                        data: 'ids='+join_selected_values,  
+                        success: function (data) {  
+                            console.log($data);
+                            
+                            if(data.status == 200){
+                 
+                                payment_table("",true);
+                            // redrawAfterDelete();
+                            toastr.success("Payment Successfully",'Success',{timeOut: 5000});
+                    }
+                        },  
+                        error: function (data) {  
+                            console.log(data.responseText); 
+                        }  
+                    });  
+  
+                  $.each(allVals, function( index, value ) {  
+                      $('table tr').filter("[data-row-id='" + value + "']").remove();  
+                  });  
+                }    
+            }    
+        });  
+  
+        // $('[data-toggle=confirmation]').confirmation({  
+        //     rootSelector: '[data-toggle=confirmation]',  
+        //     onConfirm: function (event, element) {  
+        //         element.trigger('confirm');  
+        //     }  
+        // });  
+  
+        $(document).on('confirm', function (e) {  
+            var eele = e.target;  
+            e.preventDefault();  
+  
+            $.ajax({  
+                url: ele.href,  
+                type: 'Post',  
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},  
+                success: function (data) {  
+                    if (data['success']) {  
+                        $("#" + data['tr']).slideUp("slow");  
+                        alert(data['success']);  
+                    } else if (data['error']) {  
+                        alert(data['error']);  
+                    } else {  
+                        alert('Whoops Something went wrong!!');  
+                    }  
+                },  
+                error: function (data) {  
+                    alert(data.responseText);  
+                }  
+            });  
+  
+            return false;  
+        });  
+    });  
+</script>  
 <!-- payments JS start -->
 <script type="text/javascript">
 var table;
@@ -219,23 +317,33 @@ function payment_table(tab_type='',is_clearState=false){
             { "width": "150px", "targets": 1 },
             { "width": "130px", "targets": 2 },
             { "width": "110px", "targets": 3 },
+            { "width": "110px", "targets": 4 },
+            { "width": "110px", "targets": 5 },
        
         ],
         "columns": [
+            {data: 'checkbox', name: 'checkbox', orderable: false, class: "text-left multirow"},
             {data: 'id', name: 'id', class: "text-center", orderable: false ,
                 render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
+            
             {data: 'user', name: 'user', orderable: false, class: "text-left multirow"},
             {data: 'amount', name: 'amount', orderable: false, class: "text-left multirow"},
             {data: 'created_at', name: 'created_at', orderable: false, class: "text-left multirow"},
+            {data: 'action', name: 'action', orderable: false, class: "text-left multirow"},
         ]
     });
 }
 
 $('body').on('change', '.comman-filter', function () {
-    var tab_type = $(this).attr('data-tab');
+    $('.payment_page_tabs').each(function() {
+        var thi = $(this);
+        if($(thi).find('a').hasClass('show')){
+            tab_type = $(thi).attr('data-tab');
+        }
+    });
     payment_table(tab_type,true);
 });
 
@@ -298,7 +406,14 @@ $('body').on('click', '#RejectReturnRequestBtn', function () {
     });
 });
 
-
+$('body').on('click', '#viewOrderBtn', function () {
+    var payment_id = $(this).attr('data-id');
+    var url = "{{ url('admin/payment') }}" + "/" + payment_id + "/view";
+    window.open(url,"_blank");
+});
 </script>
+
+
+
 <!-- payments JS end -->
 @endsection

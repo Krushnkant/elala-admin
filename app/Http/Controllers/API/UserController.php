@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User,Settings,Bank};
+use App\Models\ {User,Settings,Bank,UserFollower,Post,Review};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -170,6 +170,76 @@ class UserController extends BaseController
         $user_id = Auth::user()->id;
         $users = User::where('id','<>',$user_id)->where('role',3)->where('is_completed',1)->get(['id','full_name','profile_pic']);
         return $this->sendResponseWithData($users,"Users Retrieved Successfully.");
+    }
+
+    public function viewProfile(Request $request){
+        $messages = [
+            'profile_id.required' =>'Please provide a profile id',
+        ];
+        $validator = Validator::make($request->all(), [
+            'profile_id' => 'required',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+        //$user_id = Auth::user()->id;
+        $profile_id = $request->profile_id;
+
+        $user = User::where('id',$profile_id)->first();
+
+
+        $myreviews = Review::with('user')->where('customer_id',$profile_id)->where('estatus',1)->get();
+        $myreviews_arr = array();
+        foreach ($myreviews as $review){
+            $temp = array();
+            $temp['id'] = $review->id;
+            $temp['description'] = $review->description;
+            $temp['rating'] = $review->rating;
+            $temp['full_name'] = $review->user->full_name;
+            $temp['profile_image'] = isset($review->user->profile_pic)?$review->user->profile_pic:"";
+            $temp['created_at'] = $review->created_at;
+            array_push($myreviews_arr,$temp);
+        }
+
+        $experiencereviews = Review::with('user')->WhereHas('experience',function ($mainQuery) use($profile_id) {
+            $mainQuery->where('user_id',$profile_id);
+        })->where('estatus',1)->get();
+        $experiencereviews_arr = array();
+        foreach ($experiencereviews as $review){    
+            $temp = array();
+            $temp['id'] = $review->id;
+            $temp['description'] = $review->description;
+            $temp['rating'] = $review->rating;
+            $temp['full_name'] = $review->user->full_name;
+            $temp['profile_image'] = isset($review->user->profile_pic)?$review->user->profile_pic:"";
+            $temp['created_at'] = $review->created_at;
+            array_push($experiencereviews_arr,$temp);
+        }
+
+        $userdata['full_name'] = $user->full_name;
+        $userdata['email'] = $user->email;
+        $userdata['mobile_no'] = $user->mobile_no;
+        $userdata['profile_pic'] = $user->profile_pic;
+        $userdata['gender'] = $user->gender;
+        $userdata['bio'] = $user->bio;
+        $userdata['is_private'] = $user->is_private;
+        $userdata['created_at'] = $user->created_at;
+        $userdata['post'] =  Post::where('user_id',$profile_id)->where('estatus',1)->get()->count();
+        $userdata['following'] =  UserFollower::where('user_id',$profile_id)->where('estatus',1)->get()->count();
+        $userdata['follower'] =  UserFollower::where('following_id',$profile_id)->where('estatus',1)->get()->count();
+        if(isset(Auth::user()->id)) {
+            $userdata['is_follow'] = is_follower_random(Auth::user()->id,$profile_id);
+        }else{
+            $userdata['is_follow'] = "";
+        }
+        $userdata['rating'] = hostRating($profile_id);
+        $userdata['rating_member'] = hostReviewMember($profile_id);
+        $userdata['my_reviews'] = $myreviews_arr;
+        $userdata['experience_reviews'] = $experiencereviews_arr;
+
+        return $this->sendResponseWithData($userdata,"profile Retrieved Successfully.");
+        
     }
 
     

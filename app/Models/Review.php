@@ -12,4 +12,8 @@ class Review extends Model
     public function user(){
         return $this->hasOne(User::class,'id','customer_id');
     }
+
+    public function experience(){
+        return $this->hasOne(Experience::class,'id','experience_id');
+    }
 }
