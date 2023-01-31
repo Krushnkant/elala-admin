@@ -933,7 +933,7 @@ class ExperienceController extends BaseController
             $temp['id'] = $review->id;
             $temp['description'] = $review->description;
             $temp['rating'] = $review->rating;
-            $temp['user_id'] = $review->user_id;
+            $temp['user_id'] = $review->customer_id;
             $temp['full_name'] = $review->user->full_name;
             $temp['profile_image'] = isset($review->user->profile_pic)?$review->user->profile_pic:"";
             $temp['created_at'] = $review->created_at;
