@@ -153,4 +153,6 @@ class User extends Authenticatable
     public function followers() {
         return $this->hasManyThrough(User::class, UserFollower::class, 'following_id', 'id', 'id', 'user_id');
     }
+
+    
 }

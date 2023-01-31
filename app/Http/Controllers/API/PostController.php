@@ -120,11 +120,26 @@ class PostController extends BaseController
 
     public function get_my_posts(Request $request){
         $limit = isset($request->limit)?$request->limit:20;
-        $user = User::where('id',Auth::user()->id)->where('estatus',1)->first();
+        if(isset(Auth::user()->id)) {
+            $user_id = Auth::user()->id;
+        }else{
+            $user_id = 0;
+        }
+        $profile_id = isset($request->profile_id)?$request->profile_id:$user_id;
+        
+        $user = User::where('id',$profile_id)->where('estatus',1)->first();
         if (!$user){
             return $this->sendError("User Not Exist", "Not Found Error", []);
         }
-        $posts = Post::with('posttags.user')->where('user_id',Auth::user()->id)->orderBy('created_at','DESC')->paginate($limit);
+        if($profile_id == $user_id){
+            $posts = Post::with('posttags.user')->where('user_id',$profile_id);
+            $posts = $posts->orderBy('created_at','DESC')->paginate($limit);
+        }else{
+            if(isFriend($profile_id,$user_id)){
+                  
+            }
+        }
+        
         $posts_arr = array();
         foreach ($posts as $post){
             $tag_array = array();
@@ -139,8 +154,8 @@ class PostController extends BaseController
             $temp['id'] = $post->id;
             $temp['description'] = $post->description;
             $temp['is_private'] = $post->is_private;
-            $temp['is_like'] = is_like($post->id)?1:0;
-            $temp['is_commant'] = is_commant($post->id)?1:0;
+            $temp['is_like'] = is_like($post->id,$profile_id)?1:0;
+            $temp['is_commant'] = is_commant($post->id,$profile_id)?1:0;
             $temp['posttags'] = $tag_array;
             $temp['postmedia'] = $post->postmedia;
             $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag:null;

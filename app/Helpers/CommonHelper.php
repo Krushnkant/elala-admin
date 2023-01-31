@@ -267,3 +267,12 @@ function is_follower_random($user_id,$follower_id){
        return $status = "";
     }
 }
+
+function isFriend($user_id,$following_id) {
+    $checkstatus = \App\Models\UserFollower::where(['user_id'=>$user_id,'following_id'=>$following_id])->orwhere(['user_id'=>$following_id,'following_id'=>$user_id])->where('follow_each_other',1)->first();
+    if($checkstatus){
+        return $status = $checkstatus->follow_each_other;
+     }else{
+        return $status = 0;
+     }
+}
