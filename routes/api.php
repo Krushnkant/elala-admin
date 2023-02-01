@@ -112,7 +112,7 @@ Route::get('experienceDetails/{id}', [ExperienceController::class, 'experienceDe
 Route::get('getRelatedExperiences/{id}', [ExperienceController::class, 'getRelatedExperiences']);
 Route::get('getReviewExperiences/{id}', [ExperienceController::class, 'getReviewExperiences']);
 Route::get('getAvailableTimeExperiences/{id}/{day}', [ExperienceController::class, 'getAvailableTimeExperiences']);
-Route::get('getFilterExperiences', [ExperienceController::class, 'getFilterExperiences']);
+Route::post('getFilterExperiences', [ExperienceController::class, 'getFilterExperiences']);
 
 Route::get('getTeamMember', [OtherController::class, 'getTeamMember']);
 Route::get('getTestimonial', [OtherController::class, 'getTestimonial']);

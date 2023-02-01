@@ -977,6 +977,12 @@ class ExperienceController extends BaseController
                     $query->whereIn('language_id',$language);
                 });
             }
+            if (isset($request->day) && $request->day!=""){
+                $days = explode(",",$request->days);
+                $experiences = $experiences->whereHas('scheduletime',function ($query) use($request, $days) {
+                    $query->whereIn('day',$days);
+                });
+            }
             if (isset($request->categories) && $request->categories!=""){
                 $category_ids = explode(",",$request->categories);
                 $experiences = $experiences->whereIn('category_id',$category_ids);
@@ -985,7 +991,16 @@ class ExperienceController extends BaseController
                 $experiences = $experiences->where('type',$request->activity_type);
             }
             if (isset($request->city) && $request->city!=""){
-                $experiences = $experiences->where('type',$request->city);
+                $city_ids = explode(",",$request->city);
+                $experiences = $experiences->whereIn('city_id',$city_ids);
+            }
+            if (isset($request->state) && $request->state!=""){
+                $state_ids = explode(",",$request->state);
+                $experiences = $experiences->whereIn('state_id',$state_ids);
+            }
+            if (isset($request->country) && $request->country!=""){
+                $country_ids = explode(",",$request->country);
+                $experiences = $experiences->whereIn('country_id',$country_ids);
             }
             if (isset($request->sort_order) && $request->sort_order=="asc"){
                 $experiences = $experiences->orderBy('individual_rate','ASC');
@@ -995,7 +1010,7 @@ class ExperienceController extends BaseController
                 $experiences = $experiences->orderBy('individual_rate','DESC');
             }
     
-            $experiences = $experiences->where('estatus',1)->get();
+            $experiences = $experiences->where('estatus',1)->paginate($limit);
         
         $experiences_arr = array();
         foreach ($experiences as $experience){
@@ -1009,11 +1024,11 @@ class ExperienceController extends BaseController
             $temp['image'] = isset($experience->media)?$experience->media:[];
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = $experience->review_total_user;
-            array_push($treding_experiences_arr,$temp);
+            array_push($experiences_arr,$temp);
         }
 
 
-        $data['experiences'] = $treding_experiences_arr;
+        $data['experiences'] = $experiences_arr;
         return $this->sendResponseWithData($data,"Experiences Retrieved Successfully.");
     }
 
