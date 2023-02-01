@@ -120,6 +120,7 @@ class PostController extends BaseController
 
     public function get_my_posts(Request $request){
         $limit = isset($request->limit)?$request->limit:20;
+        $posts_arr = array();
         if(isset(Auth::user()->id)) {
             $user_id = Auth::user()->id;
         }else{
@@ -135,7 +136,7 @@ class PostController extends BaseController
             $posts = Post::with('posttags.user')->where('user_id',$profile_id);
             $posts = $posts->orderBy('created_at','DESC')->paginate($limit);
 
-            $posts_arr = array();
+            
             foreach ($posts as $post){
                 $tag_array = array();
                 foreach($post->posttags as $posttag){
