@@ -122,3 +122,8 @@ Route::get('getFaq', [OtherController::class, 'getFaq']);
 Route::post('allPost', [PostController::class, 'get_all_posts']);
 Route::post('viewProfile', [UserController::class, 'viewProfile']);
 
+
+Route::post('getCountry', [UserController::class, 'getCountry']);
+Route::post('getState', [UserController::class, 'getState']);
+Route::post('getCity', [UserController::class, 'getCity']);
+

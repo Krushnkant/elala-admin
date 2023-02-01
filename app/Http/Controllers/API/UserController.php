@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User,Settings,Bank,UserFollower,Post,Review};
+use App\Models\ {User,Settings,Bank,UserFollower,Post,Review,Country,State,City};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -242,6 +242,19 @@ class UserController extends BaseController
         
     }
 
-    
+    public function getCountry(){
+        $countries = Country::get(['id','name','phonecode']);
+        return $this->sendResponseWithData($countries,"Country Retrieved Successfully.");
+    }
+
+    public function getState(Request $request){
+        $states = State::where('country_id',$request->country_id)->get(['id','name']);
+        return $this->sendResponseWithData($states,"Country Retrieved Successfully.");
+    }
+
+    public function getCity(Request $request){
+        $cities = City::where('state_id',$request->state_id)->get(['id','name']);
+        return $this->sendResponseWithData($cities,"Country Retrieved Successfully.");
+    }
 
 }
