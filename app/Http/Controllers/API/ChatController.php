@@ -126,9 +126,9 @@ class ChatController extends BaseController
 
         if ($id == $auth_id) {
             $get_all_chat = Chat::with(['receiver' => function ($query) use ($auth_id) {
-                $query->where('receiver_id', '!=', $auth_id);
+                $query->where('id', '!=', $auth_id);
             }, 'user' => function ($query1) use ($auth_id) {
-                $query1->where('user_id', '!=', $auth_id);
+                $query1->where('id', '!=', $auth_id);
             }])->where(function ($query) use ($auth_id) {
                 $query->where('user_id', $auth_id)
                     ->orWhere('receiver_id', $auth_id);
