@@ -248,12 +248,14 @@ class UserController extends BaseController
     }
 
     public function getState(Request $request){
-        $states = State::where('country_id',$request->country_id)->get(['id','name']);
+        $countries = explode(",",$request->country_id);
+        $states = State::whereIn('country_id',$countries)->get(['id','name']);
         return $this->sendResponseWithData($states,"Country Retrieved Successfully.");
     }
 
     public function getCity(Request $request){
-        $cities = City::where('state_id',$request->state_id)->get(['id','name']);
+        $states = explode(",",$request->state_id);
+        $cities = City::whereIn('state_id',$states)->get(['id','name']);
         return $this->sendResponseWithData($cities,"Country Retrieved Successfully.");
     }
 

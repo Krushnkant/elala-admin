@@ -34,6 +34,10 @@ class Experience extends Model
         return $this->hasMany(ExperienceCategoryAttribute::class,'experience_id','id');
     }
 
+    public function experiencelanguage(){
+        return $this->hasOne(ExperienceLanguage::class,'experience_id','id');
+    }
+
     
 
     // public function getCountryAttribute(){

@@ -758,8 +758,6 @@ class ExperienceController extends BaseController
         return $this->sendResponseWithData($data,"Other List Retrieved Successfully.");
     }
 
-    
-
 
     //////////////////
 
@@ -962,6 +960,61 @@ class ExperienceController extends BaseController
         }
 
         return $this->sendResponseWithData($times_arr,"Available Time Experience Retrieved Successfully.");
+    }
+
+    public function getFilterExperiences(Request $request){
+        
+        $limit = isset($request->limit)?$request->limit:20;
+        $experiences = Experience::with(['media' => function($q) {
+                $q->where('type', '=', 'img'); 
+            }]);
+            if (isset($request->min_price) && isset($request->max_price)){
+                $experiences = $experiences->whereBetween('individual_rate',[$request->min_price,$request->max_price]);
+            }
+            if (isset($request->language) && $request->language!=""){
+                $language = explode(",",$request->language);
+                $experiences = $experiences->whereHas('experiencelanguage',function ($query) use($request, $language) {
+                    $query->whereIn('language_id',$language);
+                });
+            }
+            if (isset($request->categories) && $request->categories!=""){
+                $category_ids = explode(",",$request->categories);
+                $experiences = $experiences->whereIn('category_id',$category_ids);
+            }
+            if (isset($request->activity_type) && $request->activity_type!=""){
+                $experiences = $experiences->where('type',$request->activity_type);
+            }
+            if (isset($request->city) && $request->city!=""){
+                $experiences = $experiences->where('type',$request->city);
+            }
+            if (isset($request->sort_order) && $request->sort_order=="asc"){
+                $experiences = $experiences->orderBy('individual_rate','ASC');
+            }
+    
+            if (isset($request->sort_order) && $request->sort_order=="desc"){
+                $experiences = $experiences->orderBy('individual_rate','DESC');
+            }
+    
+            $experiences = $experiences->where('estatus',1)->get();
+        
+        $experiences_arr = array();
+        foreach ($experiences as $experience){
+            $temp = array();
+            $temp['id'] = $experience->id;
+            $temp['slug'] = $experience->slug;
+            $temp['title'] = $experience->title;
+            $temp['location'] = $experience->location;
+            $temp['individual_rate'] = $experience->individual_rate;
+            $temp['duration'] = $experience->duration;
+            $temp['image'] = isset($experience->media)?$experience->media:[];
+            $temp['rating'] = $experience->rating;
+            $temp['rating_member'] = $experience->review_total_user;
+            array_push($treding_experiences_arr,$temp);
+        }
+
+
+        $data['experiences'] = $treding_experiences_arr;
+        return $this->sendResponseWithData($data,"Experiences Retrieved Successfully.");
     }
 
     
