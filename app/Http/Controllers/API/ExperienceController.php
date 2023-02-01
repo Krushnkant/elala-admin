@@ -992,15 +992,15 @@ class ExperienceController extends BaseController
             }
             if (isset($request->city) && $request->city!=""){
                 $city_ids = explode(",",$request->city);
-                $experiences = $experiences->whereIn('city_id',$city_ids);
+                $experiences = $experiences->whereIn('city',$city_ids);
             }
             if (isset($request->state) && $request->state!=""){
                 $state_ids = explode(",",$request->state);
-                $experiences = $experiences->whereIn('state_id',$state_ids);
+                $experiences = $experiences->whereIn('state',$state_ids);
             }
             if (isset($request->country) && $request->country!=""){
                 $country_ids = explode(",",$request->country);
-                $experiences = $experiences->whereIn('country_id',$country_ids);
+                $experiences = $experiences->whereIn('country',$country_ids);
             }
             if (isset($request->sort_order) && $request->sort_order=="asc"){
                 $experiences = $experiences->orderBy('individual_rate','ASC');
