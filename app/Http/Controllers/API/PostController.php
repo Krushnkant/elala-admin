@@ -134,38 +134,65 @@ class PostController extends BaseController
         if($profile_id == $user_id){
             $posts = Post::with('posttags.user')->where('user_id',$profile_id);
             $posts = $posts->orderBy('created_at','DESC')->paginate($limit);
+
+            $posts_arr = array();
+            foreach ($posts as $post){
+                $tag_array = array();
+                foreach($post->posttags as $posttag){
+                    if($posttag->user){
+                        $tag['id'] = $posttag->user->id;
+                        $tag['name'] = $posttag->user->full_name;
+                        array_push($tag_array,$tag);
+                    }    
+                }
+                $temp = array();
+                $temp['id'] = $post->id;
+                $temp['description'] = $post->description;
+                $temp['is_private'] = $post->is_private;
+                $temp['is_like'] = is_like($post->id,$profile_id)?1:0;
+                $temp['is_commant'] = is_commant($post->id,$profile_id)?1:0;
+                $temp['posttags'] = $tag_array;
+                $temp['postmedia'] = $post->postmedia;
+                $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag:null;
+                $temp['user'] = $post->user;
+                $temp['total_like'] = $post->total_like;
+                $temp['total_commant'] = $post->total_commant;
+                $temp['created_at'] = $post->created_at;
+                array_push($posts_arr,$temp);
+            }
         }else{
             if(isFriend($profile_id,$user_id)){
-                  
+                $posts = Post::with('posttags.user')->where('user_id',$profile_id);
+                $posts = $posts->orderBy('created_at','DESC')->paginate($limit);
+    
+                $posts_arr = array();
+                foreach ($posts as $post){
+                    $tag_array = array();
+                    foreach($post->posttags as $posttag){
+                        if($posttag->user){
+                            $tag['id'] = $posttag->user->id;
+                            $tag['name'] = $posttag->user->full_name;
+                            array_push($tag_array,$tag);
+                        }    
+                    }
+                    $temp = array();
+                    $temp['id'] = $post->id;
+                    $temp['description'] = $post->description;
+                    $temp['is_private'] = $post->is_private;
+                    $temp['is_like'] = is_like($post->id,$profile_id)?1:0;
+                    $temp['is_commant'] = is_commant($post->id,$profile_id)?1:0;
+                    $temp['posttags'] = $tag_array;
+                    $temp['postmedia'] = $post->postmedia;
+                    $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag:null;
+                    $temp['user'] = $post->user;
+                    $temp['total_like'] = $post->total_like;
+                    $temp['total_commant'] = $post->total_commant;
+                    $temp['created_at'] = $post->created_at;
+                    array_push($posts_arr,$temp);
             }
+        }
         }
         
-        $posts_arr = array();
-        foreach ($posts as $post){
-            $tag_array = array();
-            foreach($post->posttags as $posttag){
-                if($posttag->user){
-                    $tag['id'] = $posttag->user->id;
-                    $tag['name'] = $posttag->user->full_name;
-                    array_push($tag_array,$tag);
-                }    
-            }
-            $temp = array();
-            $temp['id'] = $post->id;
-            $temp['description'] = $post->description;
-            $temp['is_private'] = $post->is_private;
-            $temp['is_like'] = is_like($post->id,$profile_id)?1:0;
-            $temp['is_commant'] = is_commant($post->id,$profile_id)?1:0;
-            $temp['posttags'] = $tag_array;
-            $temp['postmedia'] = $post->postmedia;
-            $temp['host_tag_name'] = isset($post->hosttag)?$post->hosttag:null;
-            $temp['user'] = $post->user;
-            $temp['total_like'] = $post->total_like;
-            $temp['total_commant'] = $post->total_commant;
-            $temp['created_at'] = $post->created_at;
-            array_push($posts_arr,$temp);
-        }
-
         return $this->sendResponseWithData($posts_arr,"My Post Retrieved Successfully.");
     }
 
