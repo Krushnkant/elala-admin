@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User,Settings,Bank,UserFollower,Post,Review,Country,State,City};
+use App\Models\ {User,Settings,Bank,UserFollower,Post,Review,Country,State,City,Experience};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -184,12 +184,13 @@ class UserController extends BaseController
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
         //$user_id = Auth::user()->id;
+        $limit = isset($request->limit)?$request->limit:20;
         $profile_id = $request->profile_id;
 
         $user = User::where('id',$profile_id)->first();
 
 
-        $myreviews = Review::with('user')->where('customer_id',$profile_id)->where('estatus',1)->get();
+        $myreviews = Review::with('user')->where('customer_id',$profile_id)->where('estatus',1)->paginate($limit);
         $myreviews_arr = array();
         foreach ($myreviews as $review){
             $temp = array();
@@ -204,7 +205,7 @@ class UserController extends BaseController
 
         $experiencereviews = Review::with('user')->WhereHas('experience',function ($mainQuery) use($profile_id) {
             $mainQuery->where('user_id',$profile_id);
-        })->where('estatus',1)->get();
+        })->where('estatus',1)->paginate($limit);
         $experiencereviews_arr = array();
         foreach ($experiencereviews as $review){    
             $temp = array();
@@ -215,6 +216,25 @@ class UserController extends BaseController
             $temp['profile_image'] = isset($review->user->profile_pic)?$review->user->profile_pic:"";
             $temp['created_at'] = $review->created_at;
             array_push($experiencereviews_arr,$temp);
+        }
+
+        $experiences = Experience::with(['media' => function($q) {
+            $q->where('type', '=', 'img'); 
+        }])->where('user_id',$profile_id)->where('estatus',1)->get();
+
+        $experiences_arr = array();
+        foreach ($experiences as $experience){
+            $temp = array();
+            $temp['id'] = $experience->id;
+            $temp['slug'] = $experience->slug;
+            $temp['title'] = $experience->title;
+            $temp['location'] = $experience->location;
+            $temp['individual_rate'] = $experience->individual_rate;
+            $temp['duration'] = $experience->duration;
+            $temp['image'] = isset($experience->media)?$experience->media:[];
+            $temp['rating'] = $experience->rating;
+            $temp['rating_member'] = $experience->review_total_user;
+            array_push($experiences_arr,$temp);
         }
 
         $userdata['full_name'] = $user->full_name;
@@ -237,10 +257,73 @@ class UserController extends BaseController
         $userdata['rating_member'] = hostReviewMember($profile_id);
         $userdata['my_reviews'] = $myreviews_arr;
         $userdata['experience_reviews'] = $experiencereviews_arr;
-
+        $data['experiences'] = $experiences_arr;
         return $this->sendResponseWithData($userdata,"profile Retrieved Successfully.");
         
     }
+
+    public function getMyReview(Request $request){
+        $messages = [
+            'profile_id.required' =>'Please provide a profile id',
+        ];
+        $validator = Validator::make($request->all(), [
+            'profile_id' => 'required',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+        $limit = isset($request->limit)?$request->limit:20;
+        $profile_id = $request->profile_id;
+        $myreviews = Review::with('user')->where('customer_id',$profile_id)->where('estatus',1)->paginate($limit);
+        $myreviews_arr = array();
+        foreach ($myreviews as $review){
+            $temp = array();
+            $temp['id'] = $review->id;
+            $temp['description'] = $review->description;
+            $temp['rating'] = $review->rating;
+            $temp['full_name'] = $review->user->full_name;
+            $temp['profile_image'] = isset($review->user->profile_pic)?$review->user->profile_pic:"";
+            $temp['created_at'] = $review->created_at;
+            array_push($myreviews_arr,$temp);
+        }
+        $data['myreviews'] = $myreviews_arr;
+        return $this->sendResponseWithData($data,"My Review Retrieved Successfully.");
+    }
+
+    public function getMyExperienceReview(Request $request){
+        $messages = [
+            'profile_id.required' =>'Please provide a profile id',
+        ];
+        $validator = Validator::make($request->all(), [
+            'profile_id' => 'required',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors(), "Validation Errors", []);
+        }
+        $limit = isset($request->limit)?$request->limit:20;
+        $profile_id = $request->profile_id;
+        $experiencereviews = Review::with('user')->WhereHas('experience',function ($mainQuery) use($profile_id) {
+            $mainQuery->where('user_id',$profile_id);
+        })->where('estatus',1)->paginate($limit);
+        $experiencereviews_arr = array();
+        foreach ($experiencereviews as $review){    
+            $temp = array();
+            $temp['id'] = $review->id;
+            $temp['description'] = $review->description;
+            $temp['rating'] = $review->rating;
+            $temp['user_id'] = $review->user->id;
+            $temp['full_name'] = $review->user->full_name;
+            $temp['profile_image'] = isset($review->user->profile_pic)?$review->user->profile_pic:"";
+            $temp['created_at'] = $review->created_at;
+            array_push($experiencereviews_arr,$temp);
+        }
+        $data['experiencereviews'] = $experiencereviews_arr;
+        return $this->sendResponseWithData($data,"My Review Experience Retrieved Successfully.");
+    }
+
+
 
     public function getCountry(){
         $countries = Country::get(['id','name','phonecode']);
