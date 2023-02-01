@@ -977,7 +977,7 @@ class ExperienceController extends BaseController
                     $query->whereIn('language_id',$language);
                 });
             }
-            if (isset($request->day) && $request->day!=""){
+            if (isset($request->days) && $request->days!=""){
                 $days = explode(",",$request->days);
                 $experiences = $experiences->whereHas('scheduletime',function ($query) use($request, $days) {
                     $query->whereIn('day',$days);
