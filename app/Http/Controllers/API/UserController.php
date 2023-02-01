@@ -242,6 +242,7 @@ class UserController extends BaseController
         $userdata['mobile_no'] = $user->mobile_no;
         $userdata['profile_pic'] = $user->profile_pic;
         $userdata['gender'] = $user->gender;
+        $userdata['dob'] = $user->dob;
         $userdata['bio'] = $user->bio;
         $userdata['is_private'] = $user->is_private;
         $userdata['created_at'] = $user->created_at;
