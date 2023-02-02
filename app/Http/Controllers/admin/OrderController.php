@@ -133,7 +133,7 @@ class OrderController extends Controller
                     }
 
                     $time1 = Carbon::parse($Order->orderslot->time);
-                    $endTime = $time1->addMinutes($Order->experience->duration);
+                    $endTime = $time1->addMinutes(isset($Order->experience->duration)?$Order->experience->duration:0);
                     $end_time = $endTime->format('H:i:s');
 
                     $order_info = '<span>Booking ID: '.$Order->custom_orderid.'</span>';
@@ -141,7 +141,7 @@ class OrderController extends Controller
                     $order_info .= '<span>Total Member: '.$Order->total_member.'</span>';
                     $booking_date = '<span><b> Date : </b>'.date('d-m-Y', strtotime($Order->booking_date)).'</span>';
                     $booking_date .= '<span><b> Slot : </b>'.$Order->orderslot->time.' to '.$end_time.'</span>';
-                    $nestedData['experience'] = $Order->experience->title;
+                    $nestedData['experience'] = isset($Order->experience->title)?$Order->experience->title:"";
                     $nestedData['order_info'] = $order_info;
                     $nestedData['customer_info'] = '<span><img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$user_info->full_name.'</span>';
                     $nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$Order->experience->user->full_name.'</span>';;
