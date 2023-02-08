@@ -795,15 +795,15 @@ class ExperienceController extends BaseController
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
 
-            if($experience->category_id > 0){
-                $maincategories = $this->getMainCategory($experience->category_id);
-                foreach($maincategories as $maincategory){
-                    $ExperienceCategory = New ExperienceCategory();
-                    $ExperienceCategory->experience_id = $experience->id;
-                    $ExperienceCategory->category_id = $maincategory;
-                    $ExperienceCategory->save();
-                }
-            }
+            // if($experience->category_id > 0){
+            //     $maincategories = $this->getMainCategory($experience->category_id);
+            //     foreach($maincategories as $maincategory){
+            //         $ExperienceCategory = New ExperienceCategory();
+            //         $ExperienceCategory->experience_id = $experience->id;
+            //         $ExperienceCategory->category_id = $maincategory;
+            //         $ExperienceCategory->save();
+            //     }
+            // }
 
             $temp = array();
             $temp['id'] = $experience->id;
