@@ -39,7 +39,7 @@ class Experience extends Model
     }
 
     public function experiencecategory(){
-        return $this->hasMany(ExperienceCategor::class,'experience_id','id');
+        return $this->hasMany(ExperienceCategory::class,'experience_id','id');
     }
 
     
