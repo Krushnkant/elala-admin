@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\ {User,Experience,CategoryAttribute,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage};
+use App\Models\ {User,Experience,CategoryAttribute,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage,ExperienceCategory};
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -133,8 +133,32 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'CategoryPage';
         }
         $Experience->save();
+
+       
+
+
         $attributes_arr = array();
         if($Experience){
+
+            ExperienceCategory::where('experience_id',$request->experience_id)->delete();
+            $maincategories = $this->getMainCategory($request->category_id);
+            foreach($maincategories as $maincategory){
+                $ExperienceCategory = New ExperienceCategory();
+                $ExperienceCategory->experience_id = $request->experience_id;
+                $ExperienceCategory->category_id = $maincategory;
+                $ExperienceCategory->save();
+            }
+
+            $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$request->category_id)->get();
+            foreach ($categoryAttribute as $attribute){
+                $temp = array();
+                $temp['id'] = $attribute->id;
+                $temp['field_id'] = $attribute->field_id;
+                $temp['title'] = $attribute->title;
+                $temp['option'] = $attribute->attr_optioin;
+                array_push($attributes_arr,$temp);
+            }
+
             $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$request->category_id)->get();
             foreach ($categoryAttribute as $attribute){
                 $temp = array();
@@ -1030,6 +1054,18 @@ class ExperienceController extends BaseController
 
         $data['experiences'] = $experiences_arr;
         return $this->sendResponseWithData($data,"Experiences Retrieved Successfully.");
+    }
+
+    public $catid = [];
+    function getMainCategory($id){
+        $category = \App\Models\Category::where('estatus',1)->where('id',$id)->first()->toArray();
+        if($category['parent_category_id'] != 0){
+            $this->catid[] = $category['id'];
+            $this->getMainCategory($category['parent_category_id']);
+        }else{
+            $this->catid[] = $category['id']; 
+        }
+        return $this->catid;
     }
 
     
