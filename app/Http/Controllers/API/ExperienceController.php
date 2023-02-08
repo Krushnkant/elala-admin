@@ -794,6 +794,16 @@ class ExperienceController extends BaseController
         
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
+
+            
+            $maincategories = $this->getMainCategory($experience->category_id);
+            foreach($maincategories as $maincategory){
+                $ExperienceCategory = New ExperienceCategory();
+                $ExperienceCategory->experience_id = $experience->id;
+                $ExperienceCategory->category_id = $maincategory;
+                $ExperienceCategory->save();
+            }
+
             $temp = array();
             $temp['id'] = $experience->id;
             $temp['slug'] = $experience->slug;
@@ -1009,7 +1019,10 @@ class ExperienceController extends BaseController
             }
             if (isset($request->categories) && $request->categories!=""){
                 $category_ids = explode(",",$request->categories);
-                $experiences = $experiences->whereIn('category_id',$category_ids);
+                //$experiences = $experiences->whereIn('category_id',$category_ids);
+                $experiences = $experiences->whereHas('experiencecategory',function ($query) use($request, $category_ids) {
+                    $query->whereIn('category_id',$category_ids);
+                });
             }
             if (isset($request->activity_type) && $request->activity_type!=""){
                 $experiences = $experiences->where('type',$request->activity_type);
