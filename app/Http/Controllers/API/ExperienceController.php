@@ -1071,12 +1071,12 @@ class ExperienceController extends BaseController
 
     public $catid = [];
     function getMainCategory($id){
-        $category = \App\Models\Category::where('estatus',1)->where('id',$id)->first()->toArray();
-        if($category['parent_category_id'] != 0){
-            $this->catid[] = $category['id'];
-            $this->getMainCategory($category['parent_category_id']);
+        $category = \App\Models\Category::where('estatus',1)->where('id',$id)->first();
+        if($category->parent_category_id != 0){
+            $this->catid[] = $category->id;
+            $this->getMainCategory($category->parent_category_id);
         }else{
-            $this->catid[] = $category['id']; 
+            $this->catid[] = $category->id; 
         }
         return $this->catid;
     }
