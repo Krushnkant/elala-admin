@@ -291,7 +291,8 @@ class UserController extends Controller
                     $action='';
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
                         $action .= '<button id="permissionUserBtn" class="btn btn-gray text-pink btn-sm" onclick="" data-id="' .$user->id. '"><i class="fa fa-unlock-alt" aria-hidden="true"></i></button>
-                                    <button id="editUserBtn" class="btn btn-gray text-blue btn-sm" data-toggle="modal" data-target="#UserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+                                    <button id="editUserBtn" class="btn btn-gray text-blue btn-sm" data-toggle="modal" data-target="#UserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                                    <button id="friendList" class="btn btn-gray text-black btn-sm" data-toggle="modal" data-target="#UserFriendListModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-users" aria-hidden="true"></i></button>';
                     }
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_delete($page_id)) ){
                         $action .= '<button id="deleteUserBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteUserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
