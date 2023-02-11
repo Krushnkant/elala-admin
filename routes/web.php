@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\{AuthController,DashboardController,UserController,EndUserController,ProfileController,DesignationController
     ,CategoryController,CategoryAttributeController,SettingsController,LanguageController,AgeGroupController,CancellationPolicyController
-    ,OrderController,TeamMemberController,TestimonialController};
+    ,OrderController,TeamMemberController,TestimonialController, ChatController};
 use App\Http\Controllers\admin\{ExperienceController,ReviewController,InfopageController,FaqController,PostController,PaymentController};
 
 use Illuminate\Support\Facades\Artisan;
@@ -187,9 +187,14 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
     Route::post('allpaymentslist',[PaymentController::class,'allpaymentslist'])->name('allpaymentslist');
     Route::get('payment/{id}/view',[PaymentController::class,'vieworder'])->name('posts.view');
     Route::post('allpaymentorderslist',[PaymentController::class,'allpaymentorderslist'])->name('allpaymentorderslist');
-
     Route::post('paymentsuccess',[PaymentController::class,'paymentsuccess'])->name('paymentsuccess');
-    
+
+    //Chat pooja
+    Route::get('all-chat',[ChatController::class,'index'])->name('chat.list');
+    Route::get('friend-list',[ChatController::class,'FriendList']);
+    Route::get('personal-chat/{receiverId}/{userId}',[ChatController::class,'PersonalChat']);
+    Route::post('allfriendlist/{id}',[ChatController::class,'allFriendList']);
+    Route::post('getpersonallist/{receiverId}/{userId}/{limit}/{offset}',[ChatController::class,'getPersonalChat']);
 });
 
 Route::group(['middleware'=>['auth']],function (){

@@ -155,7 +155,8 @@ class EndUserController extends Controller
 
                     $action='';
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) ){
-                        $action .= '<button id="editEndUserBtn" class="btn btn-gray text-blue btn-sm" data-toggle="modal" data-target="#EndUserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+                        $action .= '<button id="editEndUserBtn" class="btn btn-gray text-blue btn-sm" data-toggle="modal" data-target="#EndUserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                        <button id="friendList" class="btn btn-gray text-black btn-sm" data-toggle="modal" data-target="#UserFriendListModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-users" aria-hidden="true"></i></button>';
                     }
                     if ( getUSerRole()==1 || (getUSerRole()!=1 && is_delete($page_id)) ){
                         $action .= '<button id="deleteEndUserBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteEndUserModal" onclick="" data-id="' .$user->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
