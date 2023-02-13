@@ -258,7 +258,7 @@ class UserController extends BaseController
         $userdata['rating_member'] = hostReviewMember($profile_id);
         $userdata['my_reviews'] = $myreviews_arr;
         $userdata['experience_reviews'] = $experiencereviews_arr;
-        $data['experiences'] = $experiences_arr;
+        $userdata['experiences'] = $experiences_arr;
         return $this->sendResponseWithData($userdata,"profile Retrieved Successfully.");
         
     }
