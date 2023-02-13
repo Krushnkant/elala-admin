@@ -22,7 +22,7 @@ class ExperienceResource extends JsonResource
         $Images = ExperienceMedia::where('experience_id',$this->id)->where('type','img')->get(['id','thumb']);
         $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
-        $ScheduleTime = ExperienceScheduleTime::where('experience_id',$this->id)->get(['id','day','time']);
+        
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
         
 
@@ -41,6 +41,33 @@ class ExperienceResource extends JsonResource
             }
         }
 
+        $ScheduleTime_arr = array();
+        $days = [
+                'Mon','Tue'
+            ];
+        foreach ($days as $day){
+            $ScheduleTime = ExperienceScheduleTime::where('experience_id',$this->id)->where('day',$day)->get(['id','day','time']);
+            $time_array = [];
+                foreach ($ScheduleTime as $Time){
+                    $t_array['id'] = $Time->id;
+                    $t_array['slot_time'] = $Time->time;
+                    array_push($time_array,$t_array);
+                }
+                
+                $temp = array();
+                //dd($ScheduleTime[0]->id);
+               // if($ScheduleTime != ""){
+                    //dump($ScheduleTime);
+                 //$temp['id'] = $ScheduleTime[0]->id;
+                 $temp['day'] = $day;
+                 $temp['time'] = $time_array;
+        
+                
+             //}
+                array_push($ScheduleTime_arr,$temp);
+        }
+       
+         //dd($ScheduleTime_arr);
         return [
             'id' => $this->id,
             'slug' => $this->slug,
@@ -73,7 +100,7 @@ class ExperienceResource extends JsonResource
             'individual_rate' => $this->individual_rate,
             'min_private_group_rate' => $this->min_private_group_rate,
             'discount_rate' => $DiscountRate,
-            'schedule_time' => $ScheduleTime,
+            'schedule_time' => $ScheduleTime_arr,
             'cancellation_policy_id' => $this->cancellation_policy_id,
             'rating' => $this->rating,
             'rating_member' => $this->review_total_user,

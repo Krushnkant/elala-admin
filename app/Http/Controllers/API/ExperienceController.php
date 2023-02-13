@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\ {User,Experience,CategoryAttribute,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage,ExperienceCategory};
+use App\Models\ {User,Experience,CategoryAttribute,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,State,Country,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage,ExperienceCategory};
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -52,6 +52,9 @@ class ExperienceController extends BaseController
             'latitude.required' =>'Please provide a latitude.',
             'longitude.required' =>'Please provide a longitude.',
             'language.required' =>'Please provide a language.',
+            'city.required' =>'Please provide a city.',
+            'state.required' =>'Please provide a state.',
+            'country.required' =>'Please provide a country.',
         ];
 
         $validator = Validator::make($request->all(), [
@@ -59,6 +62,9 @@ class ExperienceController extends BaseController
             'latitude' => 'required',
             'longitude' => 'required',
             'language' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'country' => 'required',
         ], $messages);
 
         if ($validator->fails()) {
@@ -74,6 +80,45 @@ class ExperienceController extends BaseController
         $Experience->location = $request->location;
         $Experience->latitude = $request->latitude;
         $Experience->longitude = $request->longitude;
+        $country = Country::where('name',$request->country)->first();
+        if(!$country){
+            $coun = New Country();
+            $coun->name = $request->country;
+            $coun->save(); 
+            $country_id = $coun->id;
+
+        }else{
+            $country_id = $country->id;
+        }
+
+        $state = State::where('name',$request->state)->first();
+        if(!$state){
+            $sta = New State();
+            $sta->name = $request->state;
+            $sta->country_id = $country_id;
+            $sta->save(); 
+            $state_id = $sta->id;
+
+        }else{
+            $state_id = $country->id;
+        }
+
+        $city = City::where('name',$request->city)->first();
+        if(!$city){
+            $cit = New City();
+            $cit->name = $request->city;
+            $cit->state_id = $state_id;
+            $cit->save(); 
+            $city_id = $cit->id;
+
+        }else{
+            $city_id = $country->id;
+        }
+
+        
+        $Experience->city = ($city_id)?$city_id:1041;
+        $Experience->state = ($state_id)?$state_id:12;
+        $Experience->country = ($city_id)?$city_id:101;
         if(checkExperienceStatus('LocationPage',$Experience->proccess_page)){
             $Experience->proccess_page = 'LocationPage';
         }
