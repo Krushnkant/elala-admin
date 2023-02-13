@@ -43,7 +43,7 @@ class ExperienceResource extends JsonResource
 
         $ScheduleTime_arr = array();
         $days = [
-                'Mon','Tue'
+                'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'
             ];
         foreach ($days as $day){
             $ScheduleTime = ExperienceScheduleTime::where('experience_id',$this->id)->where('day',$day)->get(['id','day','time']);
