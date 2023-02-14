@@ -79,14 +79,15 @@ class FollowController extends BaseController
     }
 
     public function getFollower(Request $request){
+        $user_id = isset($request->user_id)?$request->user_id:auth()->id(); 
        
         $userfollowers = UserFollower::with('user');
         if(isset($request->type) && $request->type == "follower"){
-           $userfollowers = $userfollowers->where('following_id',auth()->id())->where('estatus',1);
+           $userfollowers = $userfollowers->where('following_id',$user_id)->where('estatus',1);
         }elseif(isset($request->type) && $request->type == "following"){
-           $userfollowers = $userfollowers->where('user_id',auth()->id())->where('estatus',1);
+           $userfollowers = $userfollowers->where('user_id',$user_id)->where('estatus',1);
         }else{
-           $userfollowers = $userfollowers->where('following_id',auth()->id())->where('estatus',0); 
+           $userfollowers = $userfollowers->where('following_id',$user_id)->where('estatus',0); 
         }
         $userfollowers = $userfollowers->get();
         $userfollowers_arr = array();
@@ -97,7 +98,7 @@ class FollowController extends BaseController
                 $temp['user_id'] = $userfollower->following_id;
                 $temp['full_name'] = $userfollower->follower->full_name;
                 $temp['profile_pic'] = $userfollower->follower->profile_pic;
-                $temp['is_follow'] = is_follower_random(auth()->id(),$userfollower->following_id);
+                $temp['is_follow'] = is_follower_random($user_id,$userfollower->following_id);
                 array_push($userfollowers_arr,$temp);
             }
         }else{
@@ -107,7 +108,7 @@ class FollowController extends BaseController
                 $temp['user_id'] = $userfollower->user_id;
                 $temp['full_name'] = $userfollower->user->full_name;
                 $temp['profile_pic'] = $userfollower->user->profile_pic;
-                $temp['is_follow'] = is_follower(auth()->id(),$userfollower->user_id);
+                $temp['is_follow'] = is_follower($user_id,$userfollower->user_id);
                 array_push($userfollowers_arr,$temp);
             }
         }
