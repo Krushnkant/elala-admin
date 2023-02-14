@@ -92,7 +92,7 @@ class UserController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-
+        
         $user = User::find(Auth::user()->id);
         $user->full_name = $request->name;
         $user->mobile_no = $request->mobile_no;
@@ -183,7 +183,7 @@ class UserController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        dd(auth()->id());
+       
         //$user_id = Auth::user()->id;
         $limit = isset($request->limit)?$request->limit:20;
         $profile_id = $request->profile_id;
