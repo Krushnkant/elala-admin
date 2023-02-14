@@ -183,7 +183,7 @@ class UserController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $user_id = Auth::user()->id;
+        //$user_id = Auth::user()->id;
         $limit = isset($request->limit)?$request->limit:20;
         $profile_id = $request->profile_id;
 
