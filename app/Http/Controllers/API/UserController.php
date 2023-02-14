@@ -183,7 +183,8 @@ class UserController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        //$user_id = Auth::user()->id;
+        $user_id = Auth::user()->id;
+        dd($user_id);
         $limit = isset($request->limit)?$request->limit:20;
         $profile_id = $request->profile_id;
 
@@ -252,7 +253,7 @@ class UserController extends BaseController
         if(isset(Auth::user()->id)) {
             $userdata['is_follow'] = is_follower_random(Auth::user()->id,$profile_id);
         }else{
-            $userdata['is_follow'] = "100";
+            $userdata['is_follow'] = "";
         }
         $userdata['rating'] = hostRating($profile_id);
         $userdata['rating_member'] = hostReviewMember($profile_id);
