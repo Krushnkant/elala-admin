@@ -252,7 +252,7 @@ class UserController extends BaseController
         if(isset(Auth::user()->id)) {
             $userdata['is_follow'] = is_follower_random(Auth::user()->id,$profile_id);
         }else{
-            $userdata['is_follow'] = "";
+            $userdata['is_follow'] = "100";
         }
         $userdata['rating'] = hostRating($profile_id);
         $userdata['rating_member'] = hostReviewMember($profile_id);
