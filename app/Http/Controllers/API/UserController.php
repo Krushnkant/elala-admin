@@ -184,7 +184,6 @@ class UserController extends BaseController
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
         $user_id = Auth::user()->id;
-        dd($user_id);
         $limit = isset($request->limit)?$request->limit:20;
         $profile_id = $request->profile_id;
 
