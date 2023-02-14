@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserFollower;
+use Illuminate\Support\Facades\Auth;
 
 class FollowController extends BaseController
 {
@@ -98,7 +99,12 @@ class FollowController extends BaseController
                 $temp['user_id'] = $userfollower->following_id;
                 $temp['full_name'] = $userfollower->follower->full_name;
                 $temp['profile_pic'] = $userfollower->follower->profile_pic;
-                $temp['is_follow'] = is_follower_random($user_id,$userfollower->following_id);
+                if(isset(Auth::user()->id)) {
+                    $temp['is_follow'] = is_follower_random(Auth::user()->id,$userfollower->following_id);
+                }else{
+                    $temp['is_follow'] = "";
+                }
+                //$temp['is_follow'] = is_follower_random($user_id,$userfollower->following_id);
                 array_push($userfollowers_arr,$temp);
             }
         }else{
@@ -108,7 +114,12 @@ class FollowController extends BaseController
                 $temp['user_id'] = $userfollower->user_id;
                 $temp['full_name'] = $userfollower->user->full_name;
                 $temp['profile_pic'] = $userfollower->user->profile_pic;
-                $temp['is_follow'] = is_follower($user_id,$userfollower->user_id);
+                if(isset(Auth::user()->id)){
+                    $temp['is_follow'] = is_follower(Auth::user()->id,$userfollower->user_id);
+                }else{
+                    $temp['is_follow'] = "";
+                }
+                //$temp['is_follow'] = is_follower($user_id,$userfollower->user_id);
                 array_push($userfollowers_arr,$temp);
             }
         }
