@@ -147,7 +147,7 @@ class OrderController extends Controller
                     //$nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.isset($Order->experience)?$Order->experience->user->full_name:"".'</span>';;
                     $nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'."".'</span>';;
                     $nestedData['booking'] = $booking_date;
-                    $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($Order->created_at));;
+                    $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($Order->created_at));
                     $data[] = $nestedData;
                 }
                 // dd();

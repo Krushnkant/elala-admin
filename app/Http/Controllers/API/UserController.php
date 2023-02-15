@@ -196,6 +196,9 @@ class UserController extends BaseController
         foreach ($myreviews as $review){
             $temp = array();
             $temp['id'] = $review->id;
+            $temp['experience_id'] = isset($review->experience)?$review->experience->id:0;
+            $temp['experience_title'] = isset($review->experience)?$review->experience->title:"";
+            $temp['experience_image'] = isset($review->experience)?$review->experience->image:"";
             $temp['description'] = $review->description;
             $temp['rating'] = $review->rating;
             $temp['full_name'] = $review->user->full_name;
@@ -211,6 +214,9 @@ class UserController extends BaseController
         foreach ($experiencereviews as $review){    
             $temp = array();
             $temp['id'] = $review->id;
+            $temp['experience_id'] = isset($review->experience)?$review->experience->id:0;
+            $temp['experience_title'] = isset($review->experience)?$review->experience->title:"";
+            $temp['experience_image'] = isset($review->experience)?$review->experience->image:"";
             $temp['description'] = $review->description;
             $temp['rating'] = $review->rating;
             $temp['full_name'] = $review->user->full_name;
@@ -282,6 +288,9 @@ class UserController extends BaseController
         foreach ($myreviews as $review){
             $temp = array();
             $temp['id'] = $review->id;
+            $temp['experience_id'] = isset($review->experience)?$review->experience->id:0;
+            $temp['experience_title'] = isset($review->experience)?$review->experience->title:"";
+            $temp['experience_image'] = isset($review->experience)?$review->experience->image:"";
             $temp['description'] = $review->description;
             $temp['rating'] = $review->rating;
             $temp['full_name'] = $review->user->full_name;
@@ -313,6 +322,9 @@ class UserController extends BaseController
         foreach ($experiencereviews as $review){    
             $temp = array();
             $temp['id'] = $review->id;
+            $temp['experience_id'] = isset($review->experience)?$review->experience->id:0;
+            $temp['experience_title'] = isset($review->experience)?$review->experience->title:"";
+            $temp['experience_image'] = isset($review->experience)?$review->experience->image:"";
             $temp['description'] = $review->description;
             $temp['rating'] = $review->rating;
             $temp['user_id'] = $review->user->id;

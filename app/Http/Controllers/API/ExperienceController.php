@@ -290,6 +290,14 @@ class ExperienceController extends BaseController
         }
 
         $Experience = Experience::find($request->experience_id);
+
+        if($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image_name = 'experience_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('images/experience_images');
+            $image->move($destinationPath, $image_name);
+            $Experience->image = 'images/experience_images/'.$image_name;
+        }
         
         if(checkExperienceStatus('MediaPage',$Experience->proccess_page)){
             $Experience->proccess_page = 'MediaPage';
@@ -839,7 +847,8 @@ class ExperienceController extends BaseController
         
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
-
+           
+           // dd($experience->media);
             // if($experience->category_id > 0){
             //     $maincategories = $this->getMainCategory($experience->category_id);
             //     foreach($maincategories as $maincategory){
