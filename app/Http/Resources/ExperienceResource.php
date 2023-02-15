@@ -79,6 +79,7 @@ class ExperienceResource extends JsonResource
             'category_id' => $this->category_id,
             'title' => $this->title,
             'description' => $this->description,
+            'image' => $this->image,
             'images' => $Images,
             'videos' => $Videos,
             'duration' => $this->duration,
