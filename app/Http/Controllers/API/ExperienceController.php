@@ -848,7 +848,7 @@ class ExperienceController extends BaseController
         
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
-
+            dd($experience->media);
             $coverimage = array('id'=>'0','thumb'=> $experience->image);
             array_unshift($experience->media, $coverimage);
            
