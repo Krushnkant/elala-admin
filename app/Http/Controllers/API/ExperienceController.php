@@ -848,11 +848,11 @@ class ExperienceController extends BaseController
         
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
-            //dd($experience->media);
-            $coverimage = array('id'=>'0','thumb'=> $experience->image);
-            array_unshift($experience->media->toArray(), $coverimage);
-           
-            dd($experience->media);
+           // dd($experience->media);
+            // $coverimage = array('id'=>'0','thumb'=> $experience->image);
+            // array_unshift($experience->media, $coverimage);
+            $experience->nedia->push((object)['id' => 'Game1','thumb' => 'sdsdd']);
+           // dd($experience->media);
             // if($experience->category_id > 0){
             //     $maincategories = $this->getMainCategory($experience->category_id);
             //     foreach($maincategories as $maincategory){
