@@ -31,7 +31,7 @@ class ExperienceResource extends JsonResource
        
         
         $newCompete = array('id'=>'Others','thumb'=>'ssadsd');
-        array_push($Images, $newCompete);
+        array_unshift($Images, $newCompete);
         dd($Images);
         $attributes_arr = array();
         if($this->category_id != "" && $this->category_id != 0){
