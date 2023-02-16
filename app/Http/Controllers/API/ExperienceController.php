@@ -100,7 +100,7 @@ class ExperienceController extends BaseController
             $state_id = $sta->id;
 
         }else{
-            $state_id = $country->id;
+            $state_id = $state->id;
         }
 
         $city = City::where('name',$request->city)->first();
@@ -112,13 +112,13 @@ class ExperienceController extends BaseController
             $city_id = $cit->id;
 
         }else{
-            $city_id = $country->id;
+            $city_id = $city->id;
         }
 
         
         $Experience->city = ($city_id)?$city_id:1041;
         $Experience->state = ($state_id)?$state_id:12;
-        $Experience->country = ($city_id)?$city_id:101;
+        $Experience->country = ($country_id)?$country_id:101;
         if(checkExperienceStatus('LocationPage',$Experience->proccess_page)){
             $Experience->proccess_page = 'LocationPage';
         }
