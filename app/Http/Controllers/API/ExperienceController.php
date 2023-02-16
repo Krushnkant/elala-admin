@@ -843,7 +843,7 @@ class ExperienceController extends BaseController
     public function getHomeExperiences(Request $request){
         $limit = isset($request->limit)?$request->limit:20;
         $treding_experiences = Experience::with(['media' => function($q) {
-                $q->where('type', '=', 'img')->get(['id','thumb']); 
+                $q->where('type', '=', 'img')->get(['id','thumb'])->toArray(); 
             }])->where('estatus',1)->get();
         
         $treding_experiences_arr = array();
