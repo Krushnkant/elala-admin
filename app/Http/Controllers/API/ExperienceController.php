@@ -844,10 +844,13 @@ class ExperienceController extends BaseController
         $limit = isset($request->limit)?$request->limit:20;
         $treding_experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
-            }])->where('estatus',1)->get();
+            }])->where('estatus',1)->get(['id','thumb']);
         
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
+
+            $coverimage = array('id'=>'0','thumb'=>$experience->image);
+            array_unshift($experience->media, $coverimage);
            
            // dd($experience->media);
             // if($experience->category_id > 0){

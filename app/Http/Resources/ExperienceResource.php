@@ -27,12 +27,8 @@ class ExperienceResource extends JsonResource
         $city = City::where('id',$this->city)->first();
         $state = State::where('id',$this->state)->first();
         $country = Country::where('id',$this->country)->first();
-
-       
         
-        $newCompete = array('id'=>'Others','thumb'=>'ssadsd');
-        array_unshift($Images, $newCompete);
-        dd($Images);
+    
         $attributes_arr = array();
         if($this->category_id != "" && $this->category_id != 0){
             $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$this->category_id)->get();
