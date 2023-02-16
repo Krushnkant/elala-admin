@@ -16,6 +16,7 @@ class ExperienceResource extends JsonResource
      */
     public function toArray($request)
     {
+        dd($request);
         //return parent::toArray($request);
         $ProvideItem = ExperienceProvideItem::where('experience_id',$this->id)->get(['id','title']);
         $BrindItem = ExperienceBrindItem::where('experience_id',$this->id)->get(['id','title']);
