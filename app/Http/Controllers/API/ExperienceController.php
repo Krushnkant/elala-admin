@@ -851,7 +851,7 @@ class ExperienceController extends BaseController
            // dd($experience->media);
             // $coverimage = array('id'=>'0','thumb'=> $experience->image);
             // array_unshift($experience->media, $coverimage);
-            $experience->nedia->push((object)['id' => 'Game1','thumb' => 'sdsdd']);
+            //$experience->nedia->push((object)['id' => 'Game1','thumb' => 'sdsdd']);
            // dd($experience->media);
             // if($experience->category_id > 0){
             //     $maincategories = $this->getMainCategory($experience->category_id);
