@@ -27,6 +27,11 @@ class ExperienceResource extends JsonResource
         $city = City::where('id',$this->city)->first();
         $state = State::where('id',$this->state)->first();
         $country = Country::where('id',$this->country)->first();
+
+        foreach($Images as $Image){
+            $Image->id = "#9c1d1d";  // you are inside the nested data array
+            $Image->img = "#9c1d1d";  // you are inside the nested data array
+        }
         
         dd($Images);
         $attributes_arr = array();
