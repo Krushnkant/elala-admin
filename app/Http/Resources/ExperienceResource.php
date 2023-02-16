@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,ExperienceCategoryAttribute,CategoryAttribute};
+use App\Models\{ExperienceProvideItem,ExperienceBrindItem,ExperienceMedia,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,ExperienceCategoryAttribute,CategoryAttribute,City,State,Country};
 
 
 class ExperienceResource extends JsonResource
@@ -16,15 +16,17 @@ class ExperienceResource extends JsonResource
      */
     public function toArray($request)
     {
-        dd($this->city);
+        
         //return parent::toArray($request);
         $ProvideItem = ExperienceProvideItem::where('experience_id',$this->id)->get(['id','title']);
         $BrindItem = ExperienceBrindItem::where('experience_id',$this->id)->get(['id','title']);
         $Images = ExperienceMedia::where('experience_id',$this->id)->where('type','img')->get(['id','thumb']);
         $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
-        
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
+        $city = City::where('id',$this->city)->first();
+        $state = State::where('id',$this->state)->first();
+        $country = Country::where('id',$this->country)->first();
         
 
         $attributes_arr = array();
@@ -74,9 +76,9 @@ class ExperienceResource extends JsonResource
             'slug' => $this->slug,
             'type' => $this->type,
             'location' => $this->location,
-            'city' => ($this->city)?$this->city->name:"",
-            'state' => ($this->state)?$this->state->name:"",
-            'country' => ($this->country)?$this->country->name:"",
+            'city' => ($city)?$city->name:"",
+            'state' => ($state)?$state->name:"",
+            'country' => ($country)?$country->name:"",
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'languages' => $ExperienceLanguage,
