@@ -20,7 +20,7 @@ class ExperienceResource extends JsonResource
         //return parent::toArray($request);
         $ProvideItem = ExperienceProvideItem::where('experience_id',$this->id)->get(['id','title']);
         $BrindItem = ExperienceBrindItem::where('experience_id',$this->id)->get(['id','title']);
-        $Images = ExperienceMedia::where('experience_id',$this->id)->where('type','img')->get(['id','thumb']);
+        $Images = ExperienceMedia::where('experience_id',$this->id)->where('type','img')->get(['id','thumb'])->toArray();
         $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
@@ -28,13 +28,9 @@ class ExperienceResource extends JsonResource
         $state = State::where('id',$this->state)->first();
         $country = Country::where('id',$this->country)->first();
 
-        $arr = [];
-        foreach($Images as $row)
-        {
-            $arr[] = (array) $row;
-        }
+       
         
-        dd($arr);
+        dd($Images);
         $attributes_arr = array();
         if($this->category_id != "" && $this->category_id != 0){
             $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$this->category_id)->get();
