@@ -42,7 +42,6 @@ class ExperienceController extends BaseController
             $Experience->estatus = 5;
             $Experience->save();
         }
-        dd($Experience);
         $data = new ExperienceResource($Experience);
         return $this->sendResponseWithData($data,"Added Experience Successfully");
     }
