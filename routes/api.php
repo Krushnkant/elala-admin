@@ -90,7 +90,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('commantPostUser', [PostController::class, 'commant_post_users']);
    
    
-    Route::get('getUsers', [UserController::class, 'getUser']);
+    Route::get('getUsers/{search?}', [UserController::class, 'getUser']);
 
     Route::get('paymentHistory', [PaymentController::class, 'paymentHistory']);
     Route::post('nextlastpayment', [PaymentController::class, 'nextlastpayment']);
