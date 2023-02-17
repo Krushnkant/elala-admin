@@ -24,7 +24,7 @@ class ExperienceResource extends JsonResource
         $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
-        return parent::toArray($request);
+       
         $city = City::where('id',$this->city)->first();
         $state = State::where('id',$this->state)->first();
         $country = Country::where('id',$this->country)->first();
@@ -76,9 +76,9 @@ class ExperienceResource extends JsonResource
             'slug' => $this->slug,
             'type' => $this->type,
             'location' => $this->location,
-            'city' => ($city)?$city->name:"",
-            'state' => ($state)?$state->name:"",
-            'country' => ($country)?$country->name:"",
+            'city' => isset($city)?$city->name:"",
+            'state' => isset($state)?$state->name:"",
+            'country' => isset($country)?$country->name:"",
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'languages' => $ExperienceLanguage,
