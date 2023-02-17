@@ -166,7 +166,8 @@ class UserController extends BaseController
         return $this->sendResponseWithData($bank,"Bank Deatails Retrieved Successfully.");
     }
 
-    public function getUser($search=""){
+    public function getUser(Request $request){
+        $search = isset($request->search)?$request->search:"";
         $user_id = Auth::user()->id;
         $users = User::where('id','<>',$user_id)->where('role',3)->where('is_completed',1);
         if($search != ""){
