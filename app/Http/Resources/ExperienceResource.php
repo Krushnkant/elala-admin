@@ -16,7 +16,7 @@ class ExperienceResource extends JsonResource
      */
     public function toArray($request)
     {
-        
+         
         //return parent::toArray($request);
         $ProvideItem = ExperienceProvideItem::where('experience_id',$this->id)->get(['id','title']);
         $BrindItem = ExperienceBrindItem::where('experience_id',$this->id)->get(['id','title']);
@@ -28,7 +28,7 @@ class ExperienceResource extends JsonResource
         $state = State::where('id',$this->state)->first();
         $country = Country::where('id',$this->country)->first();
         
-    
+        dd($Images);
         $attributes_arr = array();
         if($this->category_id != "" && $this->category_id != 0){
             $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$this->category_id)->get();
