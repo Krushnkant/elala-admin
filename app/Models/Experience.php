@@ -42,17 +42,17 @@ class Experience extends Model
         return $this->hasMany(ExperienceCategory::class,'experience_id','id');
     }
 
-    public function city(){
-        return $this->hasOne(City::class,'id','city');
-    }
+    // public function city(){
+    //     return $this->hasOne(City::class,'id','city');
+    // }
 
-    public function state(){
-        return $this->hasOne(State::class,'id','state');
-    }
+    // public function state(){
+    //     return $this->hasOne(State::class,'id','state');
+    // }
 
-    public function country(){
-        return $this->hasOne(Country::class,'id','country');
-    }
+    // public function country(){
+    //     return $this->hasOne(Country::class,'id','country');
+    // }
     
 
     

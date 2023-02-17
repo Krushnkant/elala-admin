@@ -25,17 +25,17 @@ class ExperienceResource extends JsonResource
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
        
-        // if($this->city > 0){
-        //     $city = City::where('id',$this->city)->first();
-        // }
+        if($this->city > 0){
+            $city = City::where('id',$this->city)->first();
+        }
 
-        // if($this->state > 0){
-        //     $state = State::where('id',$this->state)->first();
-        // }
+        if($this->state > 0){
+            $state = State::where('id',$this->state)->first();
+        }
 
-        // if($this->country > 0){
-        //     $country = Country::where('id',$this->country)->first();
-        // }
+        if($this->country > 0){
+            $country = Country::where('id',$this->country)->first();
+        }
         
         
         
