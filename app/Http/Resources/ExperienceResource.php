@@ -24,10 +24,11 @@ class ExperienceResource extends JsonResource
         $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
+        return parent::toArray($request);
         $city = City::where('id',$this->city)->first();
         $state = State::where('id',$this->state)->first();
         $country = Country::where('id',$this->country)->first();
-        return parent::toArray($request);
+        
         $attributes_arr = array();
         if($this->category_id != "" && $this->category_id != 0){
             $categoryAttribute= CategoryAttribute::with('attr_optioin')->where('category_id',$this->category_id)->get();
