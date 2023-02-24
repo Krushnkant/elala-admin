@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('removeMediaExperience', [ExperienceController::class, 'removeMediaExperience']);
 
     Route::post('checkorderslot', [OrderController::class, 'checkorderslot']);
+    Route::post('availableprivategroupdate', [OrderController::class, 'availableprivategroupdate']);
 
     Route::post('createorder', [OrderController::class, 'createorder']);
     Route::post('getHostOrders', [OrderController::class, 'getHostOrders']);
