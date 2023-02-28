@@ -216,7 +216,7 @@ class OrderController extends BaseController
 
     public function getHostOrders(Request $request){
         $limit = isset($request->limit)?$request->limit:10;
-        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','users.full_name')->leftJoin('experiences', function($join) {
+        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','users.full_name','users.id as uid')->leftJoin('experiences', function($join) {
             $join->on('experiences.id', '=', 'orders.experience_id');
           })->leftJoin('users', function($join) {
             $join->on('orders.user_id', '=', 'users.id');
@@ -249,6 +249,7 @@ class OrderController extends BaseController
             $temp['total_member'] = $order->total_member;
             $temp['total_amount'] = $order->total_amount;
             $temp['title'] = $order->title;
+            $temp['user_id'] = $order->uid;
             $temp['full_name'] = $order->full_name;
             $temp['image'] = isset($image->thumb)?$image->thumb:"";
             
@@ -261,7 +262,7 @@ class OrderController extends BaseController
 
     public function getMyOrders(Request $request){
         $limit = isset($request->limit)?$request->limit:10;
-        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','users.full_name')->leftJoin('experiences', function($join) {
+        $orders = Order::select('orders.id as booking_id','orders.*','experiences.title','users.full_name','users.id as uid')->leftJoin('experiences', function($join) {
             $join->on('experiences.id', '=', 'orders.experience_id');
           })->leftJoin('users', function($join) {
             $join->on('experiences.user_id', '=', 'users.id');
@@ -294,6 +295,7 @@ class OrderController extends BaseController
             $temp['total_member'] = $order->total_member;
             $temp['total_amount'] = $order->total_amount;
             $temp['title'] = $order->title;
+            $temp['user_id'] = $order->uid;
             $temp['full_name'] = $order->full_name;
             $temp['image'] = isset($image->thumb)?$image->thumb:"";
             

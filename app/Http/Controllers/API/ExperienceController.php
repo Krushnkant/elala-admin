@@ -265,14 +265,25 @@ class ExperienceController extends BaseController
     
         if($request->hasFile('images')) {
             $experience_images = array();
-            foreach ($request->file('images') as $image) {
+            foreach ($request->file('images') as $key => $image) {
                 $ExperienceMedia = new ExperienceMedia();
                 $ExperienceMedia->experience_id = $request->experience_id;
                 $image_name = 'experience_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-                $destinationPath = public_path('images/experience_images');
-                $image->move($destinationPath, $image_name);
+                // $destinationPath = public_path('images/experience_images');
+                // $image->move($destinationPath, $image_name);
+
+                $destinationPath = public_path('images/experience_images/'.$image_name);
+                $imageTemp = $_FILES["images"]["tmp_name"][$key];
+
+                $destinationPaththumb = public_path('images/experience_images_thumb/'.$image_name);
+                $imageTempthumb = $_FILES["images"]["tmp_name"][$key];
+
+                compressImage($imageTemp, $destinationPath, 80);
+                compressImage($imageTempthumb, $destinationPaththumb, 40);
+                
                // array_push($experience_images,'images/experience_images/'.$image_name);
-                $ExperienceMedia->thumb = 'images/experience_images/'.$image_name;
+                //$ExperienceMedia->thumb = 'images/experience_images/'.$image_name;
+                $ExperienceMedia->thumb = $image_name;
                 $ExperienceMedia->type = 'img';
                 $ExperienceMedia->save();
             }  
@@ -295,9 +306,17 @@ class ExperienceController extends BaseController
         if($request->hasFile('image')) {
             $image = $request->file('image');
             $image_name = 'experience_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('images/experience_images');
-            $image->move($destinationPath, $image_name);
-            $Experience->image = 'images/experience_images/'.$image_name;
+            $destinationPath = public_path('images/experience_images/'.$image_name);
+            $imageTemp = $_FILES["images"]["tmp_name"];
+            compressImage($imageTemp, $destinationPath, 80);
+
+            $destinationPaththumb = public_path('images/experience_images_thumb/'.$image_name);
+            $imageTempthumb = $_FILES["images"]["tmp_name"];
+            compressImage($imageTempthumb, $destinationPaththumb, 40);
+            // $destinationPath = public_path('images/experience_images');
+            // $image->move($destinationPath, $image_name);
+            //$Experience->image = 'images/experience_images/'.$image_name;
+            $Experience->image = $image_name;
         }
         
         if(checkExperienceStatus('MediaPage',$Experience->proccess_page)){
@@ -1004,7 +1023,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media[0])?url($experience->media[0]->thumb):"";
+            $temp['image'] = isset($experience->media[0])?url('images/experience_images/'.$experience->media[0]->thumb):"";
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = 1;
             array_push($experiences_arr,$temp);

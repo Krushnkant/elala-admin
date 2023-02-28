@@ -78,6 +78,9 @@ function compressImage($source, $destination, $quality) {
     return $destination; 
 }
 
+
+
+
 function getExperienceStatus($experience_status){
     if($experience_status == 1){
         $experience_status = "Active";
