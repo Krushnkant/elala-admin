@@ -307,11 +307,10 @@ class ExperienceController extends BaseController
             $image = $request->file('image');
             $image_name = 'experience_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('images/experience_images/'.$image_name);
-            $imageTemp = $_FILES["images"]["tmp_name"];
+            $imageTemp = $_FILES["image"]["tmp_name"];
             compressImage($imageTemp, $destinationPath, 80);
-
             $destinationPaththumb = public_path('images/experience_images_thumb/'.$image_name);
-            $imageTempthumb = $_FILES["images"]["tmp_name"];
+            $imageTempthumb = $_FILES["image"]["tmp_name"];
             compressImage($imageTempthumb, $destinationPaththumb, 40);
             // $destinationPath = public_path('images/experience_images');
             // $image->move($destinationPath, $image_name);
@@ -864,9 +863,21 @@ class ExperienceController extends BaseController
         $treding_experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img')->get(['id','thumb'])->toArray(); 
             }])->where('estatus',1)->get();
+           
         
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
+            $media_array = array();
+            $media_array[0]['id'] = 0;
+            $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+            $media_array[0]['type'] = 'img';
+            foreach($experience->media as $media){
+                $temp = array();
+                $temp['id'] = $media['id'];
+                $temp['thumb'] = 'images/experience_images_thumb/'.$media['thumb'];
+                $temp['type'] = $media['type'];
+                array_push($media_array,$temp);
+            }
            // dd($experience->media);
             // $coverimage = array('id'=>'0','thumb'=> $experience->image);
             // array_unshift($experience->media, $coverimage);
@@ -889,7 +900,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media)?$experience->media:[];
+            $temp['image'] = isset($media_array)?$media_array:[];
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = $experience->review_total_user;
             array_push($treding_experiences_arr,$temp);
@@ -902,6 +913,17 @@ class ExperienceController extends BaseController
     
         $experiences_near_you_arr = array();
         foreach ($experiences_near_you as $experience){
+            $media_array = array();
+            $media_array[0]['id'] = 0;
+            $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+            $media_array[0]['type'] = 'img';
+            foreach($experience->media as $media){
+                $temp = array();
+                $temp['id'] = $media['id'];
+                $temp['thumb'] = 'images/experience_images_thumb/'.$media['thumb'];
+                $temp['type'] = $media['type'];
+                array_push($media_array,$temp);
+            }
             $temp = array();
             $temp['id'] = $experience->id;
             $temp['slug'] = $experience->slug;
@@ -909,7 +931,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media)?$experience->media:[];
+            $temp['image'] = isset($media_array)?$media_array:[];
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = $experience->review_total_user;
             array_push($experiences_near_you_arr,$temp);
@@ -957,6 +979,18 @@ class ExperienceController extends BaseController
         }else{
             $host = "";
         }
+
+        $media_array = array();
+        $media_array[0]['id'] = 0;
+        $media_array[0]['thumb'] = 'images/experience_images/'.$experience['image'];
+        $media_array[0]['type'] = 'img';
+        foreach($Images as $media){
+            $temp = array();
+            $temp['id'] = $media['id'];
+            $temp['thumb'] = 'images/experience_images/'.$media['thumb'];
+            $temp['type'] = $media['type'];
+            array_push($media_array,$temp);
+        }
         $data =  [
             'id' => $experience->id,
             'slug' => $experience->slug,
@@ -967,7 +1001,7 @@ class ExperienceController extends BaseController
             'category_id' => $experience->category_id,
             'title' => $experience->title,
             'description' => $experience->description,
-            'images' => $Images,
+            'images' => $media_array,
             'videos' => $Videos,
             'duration' => $experience->duration,
             'age_limit' => explode(',',$experience->age_limit),
@@ -1015,6 +1049,18 @@ class ExperienceController extends BaseController
 
         $experiences_arr = array();
         foreach ($experiences as $experience){
+            
+            $media_array = array();
+            $media_array[0]['id'] = 0;
+            $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+            $media_array[0]['type'] = 'img';
+            foreach($experience->media as $media){
+                $temp = array();
+                $temp['id'] = $media['id'];
+                $temp['thumb'] = 'images/experience_images_thumb/'.$media['thumb'];
+                $temp['type'] = $media['type'];
+                array_push($media_array,$temp);
+            }
             $temp = array();
             $temp['id'] = $experience->id;
             $temp['slug'] = $experience->slug;
@@ -1023,7 +1069,7 @@ class ExperienceController extends BaseController
             $temp['location'] = $experience->location;
             $temp['individual_rate'] = $experience->individual_rate;
             $temp['duration'] = $experience->duration;
-            $temp['image'] = isset($experience->media[0])?url('images/experience_images/'.$experience->media[0]->thumb):"";
+            $temp['image'] = isset($media_array)?$media_array:"";
             $temp['rating'] = $experience->rating;
             $temp['rating_member'] = 1;
             array_push($experiences_arr,$temp);
