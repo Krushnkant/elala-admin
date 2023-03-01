@@ -1047,7 +1047,7 @@ class ExperienceController extends BaseController
     }
 
     public function getRelatedExperiences($slug){
-
+         
         $experience = Experience::where('slug',$slug)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
@@ -1055,11 +1055,12 @@ class ExperienceController extends BaseController
         $id = $experience->id;
         $experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
-            }])->where('category_id',$experience->category_id)->where('id', '!=',$id)->where('estatus',1)->limit('6')->get();
+            }])->where('category_id',$experience->category_id)->where('id', '!=',$id)->where('estatus',1)->limit('10')->get();
 
         $experiences_arr = array();
+        $experiences_ids = array();
         foreach ($experiences as $experience){
-            
+            $experiences_ids[] = $experience->id;
             $media_array = array();
             $media_array[0]['id'] = 0;
             $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
@@ -1085,6 +1086,42 @@ class ExperienceController extends BaseController
             array_push($experiences_arr,$temp);
         }
 
+        if(count($experiences_arr) < 10){
+            $num = 10 - count($experiences_arr);
+            $experiences = Experience::with(['media' => function($q) {
+                $q->where('type', '=', 'img'); 
+            }])->where('id', '!=',$id)->whereNotIn('id',$experiences_ids)->where('estatus',1)->limit($num)->get();
+
+            $experiences_arr = array();
+            foreach ($experiences as $experience){
+                
+                $media_array = array();
+                $media_array[0]['id'] = 0;
+                $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+                $media_array[0]['type'] = 'img';
+                foreach($experience->media as $media){
+                    $temp = array();
+                    $temp['id'] = $media['id'];
+                    $temp['thumb'] = 'images/experience_images_thumb/'.$media['thumb'];
+                    $temp['type'] = $media['type'];
+                    array_push($media_array,$temp);
+                }
+                $temp = array();
+                $temp['id'] = $experience->id;
+                $temp['slug'] = $experience->slug;
+                $temp['title'] = $experience->title;
+                $temp['description'] = $experience->description;
+                $temp['location'] = $experience->location;
+                $temp['individual_rate'] = $experience->individual_rate;
+                $temp['duration'] = $experience->duration;
+                $temp['image'] = isset($media_array)?$media_array:"";
+                $temp['rating'] = $experience->rating;
+                $temp['rating_member'] = 1;
+                array_push($experiences_arr,$temp);
+            }
+
+        }
+        
         return $this->sendResponseWithData($experiences_arr,"Related Experiences Retrieved Successfully.");
     }
 
