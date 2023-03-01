@@ -40,7 +40,7 @@ class ExperienceResource extends JsonResource
             $temp['id'] = $media['id'];
             $temp['thumb'] = 'images/experience_videos/'.$media['thumb'];
             $temp['type'] = $media['type'];
-            array_push($image_array,$temp);
+            array_push($video_array,$temp);
         }
        
         if($this->city > 0){

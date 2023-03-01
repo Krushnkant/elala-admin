@@ -1004,7 +1004,7 @@ class ExperienceController extends BaseController
             $temp['id'] = $media['id'];
             $temp['thumb'] = 'images/experience_videos/'.$media['thumb'];
             $temp['type'] = $media['type'];
-            array_push($image_array,$temp);
+            array_push($video_array,$temp);
         }
         $data =  [
             'id' => $experience->id,
@@ -1101,9 +1101,11 @@ class ExperienceController extends BaseController
             foreach ($experiences as $experience){
                 
                 $media_array = array();
-                $media_array[0]['id'] = 0;
-                $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
-                $media_array[0]['type'] = 'img';
+                if($experience['image'] != ""){
+                    $media_array[0]['id'] = 0;
+                    $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+                    $media_array[0]['type'] = 'img';
+                }
                 foreach($experience->media as $media){
                     $temp = array();
                     $temp['id'] = $media['id'];
