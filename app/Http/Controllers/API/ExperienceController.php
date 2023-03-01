@@ -957,8 +957,8 @@ class ExperienceController extends BaseController
         $id = $experience->id;
         $ProvideItem = ExperienceProvideItem::where('experience_id',$id)->get(['id','title']);
         $BrindItem = ExperienceBrindItem::where('experience_id',$id)->get(['id','title']);
-        $Images = ExperienceMedia::where('experience_id',$id)->where('type','img')->get(['id','thumb']);
-        $Videos = ExperienceMedia::where('experience_id',$id)->where('type','video')->get(['id','thumb']);
+        $Images = ExperienceMedia::where('experience_id',$id)->where('type','img')->get(['id','thumb','type']);
+        $Videos = ExperienceMedia::where('experience_id',$id)->where('type','video')->get(['id','thumb','type']);
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$id)->get(['id','from_member','to_member','discount']);
         $ScheduleTime = ExperienceScheduleTime::where('experience_id',$id)->get(['id','day','time']);
         $ExperienceLanguage = ExperienceLanguage::with('language')->where('experience_id',$id)->get();
