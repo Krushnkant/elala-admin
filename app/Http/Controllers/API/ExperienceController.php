@@ -1067,9 +1067,11 @@ class ExperienceController extends BaseController
         foreach ($experiences as $experience){
             $experiences_ids[] = $experience->id;
             $media_array = array();
-            $media_array[0]['id'] = 0;
-            $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
-            $media_array[0]['type'] = 'img';
+            if($experience['image'] != ""){
+                $media_array[0]['id'] = 0;
+                $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+                $media_array[0]['type'] = 'img';
+            }
             foreach($experience->media as $media){
                 $temp = array();
                 $temp['id'] = $media['id'];
