@@ -992,6 +992,15 @@ class ExperienceController extends BaseController
             $temp['type'] = $media['type'];
             array_push($media_array,$temp);
         }
+
+        $video_array = array();
+        foreach($Videos as $media){
+            $temp = array();
+            $temp['id'] = $media['id'];
+            $temp['thumb'] = 'images/experience_videos/'.$media['thumb'];
+            $temp['type'] = $media['type'];
+            array_push($image_array,$temp);
+        }
         $data =  [
             'id' => $experience->id,
             'slug' => $experience->slug,
@@ -1003,7 +1012,7 @@ class ExperienceController extends BaseController
             'title' => $experience->title,
             'description' => $experience->description,
             'images' => $media_array,
-            'videos' => $Videos,
+            'videos' => $video_array,
             'duration' => $experience->duration,
             'age_limit' => explode(',',$experience->age_limit),
             'provide_items' => $ProvideItem,

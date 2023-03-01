@@ -20,10 +20,28 @@ class ExperienceResource extends JsonResource
         
         $ProvideItem = ExperienceProvideItem::where('experience_id',$this->id)->get(['id','title']);
         $BrindItem = ExperienceBrindItem::where('experience_id',$this->id)->get(['id','title']);
-        $Images = ExperienceMedia::where('experience_id',$this->id)->where('type','img')->get(['id','thumb']);
-        $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb']);
+        $Images = ExperienceMedia::where('experience_id',$this->id)->where('type','img')->get(['id','thumb'])->toArray();
+        $Videos = ExperienceMedia::where('experience_id',$this->id)->where('type','video')->get(['id','thumb'])->toArray();
         $DiscountRate = ExperienceDiscountRate::where('experience_id',$this->id)->get(['id','from_member','to_member','discount']);
         $ExperienceLanguage = ExperienceLanguage::where('experience_id',$this->id)->get(['id','experience_id','language_id']);
+
+        $image_array = array();
+        foreach($Images as $media){
+            $temp = array();
+            $temp['id'] = $media['id'];
+            $temp['thumb'] = 'images/experience_images/'.$media['thumb'];
+            $temp['type'] = $media['type'];
+            array_push($image_array,$temp);
+        }
+
+        $video_array = array();
+        foreach($Videos as $media){
+            $temp = array();
+            $temp['id'] = $media['id'];
+            $temp['thumb'] = 'images/experience_videos/'.$media['thumb'];
+            $temp['type'] = $media['type'];
+            array_push($image_array,$temp);
+        }
        
         if($this->city > 0){
             $city = City::where('id',$this->city)->first();
@@ -97,8 +115,8 @@ class ExperienceResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'image' => $this->image,
-            'images' => $Images,
-            'videos' => $Videos,
+            'images' => $image_array,
+            'videos' => $video_array,
             'duration' => $this->duration,
             'age_limit' => explode(',',$this->age_limit),
             'provide_items' => $ProvideItem,
