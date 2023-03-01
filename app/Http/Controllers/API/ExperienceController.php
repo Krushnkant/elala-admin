@@ -869,9 +869,12 @@ class ExperienceController extends BaseController
         $treding_experiences_arr = array();
         foreach ($treding_experiences as $experience){
             $media_array = array();
-            $media_array[0]['id'] = 0;
-            $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
-            $media_array[0]['type'] = 'img';
+            if($experience['image'] != ""){
+                $media_array[0]['id'] = 0;
+                $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+                $media_array[0]['type'] = 'img';
+            }
+            
             foreach($experience->media as $media){
                 $temp = array();
                 $temp['id'] = $media['id'];
@@ -915,9 +918,11 @@ class ExperienceController extends BaseController
         $experiences_near_you_arr = array();
         foreach ($experiences_near_you as $experience){
             $media_array = array();
-            $media_array[0]['id'] = 0;
-            $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
-            $media_array[0]['type'] = 'img';
+            if($experience['image'] != ""){
+                $media_array[0]['id'] = 0;
+                $media_array[0]['thumb'] = 'images/experience_images_thumb/'.$experience['image'];
+                $media_array[0]['type'] = 'img';
+            }
             foreach($experience->media as $media){
                 $temp = array();
                 $temp['id'] = $media['id'];
