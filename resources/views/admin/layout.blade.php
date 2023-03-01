@@ -281,7 +281,7 @@ $settings = \App\Models\Settings::first();
 
 <script src="{{ asset('plugins/summernote/dist/summernote.min.js') }}"></script>
 <script src="{{ asset('plugins/summernote/dist/summernote-init.js') }}"></script>
-<script src="{{ asset('js/CatImgJs.js') }}" type="text/javascript"></script>
+{{-- <script src="{{ asset('js/CatImgJs.js') }}" type="text/javascript"></script> --}}
 <script src="{{ asset('js/PostImgJs.js') }}" type="text/javascript"></script>
 <script src="{{ url('plugins/chart.js/Chart.bundle.min.js') }}"></script>
 <script src="//cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.min.js"></script>

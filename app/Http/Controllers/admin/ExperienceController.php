@@ -364,12 +364,18 @@ class ExperienceController extends Controller
 
     public function uploadfile(Request $request){
         if(isset($request->action) && $request->action == 'uploadExpIcon'){
+            $image_check = ['png','jpg','gif','jpeg'];
             if ($request->hasFile('files')) {
                 $image = $request->file('files')[0];
+                
                 $image_name = 'experienceThumb_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-                $destinationPath = public_path('images/experience_images');
+                if(in_array($image->getClientOriginalExtension(),$image_check)){
+                    $destinationPath = public_path('images/experience_images');
+                }else{
+                    $destinationPath = public_path('images/experience_videos');
+                }
                 $image->move($destinationPath, $image_name);
-                return response()->json(['data' => 'images/experience_images/'.$image_name]);
+                return response()->json(['data' => $image_name]);
             }
         }
     }

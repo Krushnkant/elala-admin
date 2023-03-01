@@ -61,7 +61,7 @@
                                         <div class="jFiler-item-status"></div>
                                         <div class="jFiler-item-thumb-overlay"></div>
                                         <div class="jFiler-item-thumb-image">
-                                            <img src="{{ url($image->thumb) }}" draggable="false" class="set_img" data-toggle="modal" data-target="#{{ $idmodel }}" > 
+                                            <img src="{{ url('images/experience_images/'.$image->thumb) }}" draggable="false" class="set_img" data-toggle="modal" data-target="#{{ $idmodel }}" > 
                                         </div>
                                     </div>
                                     <div class="jFiler-item-assets jFiler-row">
@@ -82,7 +82,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                                 </div>
-                                <div class="modal-body"><img src="{{ url($image->thumb) }}" style="height: 300px;width: 100%;"></div>
+                                <div class="modal-body"><img src="{{ url('images/experience_images/'.$image->thumb) }}" style="height: 300px;width: 100%;"></div>
                                 
                             </div>
                             </div>
@@ -131,7 +131,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <video width="320" height="240" controls style="height: 300px;width: 100%;">
-                                    <source src="{{ url($image->thumb) }}" type="video/mp4">
+                                    <source src="{{ url('images/experience_videos/'.$image->thumb) }}" type="video/mp4">
                                     <source src="movie.ogg" type="video/ogg">
                                 
                                     </video>  
