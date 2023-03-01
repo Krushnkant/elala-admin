@@ -860,15 +860,6 @@ class ExperienceController extends BaseController
 
     public function getHomeExperiences(Request $request){
 
-        $ExperienceMedias = ExperienceMedia::get();
-        foreach($ExperienceMedias as $ExperienceMedia){
-            $image = str_replace("images/experience_videos/","",$ExperienceMedia->thumb);
-            $media = ExperienceMedia::find($ExperienceMedia->id);
-            $media->thumb = $image;
-            $media->save();
-        }
-
-
         $limit = isset($request->limit)?$request->limit:20;
         $treding_experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img')->get(['id','thumb'])->toArray(); 
