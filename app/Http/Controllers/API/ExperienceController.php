@@ -862,7 +862,7 @@ class ExperienceController extends BaseController
 
         $ExperienceMedias = ExperienceMedia::get();
         foreach($ExperienceMedias as $ExperienceMedia){
-            $image = str_replace("images/experience_images/","",$ExperienceMedia->thumb);
+            $image = str_replace("images/experience_videos/","",$ExperienceMedia->thumb);
             $media = ExperienceMedia::find($ExperienceMedia->id);
             $media->thumb = $image;
             $media->save();
