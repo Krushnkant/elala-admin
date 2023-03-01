@@ -296,7 +296,7 @@ class ExperienceController extends BaseController
             $image->move($destinationPath, $image_name);
             $ExperienceMedia = new ExperienceMedia();
             $ExperienceMedia->experience_id = $request->experience_id;
-            $ExperienceMedia->thumb = 'images/experience_videos/'.$image_name;
+            $ExperienceMedia->thumb = $image_name;
             $ExperienceMedia->type = 'video';
             $ExperienceMedia->save();
         }
