@@ -308,10 +308,10 @@ class ExperienceController extends BaseController
             $image_name = 'experience_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('images/experience_images/'.$image_name);
             $imageTemp = $_FILES["image"]["tmp_name"];
-            compressImage($imageTemp, $destinationPath, 80);
+            compressImage($imageTemp, $destinationPath, 50);
             $destinationPaththumb = public_path('images/experience_images_thumb/'.$image_name);
             $imageTempthumb = $_FILES["image"]["tmp_name"];
-            compressImage($imageTempthumb, $destinationPaththumb, 40);
+            compressImage($imageTempthumb, $destinationPaththumb, 20);
             // $destinationPath = public_path('images/experience_images');
             // $image->move($destinationPath, $image_name);
             //$Experience->image = 'images/experience_images/'.$image_name;
