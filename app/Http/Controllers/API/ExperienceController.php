@@ -987,9 +987,11 @@ class ExperienceController extends BaseController
         }
 
         $media_array = array();
-        $media_array[0]['id'] = 0;
-        $media_array[0]['thumb'] = 'images/experience_images/'.$experience['image'];
-        $media_array[0]['type'] = 'img';
+        if($experience['image'] != ""){
+            $media_array[0]['id'] = 0;
+            $media_array[0]['thumb'] = 'images/experience_images/'.$experience['image'];
+            $media_array[0]['type'] = 'img';
+        }
         foreach($Images as $media){
             $temp = array();
             $temp['id'] = $media['id'];
