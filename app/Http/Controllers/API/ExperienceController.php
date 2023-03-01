@@ -1060,7 +1060,7 @@ class ExperienceController extends BaseController
         $id = $experience->id;
         $experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
-            }])->where('category_id',$experience->category_id)->where('id', '!=',$id)->where('estatus',1)->limit('10')->get();
+            }])->where('category_id',$experience->category_id)->where('id', '!=',$id)->where('estatus',1)->limit('12')->get();
 
         $experiences_arr = array();
         $experiences_ids = array();
