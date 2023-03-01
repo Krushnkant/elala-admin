@@ -1093,8 +1093,8 @@ class ExperienceController extends BaseController
             array_push($experiences_arr,$temp);
         }
 
-        if(count($experiences_arr) < 10){
-            $num = 10 - count($experiences_arr);
+        if(count($experiences_arr) < 12){
+            $num = 12 - count($experiences_arr);
             $experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
             }])->where('id', '!=',$id)->whereNotIn('id',$experiences_ids)->where('estatus',1)->limit($num)->get();
