@@ -198,8 +198,8 @@ function post_table(is_clearState=false){
         },
         'columnDefs': [
             { "width": "5px", "targets": 0 },
-            { "width": "120px", "targets": 1 },
-            { "width": "50px", "targets": 2 },
+            { "width": "200px", "targets": 1 },
+            { "width": "10px", "targets": 2 },
             { "width": "10px", "targets": 3 },
         ],
         "columns": [
