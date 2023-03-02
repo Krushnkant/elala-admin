@@ -47,11 +47,12 @@ class OrderController extends BaseController
 
     public function availableprivategroupdate(Request $request)
     {
+        
+
         $validator = Validator::make($request->all(), [
             'experience_id' => 'required',
-            'booking_month' => 'required',
-            'booking_year' => 'required',
-          
+            'start_date' => 'required',
+            'end_date' => 'required',
         ]);
         if($validator->fails()){
             return response()->json(['errors' => $validator->errors(),'status'=>'failed']);
@@ -64,12 +65,22 @@ class OrderController extends BaseController
 
         //dd($order_slot);
 
-        $number = cal_days_in_month(CAL_GREGORIAN, $request->booking_month, $request->booking_year);
-        
+        //$number = cal_days_in_month(CAL_GREGORIAN, $request->booking_month, $request->booking_year);
+
+        $startDate = new Carbon($request->start_date);
+        $endDate = new Carbon($request->end_date);
+        $all_dates = array();
+        while ($startDate->lte($endDate)){
+            $all_dates[] = $startDate->toDateString();
+            $startDate->addDay();
+        }
+      
         $orders_arr = [];
-        for($i = 1; $i <= $number; $i++){
-            $paymentDate = $i.'/'.$request->booking_month.'/'.$request->booking_year;
-            $day = Carbon::createFromFormat('d/m/Y', $paymentDate)->format('l');
+        //for($i = 1; $i <= $number; $i++){
+         foreach($all_dates as $paymentDate){    
+           // dd($paymentDate);
+            //$paymentDate = $i.'/'.$request->booking_month.'/'.$request->booking_year;
+            $day = Carbon::createFromFormat('Y-m-d', $paymentDate)->format('l');
             //dump($day);
             $order_slot = OrderSlot::where(['experience_id'=>$request->experience_id])->whereYear('booking_date', '=', $request->booking_year)->whereMonth('booking_date', '=', $request->booking_month)->get()->pluck('schedule_time_id');
             $experiencescheduletimes = ExperienceScheduleTime::where(['experience_id'=>$request->experience_id,'day'=>$day])->whereNotIn('id', $order_slot)->get();
@@ -85,7 +96,7 @@ class OrderController extends BaseController
                 $temp['end_time'] = $endTime->format('H:i:s');
                 $temp['individual_rate'] = $experience->individual_rate;
                 $temp['min_private_group_rate'] = $experience->min_private_group_rate;
-                $date = $i.'-'.$request->booking_month.'-'.$request->booking_year;
+                $date = $paymentDate;
                 $temp['date'] = date('d-m-Y', strtotime($date)); 
                 array_push($orders_arr,$temp);
             }
