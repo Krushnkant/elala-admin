@@ -148,9 +148,9 @@ class ExperienceController extends Controller
                     $category_name = isset($experience->category)?$experience->category->category_name:"";
                     $full_name = isset($experience->user->full_name)?$experience->user->full_name:"";
                     $name = '<span style="font-size:15px">  '.$experience->title.'</span><br>'.'<span>'.$category_name.'</span><br>'.'<span>Experience By : '.$full_name.'</span>';
-                    
+                    $hours = floor($experience->duration / 60).' hours : '.($experience->duration -   floor($experience->duration / 60) * 60) .' min';
                     $nestedData['name'] = $name;
-                    $nestedData['time'] = $experience->duration .' min';
+                    $nestedData['time'] = $hours;
                     $nestedData['price'] = $price;
                     $nestedData['estatus'] = $estatus;
                     $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($experience->created_at));
