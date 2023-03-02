@@ -67,27 +67,27 @@
                             <table id="Order" class="table zero-configuration customNewtable" style="width:100%">
                                 <thead>
                                 <tr>
-                                    
                                     <th>No</th>
-                                    <th>Experience</th>
-                                    <th>Booking</th>
-                                    <th>Customer</th>
-                                    <th>Host</th>
-                                    <th>Booking Date/Slot</th>
-                                    <th>Register Date</th>
+                                    <th>Booking Id</th>
+                                    <th>Booking Info</th>
+                                    <th>Customer Info</th>
+                                    <th>Experience Detail</th>
+                                    <th>Host By</th>
+                                    <th>Experience Date</th>
+                                    <th>Booking Date</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
-                                <tr>
-                                    
-                                    <th>No</th>
-                                    <th>Experience</th>
-                                    <th>Booking</th>
-                                    <th>Customer</th>
-                                    <th>Host</th>
-                                    <th>Booking Date/Slot</th>
-                                    <th>Register Date</th>
-                                </tr>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Booking Id</th>
+                                        <th>Booking Info</th>
+                                        <th>Customer Info</th>
+                                        <th>Experience Detail</th>
+                                        <th>Host By</th>
+                                        <th>Experience Date</th>
+                                        <th>Booking Date</th>
+                                    </tr>
                                 </tfoot>
                             </table>
                         </div>
@@ -252,12 +252,13 @@ function order_table(tab_type='',is_clearState=false){
         },
         'columnDefs': [
             { "width": "20px", "targets": 0 },
-            { "width": "150px", "targets": 1 },
+            { "width": "80px", "targets": 1 },
             { "width": "130px", "targets": 2 },
             { "width": "110px", "targets": 3 },
-            { "width": "110px", "targets": 4 },
-            { "width": "150px", "targets": 5 },
-            { "width": "150px", "targets": 6 }
+            { "width": "170px", "targets": 4 },
+            { "width": "110px", "targets": 5 },
+            { "width": "100px", "targets": 6 },
+            { "width": "80px", "targets": 7 },
         ],
         "columns": [
             {data: 'id', name: 'id', class: "text-center", orderable: false ,
@@ -265,12 +266,13 @@ function order_table(tab_type='',is_clearState=false){
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            {data: 'experience', name: 'experience', orderable: false, class: "text-left multirow"},
-            {data: 'order_info', name: 'order_info', orderable: false, class: "text-left multirow"},
+            {data: 'booking_id', name: 'booking_id', orderable: true, class: "text-left multirow"},
+            {data: 'booking_info', name: 'booking_info', orderable: false, class: "text-left multirow"},
             {data: 'customer_info', name: 'customer_info', orderable: false, class: "text-center multirow"},
-            {data: 'host', name: 'host', orderable: false, class: "text-center multirow"},
-            {data: 'booking', name: 'booking', orderable: false, class: "text-left multirow"},
-            {data: 'created_at', name: 'created_at', orderable: false, class: "text-left multirow"},
+            {data: 'experience_details', name: 'experience_details', orderable: false, class: "text-left multirow"},
+            {data: 'host_by', name: 'host_by', orderable: false, class: "text-center multirow"},
+            {data: 'experience_date', name: 'experience_date', orderable: true, class: "text-left multirow"},
+            {data: 'booking_date', name: 'booking_date', orderable: true, class: "text-left multirow"},
         ]
     });
 }

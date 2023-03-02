@@ -24,12 +24,13 @@ class OrderController extends Controller
         if ($request->ajax()) {
             $columns = array(
                 0 =>'id',
-                1 =>'experience',
-                2 =>'order_info',
+                1 =>'custom_orderid',
+                2 =>'booking_info',
                 3=> 'customer_info',
-                4=> 'host',
-                5=> 'note',
-                6=> 'created_at'
+                4=> 'experience_details',
+                5=> 'host_by',
+                6=> 'created_at',
+                7=> 'booking_date'
             );
 
             $tab_type = $request->tab_type;
@@ -136,18 +137,30 @@ class OrderController extends Controller
                     $endTime = $time1->addMinutes(isset($Order->experience->duration)?$Order->experience->duration:0);
                     $end_time = $endTime->format('H:i:s');
 
-                    $order_info = '<span>Booking ID: '.$Order->custom_orderid.'</span>';
-                    $order_info .= '<span>Total Order Cost: '.$Order->total_amount.'</span>';
+                    $order_info = '<span>Total Order Cost: '.$Order->total_amount.'</span>';
                     $order_info .= '<span>Total Member: '.$Order->total_member.'</span>';
-                    $booking_date = '<span><b> Date : </b>'.date('d-m-Y', strtotime($Order->booking_date)).'</span>';
-                    $booking_date .= '<span><b> Slot : </b>'.$Order->orderslot->time.' to '.$end_time.'</span>';
-                    $nestedData['experience'] = isset($Order->experience->title)?$Order->experience->title:"";
-                    $nestedData['order_info'] = $order_info;
+                    //$booking_date = '<span><b> Date : </b>'.date('d-m-Y', strtotime($Order->booking_date)).'</span>';
+                    $experience_details = '<span><b> '.isset($Order->experience->title)?$Order->experience->title:"".' </b></span>';
+                    $experience_details .= '<span><b> Slot : </b>'.$Order->orderslot->time.' to '.$end_time.'</span>';
+                    if(isset($Order->experience->location)){
+                    $experience_details .= '<span><b> Location : </b>'.$Order->experience->location.'</span>';
+                    }
+
+                    $host_by = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span>';
+                    if(isset($Order->experience->user)){
+                        $host_by .= '<span>'.$Order->experience->user->full_name.'</span>';
+                    }
+
+
+                    $nestedData['booking_id'] = $Order->custom_orderid;
+                    $nestedData['booking_info'] = $order_info;
                     $nestedData['customer_info'] = '<span><img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$user_info->full_name.'</span>';
+                    $nestedData['experience_details'] = $experience_details;
+                
                     //$nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.isset($Order->experience)?$Order->experience->user->full_name:"".'</span>';;
-                    $nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'."".'</span>';;
-                    $nestedData['booking'] = $booking_date;
-                    $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($Order->created_at));
+                    $nestedData['host_by'] = $host_by;
+                    $nestedData['experience_date'] = date('d-m-Y h:i A', strtotime($Order->created_at));
+                    $nestedData['booking_date'] = date('d-m-Y', strtotime($Order->booking_date));
                     $data[] = $nestedData;
                 }
                 // dd();

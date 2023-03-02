@@ -174,9 +174,9 @@ div#toast-container .toast-error {
     font-weight: 500;
 }
 
-.table>tbody>tr>td {
+/* .table>tbody>tr>td {
     font-size: 12px;
-}
+} */
 
 .colorpicker-group .asColorPicker-wrap {
     width: 100%;

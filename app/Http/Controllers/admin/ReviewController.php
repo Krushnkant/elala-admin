@@ -108,7 +108,7 @@ class ReviewController extends Controller
                         $action .= 'Reject';
                     }
                   
-                    $nestedData['experice'] = $experience->title;
+                    $nestedData['experice'] = isset($experience->title)?$experience->title:"";
                     $nestedData['user'] = $userdata->full_name;
                     $nestedData['review_text'] = $review->description;
                     $nestedData['review_rating'] = $review->rating .' <i class="fa fa-star checked"></i>';
