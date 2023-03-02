@@ -23,6 +23,7 @@
                                     <tr>
                                         <th>Sr. No</th>
                                         <th>Post</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -30,6 +31,7 @@
                                     <tr>
                                         <th>Sr. No</th>
                                         <th>Post</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                     </tfoot>
@@ -197,7 +199,8 @@ function post_table(is_clearState=false){
         'columnDefs': [
             { "width": "5px", "targets": 0 },
             { "width": "120px", "targets": 1 },
-            { "width": "10px", "targets": 2 },
+            { "width": "50px", "targets": 2 },
+            { "width": "10px", "targets": 3 },
         ],
         "columns": [
             {data: 'sr_no', name: 'sr_no', class: "text-center", orderable: false,
@@ -206,6 +209,7 @@ function post_table(is_clearState=false){
                 }
             },
             {data: 'post', name: 'post', orderable: false, searchable: false, class: "text-left"},
+            {data: 'estatus', name: 'estatus', orderable: false, searchable: false, class: "text-center"},
             {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
         ]
     });

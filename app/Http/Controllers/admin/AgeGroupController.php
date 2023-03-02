@@ -80,11 +80,10 @@ class AgeGroupController extends Controller
 
             $columns = array(
                 0 =>'id',
-                1 =>'from_age',
-                2=> 'to_age',
-                4=> 'estatus',
-                5=> 'created_at',
-                6=> 'action',
+                1 =>'age',
+                2=> 'estatus',
+                3=> 'created_at',
+                4=> 'action',
             );
 
             $totalData = AgeGroup::count();
@@ -152,8 +151,7 @@ class AgeGroupController extends Controller
                         $action .= '<button id="deleteAgeGroupBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeleteAgeGroupModel" onclick="" data-id="' .$agegroup->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
                     }
 
-                    $nestedData['from_age'] = $agegroup->from_age;
-                    $nestedData['to_age'] = $agegroup->to_age;
+                    $nestedData['age'] = $agegroup->from_age ." - ". $agegroup->to_age;
                     $nestedData['estatus'] = $estatus;
                     $nestedData['created_at'] = date('Y-m-d H:i:s', strtotime($agegroup->created_at));
                     $nestedData['action'] = $action;

@@ -112,7 +112,8 @@ class PostController extends Controller
             $columns = array(
                 0 =>'sr_no',
                 1 =>'post',
-                2 => 'action',
+                2 =>'estatus',
+                3 => 'action',
             );
             $totalData = Post::with('postuser','hosttag','postimage')->count();
             
@@ -220,17 +221,17 @@ class PostController extends Controller
                                     <div class="media-reply__link">
                                         <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i> '. $post->total_like.'</button>
                                         <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-comment" aria-hidden="true"></i> '. $post->total_commant.'</button>
-                                        <button class="btn btn-transparent text-dark font-weight-bold p-0 ml-2">'.$privacy.'</button>
+                                        
                                     </div>
                                 </div>
-                                
+                                <p class="btn btn-transparent p-0 ml-2">'.$privacy.'</p> <br>
                                 '. $post->description .'
                                 <ul class="mt-1">';
                                  foreach($post->postmedia as $postmedia){ 
                                      $nestedData['post'] .= '  <li class="d-inline-block"><img class="rounded" width="60" height="60" src="'.url($postmedia->name).'" alt=""></li>';
                                  }
                             $nestedData['post'] .= '</ul>   
-                            <h6 class="p-t-15" title="host tag"><i class="fa fa-tag mb-2"></i> '.$host_tag_full_name.' </h6>
+                            <h6 class="p-t-15" title="host tag">Host Tag : '.$host_tag_full_name.' </h6>
                         </div>
                     </div>';
                     // $nestedData['privacy'] = $privacy;

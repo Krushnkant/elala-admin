@@ -28,7 +28,7 @@
                                     </li>
                                     <li class="nav-item experience_page_tabs" data-tab="Draft_experience_tab"><a class="nav-link" data-toggle="tab" href="">Draft</a>
                                     </li>
-                                    <li class="nav-item experience_page_tabs" data-tab="Padding_experience_tab"><a class="nav-link" data-toggle="tab" href="">Padding</a>
+                                    <li class="nav-item experience_page_tabs" data-tab="Padding_experience_tab"><a class="nav-link" data-toggle="tab" href="">Pending</a>
                                     </li>
                                     <li class="nav-item experience_page_tabs" data-tab="Deactive_experience_tab"><a class="nav-link" data-toggle="tab" href="">Deactive</a>
                                     </li>

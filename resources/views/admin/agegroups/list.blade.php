@@ -33,8 +33,7 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>From Age</th>
-                                    <th>To Age</th>
+                                    <th>Age</th>
                                     <th>Status</th>
                                     <th>Date</th>
                                     <th>Other</th>
@@ -42,9 +41,8 @@
                                 </thead>
                                 <tfoot>
                                 <tr>
-                                <th>No</th>
-                                    <th>From Age</th>
-                                    <th>To Age</th>
+                                    <th>No</th>
+                                    <th>Age</th>
                                     <th>Status</th>
                                     <th>Date</th>
                                     <th>Other</th>
@@ -273,10 +271,9 @@
             'columnDefs': [
                 { "width": "50px", "targets": 0 },
                 { "width": "145px", "targets": 1 },
-                { "width": "165px", "targets": 2 },
-                { "width": "75px", "targets": 3 },
-                { "width": "120px", "targets": 4 },
-                { "width": "115px", "targets": 5 },
+                { "width": "75px", "targets": 2 },
+                { "width": "120px", "targets": 3 },
+                { "width": "115px", "targets": 4 },
             ],
             "columns": [
                 {data: 'id', name: 'id', class: "text-center", orderable: false,
@@ -284,8 +281,7 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },
-                {data: 'from_age', name: 'from_age', class: "text-center multirow"},
-                {data: 'to_age', name: 'to_age', class: "text-left multirow"},
+                {data: 'age', name: 'age', class: "text-center multirow"},
                 {data: 'estatus', name: 'estatus', orderable: false, searchable: false, class: "text-center"},
                 {data: 'created_at', name: 'created_at', searchable: false, class: "text-left"},
                 {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
