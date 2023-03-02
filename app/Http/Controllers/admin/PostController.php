@@ -225,7 +225,7 @@ class PostController extends Controller
                                 </div>
                                 
                                 '. $post->description .'
-                                <ul>';
+                                <ul class="mt-1">';
                                  foreach($post->postmedia as $postmedia){ 
                                      $nestedData['post'] .= '  <li class="d-inline-block"><img class="rounded" width="60" height="60" src="'.url($postmedia->name).'" alt=""></li>';
                                  }
