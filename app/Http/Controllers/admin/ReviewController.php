@@ -103,12 +103,12 @@ class ReviewController extends Controller
                         $action .= '<button id="AcceptBtn" onclick="acceptstatus('. $review->id .')" class="btn btn-gray text-blue btn-sm" data-id="' .$review->id. '">Accept</button>';
                         $action .= '<button id="Reject" onclick="rejectstatus('. $review->id .')" class="btn btn-gray text-blue btn-sm" data-id="' .$review->id. '">Reject</button>';
                     }else if($review->status == 1){
-                        $action .= 'Accept';
+                        $action .= '<span class="text-success">Accept</span>';
                     }else{
-                        $action .= 'Reject';
+                        $action .= '<span class="text-danger">Reject</span>';
                     }
                   
-                    $nestedData['experice'] = isset($experience->title)?$experience->title:"";
+                    $nestedData['experice'] = isset($experience->title)?$experience->title:"-";
                     $nestedData['user'] = $userdata->full_name;
                     $nestedData['review_text'] = $review->description;
                     $nestedData['review_rating'] = $review->rating .' <i class="fa fa-star checked"></i>';

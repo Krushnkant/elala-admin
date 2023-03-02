@@ -42,7 +42,6 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Question</th>
-                                        <th>Answer</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -50,7 +49,6 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Question</th>
-                                        <th>Answer</th>
                                         <th>Action</th>
                                     </tr>
                                     </tfoot>
@@ -203,10 +201,10 @@ function faqs_table(is_clearState=false){
             // "dataSrc": ""
         },
         'columnDefs': [
-            { "width": "50px", "targets": 0 },
-            { "width": "120px", "targets": 1 },
-            { "width": "100px", "targets": 2 },
-            { "width": "100px", "targets": 3 },
+            { "width": "20px", "targets": 0 },
+            { "width": "200px", "targets": 1 },
+            { "width": "30px", "targets": 2 },
+            // { "width": "100px", "targets": 3 },
         ],
         "columns": [
             {data: 'id', question: 'id', class: "text-center", orderable: false,
@@ -214,8 +212,8 @@ function faqs_table(is_clearState=false){
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            {data: 'question', name: 'question'},
-            {data: 'answer', name: 'answer', class: "text-left multirow"},
+            {data: 'question', name: 'question',orderable: false},
+            // {data: 'answer', name: 'answer', class: "text-left multirow"},
             {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
         ]
     });

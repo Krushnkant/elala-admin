@@ -22,14 +22,28 @@
                                     <thead>
                                     <tr>
                                         <th>Sr. No</th>
-                                        <th>Post</th>
+                                        <th>Image</th>
+                                        <th>User Name</th>
+                                        <th>Description</th>
+                                        <th>Host Tag</th>
+                                        <th>Privacy</th>
+                                        <th>Activity</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tfoot>
                                     <tr>
                                         <th>Sr. No</th>
-                                        <th>Post</th>
+                                        <th>Image</th>
+                                        <th>User Name</th>
+                                        <th>Description</th>
+                                        <th>Host Tag</th>
+                                        <th>Privacy</th>
+                                        <th>Activity</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
                                         <th>Action</th>
                                     </tr>
                                     </tfoot>
@@ -195,9 +209,16 @@ function post_table(is_clearState=false){
             // "dataSrc": ""
         },
         'columnDefs': [
-            { "width": "5px", "targets": 0 },
+            { "width": "50px", "targets": 0 },
             { "width": "120px", "targets": 1 },
-            { "width": "10px", "targets": 2 },
+            { "width": "170px", "targets": 2 },
+            { "width": "70px", "targets": 3 },
+            { "width": "120px", "targets": 4 },
+            { "width": "120px", "targets": 5 },
+            { "width": "120px", "targets": 6 },
+            { "width": "120px", "targets": 7 },
+            { "width": "120px", "targets": 8 },
+            { "width": "120px", "targets": 9 },
         ],
         "columns": [
             {data: 'sr_no', name: 'sr_no', class: "text-center", orderable: false,
@@ -205,7 +226,14 @@ function post_table(is_clearState=false){
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            {data: 'post', name: 'post', orderable: false, searchable: false, class: "text-left"},
+            {data: 'post_thumb', name: 'post_thumb', orderable: false, searchable: false, class: "text-center"},
+            {data: 'user_name', name: 'user_name', class: "text-left", orderable: false},
+            {data: 'description', name: 'description', class: "text-left", orderable: false},
+            {data: 'host_tag', name: 'host_tag', class: "text-left", orderable: false},
+            {data: 'privacy', name: 'privacy', class: "text-left", orderable: false},
+            {data: 'activity', name: 'activity', class: "text-left", orderable: false},
+            {data: 'estatus', name: 'estatus', orderable: false, searchable: false, class: "text-center"},
+            {data: 'created_at', name: 'created_at', searchable: false, class: "text-left"},
             {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
         ]
     });

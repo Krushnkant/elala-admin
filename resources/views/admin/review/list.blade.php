@@ -129,16 +129,16 @@ function review_table(is_clearState=false,tab_type=''){
             // "dataSrc": ""
         },
         'columnDefs': [
-            { "width": "50px", "targets": 0 },
-            { "width": "100px", "targets": 1 },
+            { "width": "20px", "targets": 0 },
+            { "width": "150px", "targets": 1 },
             { "width": "70px", "targets": 2 },
-            { "width": "120px", "targets": 3 },
-            { "width": "120px", "targets": 4 },
+            { "width": "150px", "targets": 3 },
+            { "width": "20px", "targets": 4 },
             { "width": "120px", "targets": 5 },
             { "width": "120px", "targets": 6 },
         ],
         "columns": [
-            {data: 'sr_no', name: 'sr_no', class: "text-center", orderable: false,
+            {data: 'sr_no', name: 'sr_no', class: "text-center", orderable: true,
                 render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
@@ -146,8 +146,8 @@ function review_table(is_clearState=false,tab_type=''){
             {data: 'experice', name: 'experice', orderable: false, searchable: false, class: "text-left"},
             {data: 'user', name: 'user', orderable: false, searchable: false, class: "text-left"},
             {data: 'review_text', name: 'review_text', orderable: false, searchable: false, class: "text-left"},
-            {data: 'review_rating', name: 'review_rating', class: "text-left"},
-            {data: 'created_at', name: 'created_at', searchable: false, class: "text-left"},
+            {data: 'review_rating', name: 'review_rating', class: "text-center", orderable: false},
+            {data: 'created_at', name: 'created_at', searchable: false, class: "text-left", orderable: true},
             {data: 'action', name: 'action', orderable: false, searchable: false, class: "text-center"},
         ]
     });

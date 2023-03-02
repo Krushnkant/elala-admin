@@ -111,15 +111,8 @@ class PostController extends Controller
         if ($request->ajax()) {
             $columns = array(
                 0 =>'sr_no',
-                1 =>'post_thumb',
-                2 => 'user_name',
-                3 => 'description',
-                4 => 'host_tag',
-                5 => 'privacy',
-                6 => 'activity',
-                7 => 'estatus',
-                8 => 'created_at',
-                9 => 'action',
+                1 =>'post',
+                2 => 'action',
             );
             $totalData = Post::with('postuser','hosttag','postimage')->count();
             
@@ -137,7 +130,7 @@ class PostController extends Controller
 
             if(empty($request->input('search.value')))
             {
-                $posts = Post::with('postuser','hosttag','postimage')->offset($start)
+                $posts = Post::with('postuser','hosttag','postimage','postmedia')->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
                     ->get();
@@ -145,13 +138,13 @@ class PostController extends Controller
             }
             else {
                 $search = $request->input('search.value');
-                $posts =  Post::with('postuser','hosttag','postimage')->Where('description', 'LIKE',"%{$search}%")
+                $posts =  Post::with('postuser','hosttag','postimage','postmedia')->Where('description', 'LIKE',"%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
                     ->get();
 
-                $totalFiltered = Post::with('postuser','hosttag','postimage')->Where('description', 'LIKE',"%{$search}%")
+                $totalFiltered = Post::Where('description', 'LIKE',"%{$search}%")
                     ->count();
           
             }
@@ -178,9 +171,9 @@ class PostController extends Controller
                         $estatus = '<label class="switch"><input type="checkbox" id="postStatuscheck_'. $post->id .'" value="2"><span class="slider round"></span></label>';
                     }
 
-                    $thumb_path = url('images/placeholder_image.png');
-                    if(isset($post->postimage->name) && $post->postimage->name!=null){
-                        $thumb_path = url($post->postimage->name);
+                    $thumb_path = url('images/default_avatar.jpg');
+                    if(isset($post->user->profile_pic) && $post->postimage->profile_pic!=null){
+                        $thumb_path = url($post->user->profile_pic);
                     }
 
                     if(isset($post->user->full_name)){
@@ -217,14 +210,34 @@ class PostController extends Controller
                         $action .= '<button title="Delete" id="deletepostBtn" class="btn btn-gray text-danger btn-sm" data-toggle="modal" data-target="#DeletepostModal" onclick="" data-id="' .$post->id. '"><i class="fa fa-trash-o" aria-hidden="true"></i></button>';
                     }
                     
-                    $nestedData['user_name'] = $user_full_name;
-                    $nestedData['post_thumb'] = '<img src="'. $thumb_path .'" width="50px" height="50px" alt="Thumbnail">';
-                    $nestedData['description'] = $post->description;
-                    $nestedData['privacy'] = $privacy;
-                    $nestedData['host_tag'] = $host_tag_full_name;
-                    $nestedData['activity'] = $activity;
+                    // $nestedData['user_name'] = $user_full_name;
+                    // $nestedData['post_thumb'] = '<img src="'. $thumb_path .'" width="50px" height="50px" alt="Thumbnail">';
+                    $nestedData['post'] = '<div class="media media-reply">
+                            <img class="mr-3 circle-rounded" src="'. $thumb_path .'" width="50" height="50" alt="'. $user_full_name .'">
+                            <div class="media-body">
+                                <div class="d-sm-flex justify-content-between mb-2">
+                                    <h5 class="mb-sm-0">'. $user_full_name .' <small class="text-muted ml-3">about '.date('d-m-Y h:i A', strtotime($post->created_at)).'</small></h5>
+                                    <div class="media-reply__link">
+                                        <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i> '. $post->total_like.'</button>
+                                        <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-comment" aria-hidden="true"></i> '. $post->total_commant.'</button>
+                                        <button class="btn btn-transparent text-dark font-weight-bold p-0 ml-2">'.$privacy.'</button>
+                                    </div>
+                                </div>
+                                
+                                '. $post->description .'
+                                <ul>';
+                                 foreach($post->postmedia as $postmedia){ 
+                                     $nestedData['post'] .= '  <li class="d-inline-block"><img class="rounded" width="60" height="60" src="'.url($postmedia->name).'" alt=""></li>';
+                                 }
+                            $nestedData['post'] .= '</ul>   
+                            <h6 class="p-t-15" title="host tag"><i class="fa fa-tag mb-2"></i> '.$host_tag_full_name.' </h6>
+                        </div>
+                    </div>';
+                    // $nestedData['privacy'] = $privacy;
+                    // $nestedData['host_tag'] = $host_tag_full_name;
+                    // $nestedData['activity'] = $activity;
                     $nestedData['estatus'] = $estatus;
-                    $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($post->created_at));
+                    // $nestedData['created_at'] = date('d-m-Y h:i A', strtotime($post->created_at));
                     $nestedData['action'] = $action;
                     $data[] = $nestedData;
                 }

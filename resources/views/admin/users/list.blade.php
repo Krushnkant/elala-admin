@@ -19,14 +19,14 @@
                     {{--<h4 class="card-title">User List</h4>--}}
 
                     <div class="action-section row">
-                        <div class="col-lg-12 col-md-8 col-sm-12">
+                        <div class="col-lg-8 col-md-8 col-sm-12">
                             <?php $page_id = \App\Models\ProjectPage::where('route_url', \Illuminate\Support\Facades\Route::currentRouteName())->pluck('id')->first(); ?>
                             @if(getUSerRole()==1 || (getUSerRole()!=1 && is_write($page_id)) )
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#UserModal" id="AddUserBtn"><i class="fa fa-plus" aria-hidden="true"></i></button>
                             @endif
                             {{-- <button class="btn btn-danger" onclick="deleteMultipleAttributes()"><i class="fa fa-trash" aria-hidden="true"></i></button>--}}
                         </div>
-                        <div class="custom-tab-1 col-lg-2 mt-3">
+                        <div class="custom-tab-1 col-lg-4 col-md-4 col-sm-12">
                             <ul class="nav nav-tabs nav-fill">
                                 <li class="nav-item user_page_tabs" data-tab="all_user_tab"><a class="nav-link active show" data-toggle="tab" href="">All</a>
                                 </li>

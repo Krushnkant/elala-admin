@@ -13483,12 +13483,12 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     color: #fff;
 }
 
-.media-reply {
+/* .media-reply {
     margin-bottom: 20px;
-}
+} */
 
 .media-reply .media-body {
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.1);
 }
 
