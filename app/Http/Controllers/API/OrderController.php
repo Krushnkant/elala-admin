@@ -262,7 +262,7 @@ class OrderController extends BaseController
             $temp['title'] = $order->title;
             $temp['user_id'] = $order->uid;
             $temp['full_name'] = $order->full_name;
-            $temp['image'] = isset($image->thumb)?$image->thumb:"";
+            $temp['image'] = isset($image->thumb)?'images/experience_images_thumb/'.$image->thumb:"";
             
             array_push($orders_arr,$temp);
         }
@@ -308,7 +308,7 @@ class OrderController extends BaseController
             $temp['title'] = $order->title;
             $temp['user_id'] = $order->uid;
             $temp['full_name'] = $order->full_name;
-            $temp['image'] = isset($image->thumb)?$image->thumb:"";
+            $temp['image'] = isset($image->thumb)?'images/experience_images_thumb/'.$image->thumb:"";
             
             array_push($orders_arr,$temp);
         }
@@ -381,6 +381,29 @@ class OrderController extends BaseController
         }else{
             $host = "";
         }
+
+        $media_array = array();
+        if($experience['image'] != ""){
+            $media_array[0]['id'] = 0;
+            $media_array[0]['thumb'] = 'images/experience_images/'.$experience['image'];
+            $media_array[0]['type'] = 'img';
+        }
+        foreach($Images as $media){
+            $temp = array();
+            $temp['id'] = $media['id'];
+            $temp['thumb'] = 'images/experience_images/'.$media['thumb'];
+            $temp['type'] = $media['type'];
+            array_push($media_array,$temp);
+        }
+
+        $video_array = array();
+        foreach($Videos as $media){
+            $temp = array();
+            $temp['id'] = $media['id'];
+            $temp['thumb'] = 'images/experience_videos/'.$media['thumb'];
+            $temp['type'] = $media['type'];
+            array_push($video_array,$temp);
+        }
   
         $experienceData =  [
             'id' => $experience->id,
@@ -392,8 +415,8 @@ class OrderController extends BaseController
             'category_id' => $experience->category_id,
             'title' => $experience->title,
             'description' => $experience->description,
-            'images' => $Images,
-            'videos' => $Videos,
+            'images' => $media_array,
+            'videos' => $video_array,
             'duration' => $experience->duration,
             'age_limit' => explode(',',$experience->age_limit),
             'provide_items' => $ProvideItem,
