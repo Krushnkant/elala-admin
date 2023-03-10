@@ -187,6 +187,7 @@ class OrderController extends BaseController
         $order->gateway_name = isset($request->gateway_name) ? $request->gateway_name : '';
         $order->payment_mode = isset($request->payment_mode) ? $request->payment_mode : '';
         $order->payment_date = isset($request->payment_date) ? $request->payment_date : '';
+        $order->is_group_order = isset($request->is_group_order) ? $request->is_group_order : 0;
         $order->save();
         $days = 7;
         if($order){
