@@ -263,6 +263,7 @@ class OrderController extends BaseController
             $temp['title'] = $order->title;
             $temp['user_id'] = $order->uid;
             $temp['full_name'] = $order->full_name;
+            $temp['is_group_order'] = $order->is_group_order;
             $temp['image'] = isset($image->thumb)?'images/experience_images_thumb/'.$image->thumb:"";
             
             array_push($orders_arr,$temp);
@@ -309,6 +310,7 @@ class OrderController extends BaseController
             $temp['title'] = $order->title;
             $temp['user_id'] = $order->uid;
             $temp['full_name'] = $order->full_name;
+            $temp['is_group_order'] = $order->is_group_order;
             $temp['image'] = isset($image->thumb)?'images/experience_images_thumb/'.$image->thumb:"";
             
             array_push($orders_arr,$temp);
