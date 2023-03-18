@@ -78,6 +78,13 @@ class OtherController extends BaseController
         return $this->sendResponseWithData($faqs_arr,"Testimonial Retrieved Successfully.");
     }
 
+    public function getCount(){
+       // $temp['myOrderCount'] = 1;
+        $temp['newOrderCount'] = 2;
+        $temp['newMessageCount'] = 3;
+        return $this->sendResponseWithData($temp,"Count Retrieved Successfully.");
+    }
+
 
 
 }

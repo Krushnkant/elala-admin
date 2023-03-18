@@ -120,6 +120,7 @@ Route::get('getTestimonial', [OtherController::class, 'getTestimonial']);
 Route::get('infopage', [OtherController::class, 'infopage']);
 Route::post('contact', [OtherController::class, 'contact']);
 Route::get('getFaq', [OtherController::class, 'getFaq']);
+Route::get('getCount', [OtherController::class, 'getCount']);
 
 Route::post('allPost', [PostController::class, 'get_all_posts']);
 Route::post('viewProfile', [UserController::class, 'viewProfile']);

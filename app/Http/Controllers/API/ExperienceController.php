@@ -262,9 +262,9 @@ class ExperienceController extends BaseController
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
-    
+        $experience_images = array();
         if($request->hasFile('images')) {
-            $experience_images = array();
+            
             foreach ($request->file('images') as $key => $image) {
                 $ExperienceMedia = new ExperienceMedia();
                 $ExperienceMedia->experience_id = $request->experience_id;
@@ -281,7 +281,7 @@ class ExperienceController extends BaseController
                 compressImage($imageTemp, $destinationPath, 80);
                 compressImage($imageTempthumb, $destinationPaththumb, 40);
                 
-               // array_push($experience_images,'images/experience_images/'.$image_name);
+                array_push($experience_images,'images/experience_images_thumb/'.$image_name);
                 //$ExperienceMedia->thumb = 'images/experience_images/'.$image_name;
                 $ExperienceMedia->thumb = $image_name;
                 $ExperienceMedia->type = 'img';
@@ -299,6 +299,7 @@ class ExperienceController extends BaseController
             $ExperienceMedia->thumb = $image_name;
             $ExperienceMedia->type = 'video';
             $ExperienceMedia->save();
+            $video = 'images/experience_videos/'.$image_name;
         }
 
         $Experience = Experience::find($request->experience_id);
@@ -314,7 +315,7 @@ class ExperienceController extends BaseController
             compressImage($imageTempthumb, $destinationPaththumb, 20);
             // $destinationPath = public_path('images/experience_images');
             // $image->move($destinationPath, $image_name);
-            //$Experience->image = 'images/experience_images/'.$image_name;
+            $coverImage = 'images/experience_images_thumb/'.$image_name;
             $Experience->image = $image_name;
         }
         
@@ -323,8 +324,12 @@ class ExperienceController extends BaseController
         }
         $Experience->save();
         //$ExperienceMedia->proccess_page = 'MediaPage';
+
+        $temp['coverImage'] = isset($coverImage)?$coverImage:"";
+        $temp['images'] = $experience_images;
+        $temp['video'] = isset($video)?$video:"";
         
-        return $this->sendResponseSuccess("Added Experience Media Successfully");
+        return $this->sendResponseWithData($temp,"Added Experience Media Successfully");
     }
 
     public function addExperienceAgeGroup(Request $request){
