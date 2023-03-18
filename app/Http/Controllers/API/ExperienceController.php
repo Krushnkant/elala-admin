@@ -862,7 +862,7 @@ class ExperienceController extends BaseController
 
         $limit = isset($request->limit)?$request->limit:20;
         $treding_experiences = Experience::with(['media' => function($q) {
-                $q->where('type', '=', 'img')->get(['id','thumb'])->toArray(); 
+                $q->where('type', '=', 'img')->get(['id','thumb','type'])->toArray(); 
             }])->where('estatus',1)->get();
            
         
