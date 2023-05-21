@@ -1234,6 +1234,9 @@ class ExperienceController extends BaseController
                 $experiences = $experiences->orderBy('individual_rate','DESC');
             }
     
+            if (isset($request->rating) && $request->rating!=""){
+                $experiences = $experiences->where('rating',">",$request->rating);
+            }
             $experiences = $experiences->where('estatus',1)->paginate($limit);
         
         $experiences_arr = array();
