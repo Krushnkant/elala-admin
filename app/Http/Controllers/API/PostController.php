@@ -61,14 +61,22 @@ class PostController extends BaseController
         }
         $allowedMimeTypes = ['jpeg','gif','png','bmp','svg','PNG','JPEG','jpg','JPG'];
         if($request->hasFile('media')) {
-            foreach ($request->file('media') as $image) {
+            foreach ($request->file('media') as $key => $image) {
                 $postmedia = new PostMedia();
                 $postmedia->post_id = $post->id;
                 $image_name = 'post_images_' . rand(111111, 999999) . time() . '.' . $image->getClientOriginalExtension();
-                $destinationPath = public_path('images/post_media');
-                $image->move($destinationPath, $image_name);
+                // $destinationPath = public_path('images/post_media');
+                // $image->move($destinationPath, $image_name);
+                $destinationPath = public_path('images/post_media/'.$image_name);
+                $imageTemp = $_FILES["media"]["tmp_name"][$key];
+
+                $destinationPaththumb = public_path('images/post_media_thumb/'.$image_name);
+                $imageTempthumb = $_FILES["media"]["tmp_name"][$key];
                // array_push($experience_images,'images/experience_images/'.$image_name);
+                compressImage($imageTemp, $destinationPath, 80);
+                compressImage($imageTempthumb, $destinationPaththumb, 40);
                 $postmedia->name = 'images/post_media/'.$image_name;
+                $postmedia->thumb_name = 'images/post_media_thumb/'.$image_name;
                 if(in_array($image->getClientOriginalExtension(), $allowedMimeTypes)){
                     $postmedia->type = 0;
                 }else{
