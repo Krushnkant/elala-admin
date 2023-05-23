@@ -178,6 +178,7 @@ class UserController extends BaseController
     }
 
     public function viewProfile(Request $request){
+        \Log::info(Auth::user());
         $messages = [
             'profile_id.required' =>'Please provide a profile id',
         ];
@@ -192,6 +193,7 @@ class UserController extends BaseController
         //$user_id = Auth::user()->id;
         $limit = isset($request->limit)?$request->limit:20;
         $profile_id = $request->profile_id;
+        $login_id = $request->user_id;
 
         $user = User::where('id',$profile_id)->first();
 
@@ -261,8 +263,9 @@ class UserController extends BaseController
         $userdata['post'] =  Post::where('user_id',$profile_id)->where('estatus',1)->get()->count();
         $userdata['following'] =  UserFollower::where('user_id',$profile_id)->where('estatus',1)->get()->count();
         $userdata['follower'] =  UserFollower::where('following_id',$profile_id)->where('estatus',1)->get()->count();
-        if(isset(Auth::user()->id)) {
-            $userdata['is_follow'] = is_follower_random(Auth::user()->id,$profile_id);
+        if(isset(Auth::user()->id)||$login_id) {
+            // $userdata['is_follow'] = is_follower_random(Auth::user()->id,$profile_id);
+            $userdata['is_follow'] = is_follower_random($login_id,$profile_id);
         }else{
             $userdata['is_follow'] = "";
         }
