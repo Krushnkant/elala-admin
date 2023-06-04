@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ {User,Settings,Bank,UserFollower,Post,Review,Country,State,City,Experience};
+use App\Models\ {ActivityLog, User,Settings,Bank,UserFollower,Post,Review,Country,State,City,Experience};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -94,6 +94,15 @@ class UserController extends BaseController
         }
         
         $user = User::find(Auth::user()->id);
+       $activityLog = ActivityLog::create([
+            "title"=>"Profile",
+            "old_data"=>$user,
+            "type"=>1,
+            "action"=>"update",
+            "item_id"=>$user->id,
+            "user_id"=>Auth::user()->id,
+        ]);
+
         $user->full_name = $request->name;
         $user->mobile_no = $request->mobile_no;
         $user->gender = $request->gender;
@@ -112,6 +121,14 @@ class UserController extends BaseController
         }
 
         $user->save();
+        ActivityLog::where('id',$activityLog->id)->update([
+            "title"=>"Profile",
+            "new_data"=>$user,
+            "type"=>1,
+            "action"=>"update",
+            "item_id"=>$user->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         return $this->sendResponseWithData($user,"User Profile Updated Successfully");
     }
 

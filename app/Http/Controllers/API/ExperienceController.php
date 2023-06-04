@@ -1185,7 +1185,9 @@ class ExperienceController extends BaseController
 
     public function getFilterExperiences(Request $request){
         
-        $limit = isset($request->limit)?$request->limit:20;
+        $limit = isset($request->limit)?$request->limit:15;
+        $page = isset($request->page)?$request->page:1;
+        $skip=($page-1)*$limit;
         $experiences = Experience::with(['media' => function($q) {
                 $q->where('type', '=', 'img'); 
             }]);
@@ -1237,7 +1239,8 @@ class ExperienceController extends BaseController
             if (isset($request->rating) && $request->rating!=""){
                 $experiences = $experiences->where('rating',">",$request->rating);
             }
-            $experiences = $experiences->where('estatus',1)->paginate($limit);
+            $data['total'] = $experiences->where('estatus',1)->count();
+            $experiences = $experiences->where('estatus',1)->skip($skip)->limit($limit)->get();
         
         $experiences_arr = array();
         foreach ($experiences as $experience){
