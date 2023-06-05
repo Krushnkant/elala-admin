@@ -97,8 +97,8 @@ class UserController extends BaseController
        $activityLog = ActivityLog::create([
             "title"=>"Profile",
             "old_data"=>$user,
-            "type"=>1,
-            "action"=>"update",
+            "type"=>2,
+            "action"=>2,
             "item_id"=>$user->id,
             "user_id"=>Auth::user()->id,
         ]);
@@ -122,12 +122,7 @@ class UserController extends BaseController
 
         $user->save();
         ActivityLog::where('id',$activityLog->id)->update([
-            "title"=>"Profile",
             "new_data"=>$user,
-            "type"=>1,
-            "action"=>"update",
-            "item_id"=>$user->id,
-            "user_id"=>Auth::user()->id,
         ]);
         return $this->sendResponseWithData($user,"User Profile Updated Successfully");
     }

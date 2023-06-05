@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use App\Models\ {Order,ExperienceMedia,Experience,OrderSlot,Review,User,ExperienceProvideItem,ExperienceBrindItem,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,SingleOrdPayment,SupplierPayments};
+use App\Models\ {ActivityLog, Order,ExperienceMedia,Experience,OrderSlot,Review,User,ExperienceProvideItem,ExperienceBrindItem,ExperienceDiscountRate,ExperienceScheduleTime,ExperienceLanguage,SingleOrdPayment,SupplierPayments};
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Support\Facades\Validator;
@@ -189,6 +189,14 @@ class OrderController extends BaseController
         $order->payment_date = isset($request->payment_date) ? $request->payment_date : '';
         $order->is_group_order = isset($request->is_group_order) ? $request->is_group_order : 0;
         $order->save();
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Order Create",
+            "old_data"=>$order,
+            "type"=>3,
+            "action"=>1,
+            "item_id"=> $order->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $days = 7;
         if($order){
            
@@ -208,9 +216,28 @@ class OrderController extends BaseController
                 $supplierPayments->total_amt = $order->total_amount;
                 $supplierPayments->payment_date = $dt;
                 $supplierPayments->save();  
+                ActivityLog::create([
+                    "title"=>"Experience Supplier Payments",
+                    "old_data"=>$order,
+                    "type"=>3,
+                    "action"=>1,
+                    "item_id"=> $order->id,
+                    "user_id"=>$experience->user_id,
+                ]);
             }else{
+                $ActivityLog=ActivityLog::create([
+                    "title"=>"Experience Supplier Payments update",
+                    "old_data"=>$supplierPayments,
+                    "type"=>3,
+                    "action"=>1,
+                    "item_id"=> $supplierPayments->id,
+                    "user_id"=>$experience->user_id,
+                ]);
                 $supplierPayments->total_amt = (int)$supplierPayments->total_amt + (int)$order->total_amount;
                 $supplierPayments->save();
+                ActivityLog::where('id',$ActivityLog->id)->update([
+                    "new_data"=>$supplierPayments,
+                ]);
             }
             
             if($supplierPayments){
@@ -219,6 +246,14 @@ class OrderController extends BaseController
                 $singleOrdPayment->order_id = $order->id;
                 $singleOrdPayment->total_amt = $order->total_amount;
                 $singleOrdPayment->save();
+                $ActivityLog=ActivityLog::create([
+                    "title"=>"Experience Single Order Payment",
+                    "old_data"=>$supplierPayments,
+                    "type"=>3,
+                    "action"=>1,
+                    "item_id"=> $supplierPayments->id,
+                    "user_id"=>$experience->user_id,
+                ]);
             }
 
         }

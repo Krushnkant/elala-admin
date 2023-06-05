@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\ {User,Experience,CategoryAttribute,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,State,Country,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage,ExperienceCategory};
+use App\Models\ {ActivityLog, User,Experience,CategoryAttribute,ExperienceMedia,ExperienceBrindItem,ExperienceProvideItem,ExperienceScheduleTime,ExperienceDiscountRate,ExperienceCategoryAttribute,City,State,Country,Category,Language,AgeGroup,ExperienceCancellationPolicy,Review,ExperienceLanguage,ExperienceCategory};
 use App\Http\Resources\ExperienceResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,6 +34,17 @@ class ExperienceController extends BaseController
             $Experience = Experience::find($request->experience_id);
             $Experience->type = $request->type;
             $Experience->save();
+            ActivityLog::updateOrCreate([
+                "item_id"=>$request->experience_id,
+                "user_id"=>Auth::user()->id,
+            ],[
+                "title"=>"type",
+                "new_data"=>$request->experience_id,
+                "type"=>2,
+                "action"=>1,
+                "item_id"=>$Experience->id,
+                "user_id"=>Auth::user()->id,
+            ]);
         }else{
             $Experience = new Experience();
             $Experience->user_id = Auth::user()->id;
@@ -41,6 +52,14 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'TypePage';
             $Experience->estatus = 5;
             $Experience->save();
+            ActivityLog::create([
+                "title"=>"Experience Type",
+                "old_data"=>$Experience,
+                "type"=>2,
+                "action"=>1,
+                "item_id"=>$Experience->id,
+                "user_id"=>Auth::user()->id,
+            ]);
         }
         $data = new ExperienceResource($Experience);
         return $this->sendResponseWithData($data,"Added Experience Successfully");
@@ -77,6 +96,14 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
+       $activityLog = ActivityLog::create([
+            "title"=>"Experience Location",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>1,
+            "item_id"=>$request->experience_id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->location = $request->location;
         $Experience->latitude = $request->latitude;
         $Experience->longitude = $request->longitude;
@@ -123,7 +150,10 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'LocationPage';
         }
         $Experience->save();
-
+        ActivityLog::where('id',$activityLog->id)->update([
+            "new_data"=>$Experience,
+            "action"=>2,
+        ]);
         $languages = explode(',',$request->language);
         $ExperienceLanguageOld = ExperienceLanguage::where('experience_id',$request->experience_id)->get()->pluck('language_id')->toArray();
      
@@ -142,12 +172,28 @@ class ExperienceController extends BaseController
                     $Language->experience_id = $request->experience_id;
                     $Language->language_id = $lans;
                     $Language->save();
+                    $activityLog = ActivityLog::create([
+                        "title"=>"Experience Language",
+                        "old_data"=>$Language,
+                        "type"=>2,
+                        "action"=>1,
+                        "item_id"=>$Language->id,
+                        "user_id"=>Auth::user()->id,
+                    ]);
                 }
             }
         }
 
         foreach($deleteids as $deleteid){
             $LanguageDelete = ExperienceLanguage::where('experience_id',$request->experience_id)->where('language_id',$deleteid)->first();
+            $activityLog = ActivityLog::create([
+                "title"=>"Experience Language",
+                "old_data"=>$LanguageDelete,
+                "type"=>2,
+                "action"=>3,
+                "item_id"=>$LanguageDelete->id,
+                "user_id"=>Auth::user()->id,
+            ]);
             $LanguageDelete->delete();
         }
         
@@ -179,12 +225,17 @@ class ExperienceController extends BaseController
         }
         $Experience->save();
 
-       
-
-
         $attributes_arr = array();
         if($Experience){
-
+            $ExperienceCategory=ExperienceCategory::find('experience_id',$request->experience_id);
+            $activityLog = ActivityLog::create([
+                "title"=>"Experience Category",
+                "old_data"=>$ExperienceCategory,
+                "type"=>2,
+                "action"=>3,
+                "item_id"=>$ExperienceCategory->id,
+                "user_id"=>Auth::user()->id,
+            ]);
             ExperienceCategory::where('experience_id',$request->experience_id)->delete();
             $maincategories = $this->getMainCategory($request->category_id);
             foreach($maincategories as $maincategory){
@@ -238,6 +289,14 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog= ActivityLog::create([
+            "title"=>"Experience Details",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>1,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->title = $request->title;
         $Experience->slug = createSlug($request->title);
         $Experience->description = $request->description;
@@ -245,6 +304,9 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'DetailsPage';
         }
         $Experience->save();
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Details Successfully");
     }
 
@@ -262,6 +324,14 @@ class ExperienceController extends BaseController
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
+        $ActivityLog= ActivityLog::create([
+            "title"=>"Experience Media",
+            "old_data"=>$experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $experience_images = array();
         if($request->hasFile('images')) {
             
@@ -324,7 +394,9 @@ class ExperienceController extends BaseController
         }
         $Experience->save();
         //$ExperienceMedia->proccess_page = 'MediaPage';
-
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         $temp['coverImage'] = isset($coverImage)?$coverImage:"";
         $temp['images'] = $experience_images;
         $temp['video'] = isset($video)?$video:"";
@@ -352,12 +424,23 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Age Group",
+            "old_data"=>$Experience,
+            "type"=>1,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->duration = $request->duration;
         $Experience->age_limit = $request->age_id;
         if(checkExperienceStatus('AgePage',$Experience->proccess_page)){
             $Experience->proccess_page = 'AgePage';
         }
         $Experience->save();
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Age Successfully");
     }
 
@@ -374,7 +457,14 @@ class ExperienceController extends BaseController
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
-        
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Provide Item",
+            "old_data"=>$experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         foreach($request->items as $item) {
             if($item['action'] == 1){
                 $BrindItem = new ExperienceProvideItem();
@@ -398,7 +488,9 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'ProvideItemPage';
         }
         $Experience->save();
-        
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Item Successfully");
     }
 
@@ -434,12 +526,22 @@ class ExperienceController extends BaseController
         }  
         
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Brind Item",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->is_bring_item = 1;
         if(checkExperienceStatus('BrindItemPage',$Experience->proccess_page)){
             $Experience->proccess_page = 'BrindItemPage';
         }
         $Experience->save();
-        
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Brind Item Successfully");
     }
 
@@ -472,6 +574,14 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Brind Item",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->is_meet_address = $request->is_meet_address;
         $Experience->meet_address = $request->address;
         $Experience->meet_address_flat_no = $request->address_flat_no;
@@ -486,6 +596,9 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'MeetLocationPage';
         }
         $Experience->save();
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Meet Location Successfully");
     }
 
@@ -509,6 +622,14 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Max Group Size",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->max_member_public_group_size = $request->max_member_public_group_size;
         $Experience->max_member_private_group_size = $request->max_member_private_group_size;
         
@@ -516,6 +637,9 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'GroupSizePage';
         }
         $Experience->save();
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Group Size Successfully");
     }
 
@@ -553,10 +677,23 @@ class ExperienceController extends BaseController
         
         $Experience = Experience::find($request->experience_id);
         
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Schedule Time Page",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
+        
         if(checkExperienceStatus('ScheduleTimePage',$Experience->proccess_page)){
             $Experience->proccess_page = 'ScheduleTimePage';
         }
         $Experience->save();
+
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         
         return $this->sendResponseSuccess("Added Experience Schedule Time Successfully");
     }
@@ -581,6 +718,14 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Schedule Time Page",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->individual_rate = $request->individual_rate;
         $Experience->min_private_group_rate = $request->min_private_group_rate;
         
@@ -588,6 +733,10 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'PricePage';
         }
         $Experience->save();
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
+        
         return $this->sendResponseSuccess("Added Experience Price Successfully");
     }
 
@@ -626,12 +775,21 @@ class ExperienceController extends BaseController
         }  
         
         $Experience = Experience::find($request->experience_id);
-        
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Discount Group",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         if(checkExperienceStatus('DiscountPage',$Experience->proccess_page)){
             $Experience->proccess_page = 'DiscountPage';
         }
         $Experience->save();
-
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Discount Price Successfully");
     }
 
@@ -650,6 +808,14 @@ class ExperienceController extends BaseController
     
         
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Cancelletion Policy",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->cancellation_policy_id = $request->cancellation_policy_id;
         
         if(checkExperienceStatus('CancelletionPolicyPage',$Experience->proccess_page)){
@@ -657,7 +823,9 @@ class ExperienceController extends BaseController
         }
         $Experience->estatus = 4;
         $Experience->save();
-
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Cancelletion Policy Successfully");
     }
 
@@ -696,11 +864,21 @@ class ExperienceController extends BaseController
         }  
         
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Attribute Page",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         if(checkExperienceStatus('CategoryAttributePage',$Experience->proccess_page)){
             $Experience->proccess_page = 'CategoryAttributePage';
         }
         $Experience->save();
-
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Category Attribute Successfully");
     }
 
@@ -718,10 +896,24 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
+        $ActivityLog = ActivityLog::create([
+            "title"=>"Experience Remove",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>3,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->estatus = 3;
         $Experience->save();
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
+        
         $Experience->delete();
-
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Remove Experience Successfully");
     }
 

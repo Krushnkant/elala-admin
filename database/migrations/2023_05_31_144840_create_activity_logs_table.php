@@ -19,7 +19,7 @@ class CreateActivityLogsTable extends Migration
             $table->text('old_data')->nullable();
             $table->text('new_data')->nullable();
             $table->integer('type')->nullable()->comment('1 = Proflie, 2 = Experience,3=order');
-            $table->string('action')->nullable()->comment('insert,update,delete');
+            $table->string('action')->nullable()->comment('1=insert,2=update,3=delete');
             $table->integer('item_id')->nullable();
             $table->integer('user_id')->nullable();
             $table->timestamps();
