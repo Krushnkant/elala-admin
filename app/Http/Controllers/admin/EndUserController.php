@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\ProjectPage;
 use App\Models\User;
 use App\Models\Order;
@@ -261,7 +262,14 @@ class EndUserController extends Controller
             if(!$user){
                 return response()->json(['status' => '400']);
             }
-
+            ActivityLog::create([
+                "title"=>"Profile update by admin",
+                "old_data"=>$user,
+                "type"=>1,
+                "action"=>2,
+                "item_id"=> $user->id,
+                "user_id"=>Auth::user()->id,
+            ]);
             $old_image = $user->profile_pic;
             $image_name = $old_image;
             $user->full_name = $request->full_name;
@@ -306,7 +314,17 @@ class EndUserController extends Controller
             $user->profile_pic = $image_name;
         }
         $user->save();
-       
+        if($action=="add"){
+            ActivityLog::create([
+                "title"=>"Profile create by admin",
+                "old_data"=>$user,
+                "type"=>1,
+                "action"=>1,
+                "item_id"=> $user->id,
+                "user_id"=>Auth::user()->id,
+            ]);
+        }
+
         return response()->json(['status' => '200', 'action' => $action]);
     }
 

@@ -39,7 +39,7 @@ class ExperienceController extends BaseController
                 "user_id"=>Auth::user()->id,
             ],[
                 "title"=>"type",
-                "new_data"=>$request->experience_id,
+                "new_data"=>$Experience,
                 "type"=>2,
                 "action"=>1,
                 "item_id"=>$Experience->id,

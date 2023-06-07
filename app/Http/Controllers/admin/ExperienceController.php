@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Experience;
 use App\Models\ProjectPage;
 use App\Models\Language;
@@ -16,7 +17,7 @@ use App\Models\ExperienceCategoryAttribute;
 use App\Models\ExperienceCancellationPolicy;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class ExperienceController extends Controller
 {
@@ -226,6 +227,18 @@ class ExperienceController extends Controller
         if(!$experience){
             return response()->json(['status' => '400']);
         }
+
+      $ActivityLog =  ActivityLog::updateOrCreate([
+            "item_id"=>$request->experience_id,
+            "user_id"=>Auth::user()->id,
+        ],[
+            "title"=>"Experience",
+            "old_data"=>$experience,
+            "type"=>2,
+            "action"=>2,
+            "item_id"=>$experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $experience->type = $request->type;
         $experience->location = $request->location;
         //$experience->language_id = $request->language_id;
@@ -248,11 +261,21 @@ class ExperienceController extends Controller
         $experience->save();
 
         
-
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$experience,
+        ]);
         $oldlanguageids = ExperienceLanguage::where('experience_id',$request->experience_id)->get()->pluck('language_id')->toArray();
         foreach($oldlanguageids as $oldlanguageid){
             if(!in_array($oldlanguageid,$request->language_id)){
                 $experiencelanguage = ExperienceLanguage::find($oldlanguageid);
+                ActivityLog::create([
+                    "title"=>"Experience Language",
+                    "old_data"=>$experiencelanguage,
+                    "type"=>2,
+                    "action"=>3,
+                    "item_id"=>$experiencelanguage->id,
+                    "user_id"=>Auth::user()->id,
+                ]);
                 $experiencelanguage->delete();
             }
         }
@@ -263,14 +286,40 @@ class ExperienceController extends Controller
                 $experiencelanguage->experience_id = $request->experience_id;
                 $experiencelanguage->language_id = $language_id;
                 $experiencelanguage->save();
+                ActivityLog::create([
+                    "title"=>"Experience Language",
+                    "old_data"=>$experiencelanguage,
+                    "type"=>2,
+                    "action"=>1,
+                    "item_id"=>$experiencelanguage->id,
+                    "user_id"=>Auth::user()->id,
+                ]);
             }
         }
 
         $experiencelanguage = ExperienceProvideItem::where('experience_id',$request->experience_id);
+        $experiencelanguageLogs = ExperienceProvideItem::where('experience_id',$request->experience_id)->first();
+        ActivityLog::create([
+            "title"=>"Provide Item",
+            "old_data"=>$experiencelanguageLogs,
+            "type"=>2,
+            "action"=>3,
+            "item_id"=>$experiencelanguageLogs->id,
+            "user_id"=>Auth::user()->id,
+        ]);
+        $experiencelanguage->delete();
+        $experiencelanguage = ExperienceBrindItem::where('experience_id',$request->experience_id);
+        $ExperienceBrindItemLogs = ExperienceBrindItem::where('experience_id',$request->experience_id)->first();
+        ActivityLog::create([
+            "title"=>"Provide Brind Item",
+            "old_data"=>$ExperienceBrindItemLogs,
+            "type"=>2,
+            "action"=>3,
+            "item_id"=>$ExperienceBrindItemLogs->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $experiencelanguage->delete();
 
-        $experiencelanguage = ExperienceBrindItem::where('experience_id',$request->experience_id);
-        $experiencelanguage->delete();
 
         $provide_items = explode(',',$request->provide_item);
         foreach($provide_items as $provide_item){
@@ -278,6 +327,14 @@ class ExperienceController extends Controller
             $experiencelanguage->experience_id = $request->experience_id;
             $experiencelanguage->title = $provide_item;
             $experiencelanguage->save();
+            ActivityLog::create([
+                "title"=>"Provide Provide Item",
+                "old_data"=>$experiencelanguage,
+                "type"=>2,
+                "action"=>1,
+                "item_id"=>$experiencelanguage->id,
+                "user_id"=>Auth::user()->id,
+            ]);
         }
 
         $bring_items = explode(',',$request->bring_item);
@@ -286,6 +343,14 @@ class ExperienceController extends Controller
             $experiencelanguage->experience_id = $request->experience_id;
             $experiencelanguage->title = $bring_item;
             $experiencelanguage->save();
+            ActivityLog::create([
+                "title"=>"Provide Brind Item",
+                "old_data"=>$experiencelanguage,
+                "type"=>2,
+                "action"=>1,
+                "item_id"=>$experiencelanguage->id,
+                "user_id"=>Auth::user()->id,
+            ]);
         }
 
         if(isset($request->tagid)){
@@ -315,6 +380,15 @@ class ExperienceController extends Controller
                 $experiencemedia->thumb = $expImg;
                 $experiencemedia->type = $type;
                 $experiencemedia->save();
+
+                ActivityLog::create([
+                    "title"=>"Provide Media",
+                    "old_data"=>$experiencemedia,
+                    "type"=>2,
+                    "action"=>1,
+                    "item_id"=>$experiencemedia->id,
+                    "user_id"=>Auth::user()->id,
+                ]);
             }
         }
         return response()->json(['status' => '200', 'action' => $action]);

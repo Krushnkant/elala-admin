@@ -47,6 +47,7 @@ class ProjectPageSeeder extends Seeder
             'inner_routes' => 'admin.end_users.list,admin.end_users.addorupdate,admin.allEnduserlist,admin.end_users.changeEnduserstatus,admin.end_users.edit,admin.end_users.delete'
         ]);
 
+    
         ProjectPage::create([
             'id' => 4,
             'parent_menu' => 1,
@@ -275,7 +276,16 @@ class ProjectPageSeeder extends Seeder
             'inner_routes' => 'admin.chat.list, admin.chat.personal-chat, admin.chat.friend-list',
             'sr_no' => 102
         ]);
-        
+        ProjectPage::create([
+            'id' => 26,
+            'parent_menu' => 0,
+            'label' => 'Activity Logs',
+            'icon_class' => 'fa fa-list-alt',
+            'route_url' => 'admin.activity.list',
+            'is_display_in_menu' => 0,
+            'inner_routes' => 'admin.activity.list',
+            'sr_no' => 103
+        ]);
         $users = User::where('role',"!=",1)->get();
         $project_page_ids1 = ProjectPage::where('parent_menu',0)->where('is_display_in_menu',0)->pluck('id')->toArray();
         $project_page_ids2 = ProjectPage::where('parent_menu',"!=",0)->where('is_display_in_menu',1)->pluck('id')->toArray();

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\ProjectPage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,6 +20,11 @@ class CategoryController extends Controller
         return view('admin.categories.list',compact('action','categories','id'))->with('page',$this->page);
     }
 
+    public function indexActivity($id=0){
+        $action = "list";
+        $activity = ActivityLog::get();
+        return view('admin.categories.activity',compact('action','activity'))->with('page',$this->page);
+    }
     public function create(){
         $action = "create";
         $categories = Category::where('estatus',1)->get()->toArray();
@@ -194,6 +201,89 @@ class CategoryController extends Controller
         }
     }
 
+    public function allactivitylist(Request $request){
+        if ($request->ajax()) {
+            $tab_type = $request->tab_type;
+            $columns = array(
+                0 =>'id',
+                1 =>'title',
+                2=> 'old_data',
+                3=> 'new_data',
+                4=> 'type',
+                5=> 'action',
+                6=> 'item_id',
+                7=> 'user_id',
+            );
+
+            $totalData = ActivityLog::count();
+
+            $totalFiltered = $totalData;
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+
+         
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+
+            if($order == "id"){
+                $order == "created_at";
+                $dir = 'desc';
+            }
+
+            if(empty($request->input('search.value')))
+            {
+                $users = ActivityLog::get();
+            }
+            else {
+                $search = $request->input('search.value');
+                $users = ActivityLog::offset($start)
+                      ->limit($limit)
+                      ->orderBy($order,$dir)
+                      ->get();
+
+                $totalFiltered = ActivityLog::count();
+            }
+            $data = array();
+
+            if(!empty($users))
+            {
+                foreach ($users as $logs)
+                {
+                    if($logs['type']==1){
+                        $activityData['type']="Profile";
+                    }elseif($logs['type']==2){
+                        $activityData['type']="Experience";
+                    }else{
+                        $activityData['type']="Order";
+                    }
+                    if($logs['action']==1){
+                        $activityData['action']="insert";
+                    }elseif($logs['action']==2){
+                        $activityData['action']="update";
+                    }else{
+                        $activityData['action']="delete";
+                    }
+                    $userInfo=User::where('id',$logs->user_id)->first();
+                    if($userInfo){
+                        $activityData['user_id']=$userInfo->full_name;
+                    }
+                    $activityData['item_id']=$logs->item_id;
+                    $activityData['title']=$logs->title;
+                    $data[] = $activityData;
+                }
+            }
+     
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data" => $data,
+            );
+
+            echo json_encode($json_data);
+        }
+    }
     public function changecategorystatus($id){
         $category = Category::find($id);
         if ($category->estatus==1){

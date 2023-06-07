@@ -69,9 +69,11 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','userpermission'],'as'=>'a
 
     //category route
     Route::get('categorieslist/{id?}',[CategoryController::class,'index'])->name('categories.list');
+    Route::get('activity_log',[CategoryController::class,'indexActivity'])->name('activity.list');
     Route::get('categories/create',[CategoryController::class,'create'])->name('categories.add');
     Route::post('categories/save',[CategoryController::class,'save'])->name('categories.save');
     Route::post('allcategorylist',[CategoryController::class,'allcategorylist'])->name('allcategorylist');
+    Route::post('allactivitylist',[CategoryController::class,'allactivitylist'])->name('allactivitylist');
     Route::get('changecategorystatus/{id}',[CategoryController::class,'changecategorystatus'])->name('categories.changecategorystatus');
     Route::get('categories/{id}/delete',[CategoryController::class,'deletecategory'])->name('categories.delete');
     Route::get('categories/{id}/edit',[CategoryController::class,'editcategory'])->name('categories.edit');
