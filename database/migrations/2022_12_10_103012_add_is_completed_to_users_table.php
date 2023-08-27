@@ -14,7 +14,7 @@ class AddIsCompletedToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('is_completed')->nullable()->comment('0->Pending Profile, 1->Completed Profile');
+            $table->integer('is_completed')->default(0)->nullable()->comment('0->Pending Profile, 1->Completed Profile');
         });
     }
 
