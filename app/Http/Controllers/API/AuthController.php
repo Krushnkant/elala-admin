@@ -46,6 +46,8 @@ class AuthController extends BaseController
                     }else{
                         $user = new User();
                         $user->email = $request->email;
+                        $user->full_name = isset($request->full_name) ? $request->full_name : null;
+                        $user->mobile_no = isset($request->mobile_no) ? $request->mobile_no : null;
                         $user->register_by = $request->register_by;
                         $user->role = 3;
                         $user->is_verify = 1;
@@ -54,7 +56,7 @@ class AuthController extends BaseController
                         $token = $user->createToken('P00j@13579WebV#d@n%p')->accessToken;
                         $user['token'] = $token;
                         $user['new_user'] = 1;
-                        $user['profile_completed'] = $user->is_completed;
+                        $user['profile_completed'] = 0;
 
                         $this->user_login_log($user->id,$request);
                         return $this->sendResponseWithData($user, "User successfully login");
