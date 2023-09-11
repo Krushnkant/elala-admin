@@ -24,6 +24,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('verify_otp', [AuthController::class, 'verify_otp']);
 Route::post('forgetpassword', [AuthController::class, 'forgetpassword']);
 Route::post('resetpassword', [AuthController::class, 'resetpassword']);
+Route::post('emailsend', [AuthController::class, 'emailsend']);
 
 
 

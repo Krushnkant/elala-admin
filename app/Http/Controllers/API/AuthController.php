@@ -95,18 +95,18 @@ class AuthController extends BaseController
                                 return $this->sendError("User password invalid", "Invalid Password", []);
                             }
                         }else{
-                            $id =  encrypt($user->id);
-                            $data2 = [
-                                'message1' => url('verify/'.$id)
-                                // 'message1' => 'https://elala.madnessmart.com/create-password/'.$id
-                                //'message1' => 'http://localhost:3000/create-password/'.$id
-                            ]; 
-                            $templateName = 'email.mailVerify';
-                            $subject = 'Verify User Link';
-                            Helpers::MailSending($templateName, $data2, $request->email, $subject);
+                            // $id =  encrypt($user->id);
+                            // $data2 = [
+                            //     'message1' => url('verify/'.$id)
+                            //     // 'message1' => 'https://elala.madnessmart.com/create-password/'.$id
+                            //     //'message1' => 'http://localhost:3000/create-password/'.$id
+                            // ]; 
+                            // $templateName = 'email.mailVerify';
+                            // $subject = 'Verify User Link';
+                            // Helpers::MailSending($templateName, $data2, $request->email, $subject);
                             $user['new_user'] = 0;
                             $user['profile_completed'] = $user->is_completed;
-                            return $this->sendResponseWithData($user, "User Registered Successfully");
+                            return $this->sendResponseWithData($user, "");
                         }
                     }else{
 
@@ -117,16 +117,16 @@ class AuthController extends BaseController
                         $user->password = Hash::make($request->password);
                         $user->decrypted_password = $request->password;
                         $user->save();
-                        $id =  encrypt($user->id);
-                        $data2 = [
-                            'message1' => url('verify/'.$id)
-                            //'message1' => 'https://elala.madnessmart.com/create-password/'.$id
-                           //'message1' => 'http://localhost:3000/create-password/'.$id
+                        // $id =  encrypt($user->id);
+                        // $data2 = [
+                        //     'message1' => url('verify/'.$id)
+                        //     //'message1' => 'https://elala.madnessmart.com/create-password/'.$id
+                        //    //'message1' => 'http://localhost:3000/create-password/'.$id
                             
-                        ]; 
-                        $templateName = 'email.mailVerify';
-                        $subject = 'Verify User Link';
-                        Helpers::MailSending($templateName, $data2, $request->email, $subject);
+                        // ]; 
+                        // $templateName = 'email.mailVerify';
+                        // $subject = 'Verify User Link';
+                        // Helpers::MailSending($templateName, $data2, $request->email, $subject);
 
                         $user['new_user'] = 1;
                         $user['profile_completed'] = $user->is_completed;
@@ -206,7 +206,16 @@ class AuthController extends BaseController
             }
         }
     }
-
+    public function emailsend(Request $request){
+        $id =  encrypt($request->userId);
+        $data2 = [
+            'message1' => url('verify/'.$id)
+        ]; 
+        $templateName = 'email.mailVerify';
+        $subject = 'Verify User Link';
+        Helpers::MailSending($templateName, $data2, $request->email, $subject);
+        return $this->sendResponseWithData($request->email, "Verification mail send Successfully");
+    }
     public function verify_otp(Request $request){
         $validator = Validator::make($request->all(), [
             'mobile_no' => 'required',
