@@ -228,14 +228,14 @@ class ExperienceController extends BaseController
         $attributes_arr = array();
         if($Experience){
             $ExperienceCategory=ExperienceCategory::find('experience_id',$request->experience_id);
-            // $activityLog = ActivityLog::create([
-            //     "title"=>"Experience Category",
-            //     "old_data"=>$ExperienceCategory,
-            //     "type"=>2,
-            //     "action"=>3,
-            //     "item_id"=>$ExperienceCategory->id,
-            //     "user_id"=>Auth::user()->id,
-            // ]);
+            $activityLog = ActivityLog::create([
+                "title"=>"Experience Category",
+                "old_data"=>$ExperienceCategory,
+                "type"=>2,
+                "action"=>3,
+                "item_id"=>$ExperienceCategory->id,
+                "user_id"=>Auth::user()->id,
+            ]);
             ExperienceCategory::where('experience_id',$request->experience_id)->delete();
             $maincategories = $this->getMainCategory($request->category_id);
             foreach($maincategories as $maincategory){
@@ -289,14 +289,14 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
-        // $ActivityLog= ActivityLog::create([
-        //     "title"=>"Experience Details",
-        //     "old_data"=>$Experience,
-        //     "type"=>2,
-        //     "action"=>1,
-        //     "item_id"=> $Experience->id,
-        //     "user_id"=>Auth::user()->id,
-        // ]);
+        $ActivityLog= ActivityLog::create([
+            "title"=>"Experience Details",
+            "old_data"=>$Experience,
+            "type"=>2,
+            "action"=>1,
+            "item_id"=> $Experience->id,
+            "user_id"=>Auth::user()->id,
+        ]);
         $Experience->title = $request->title;
         $Experience->slug = createSlug($request->title);
         $Experience->description = $request->description;
@@ -304,9 +304,9 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'DetailsPage';
         }
         $Experience->save();
-        // ActivityLog::where('id',$ActivityLog->id)->update([
-        //     "new_data"=>$Experience,
-        // ]);
+        ActivityLog::where('id',$ActivityLog->id)->update([
+            "new_data"=>$Experience,
+        ]);
         return $this->sendResponseSuccess("Added Experience Details Successfully");
     }
 
