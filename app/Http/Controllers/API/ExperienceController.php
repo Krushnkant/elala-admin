@@ -228,14 +228,14 @@ class ExperienceController extends BaseController
         $attributes_arr = array();
         if($Experience){
             $ExperienceCategory=ExperienceCategory::find('experience_id',$request->experience_id);
-            $activityLog = ActivityLog::create([
-                "title"=>"Experience Category",
-                "old_data"=>$ExperienceCategory,
-                "type"=>2,
-                "action"=>3,
-                "item_id"=>$ExperienceCategory->id,
-                "user_id"=>Auth::user()->id,
-            ]);
+            // $activityLog = ActivityLog::create([
+            //     "title"=>"Experience Category",
+            //     "old_data"=>$ExperienceCategory,
+            //     "type"=>2,
+            //     "action"=>3,
+            //     "item_id"=>$ExperienceCategory->id,
+            //     "user_id"=>Auth::user()->id,
+            // ]);
             ExperienceCategory::where('experience_id',$request->experience_id)->delete();
             $maincategories = $this->getMainCategory($request->category_id);
             foreach($maincategories as $maincategory){
