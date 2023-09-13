@@ -213,7 +213,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experie   nce::where('id',$request->experience_id)->first();
+        $experience = Experience::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
