@@ -213,7 +213,7 @@ class ExperienceController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        $experience = Experience::where('id',$request->experience_id)->first();
+        $experience = Experie   nce::where('id',$request->experience_id)->first();
         if (!$experience){
             return $this->sendError("Experience Not Exist", "Not Found Error", []);
         }
@@ -289,14 +289,14 @@ class ExperienceController extends BaseController
         }
     
         $Experience = Experience::find($request->experience_id);
-        $ActivityLog= ActivityLog::create([
-            "title"=>"Experience Details",
-            "old_data"=>$Experience,
-            "type"=>2,
-            "action"=>1,
-            "item_id"=> $Experience->id,
-            "user_id"=>Auth::user()->id,
-        ]);
+        // $ActivityLog= ActivityLog::create([
+        //     "title"=>"Experience Details",
+        //     "old_data"=>$Experience,
+        //     "type"=>2,
+        //     "action"=>1,
+        //     "item_id"=> $Experience->id,
+        //     "user_id"=>Auth::user()->id,
+        // ]);
         $Experience->title = $request->title;
         $Experience->slug = createSlug($request->title);
         $Experience->description = $request->description;
@@ -304,9 +304,9 @@ class ExperienceController extends BaseController
             $Experience->proccess_page = 'DetailsPage';
         }
         $Experience->save();
-        ActivityLog::where('id',$ActivityLog->id)->update([
-            "new_data"=>$Experience,
-        ]);
+        // ActivityLog::where('id',$ActivityLog->id)->update([
+        //     "new_data"=>$Experience,
+        // ]);
         return $this->sendResponseSuccess("Added Experience Details Successfully");
     }
 
