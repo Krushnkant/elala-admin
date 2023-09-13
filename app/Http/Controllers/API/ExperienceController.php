@@ -227,7 +227,7 @@ class ExperienceController extends BaseController
 
         $attributes_arr = array();
         if($Experience){
-            $ExperienceCategory=ExperienceCategory::find('experience_id',$request->experience_id);
+            $ExperienceCategory=ExperienceCategory::where('experience_id',$request->experience_id)->first();
             $activityLog = ActivityLog::create([
                 "title"=>"Experience Category",
                 "old_data"=>$ExperienceCategory,
