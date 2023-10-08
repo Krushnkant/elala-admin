@@ -97,7 +97,7 @@ class PaymentController extends BaseController
         return $this->sendResponseWithData($data,"Payment Retrieved Successfully.");
     }
 
-    public function payment_verify(Request $request){
+    public function payment_initiate(Request $request){
 
         $client = new Client();
 
