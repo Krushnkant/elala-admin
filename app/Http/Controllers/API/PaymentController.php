@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{SingleOrdPayment,SupplierPayments};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-
+use GuzzleHttp\Client;
 
 class PaymentController extends BaseController
 {
@@ -97,5 +97,34 @@ class PaymentController extends BaseController
         return $this->sendResponseWithData($data,"Payment Retrieved Successfully.");
     }
 
+    public function payment_verify(Request $request){
+
+        $client = new Client();
+
+        $payload = array();
+        $payload['merchantId'] = "MERCHANTUAT";
+        $payload['merchantTransactionId'] = str_random(22);
+        $payload['merchantUserId'] = $request['merchantUserId'];
+        $payload['amount'] = $request['amount'];
+        $payload['redirectUrl'] = "https://webhook.site/redirect-url";
+        $payload['redirectMode'] = "REDIRECT";
+        $payload['callbackUrl'] = "https://webhook.site/callback-url";
+        $payload['mobileNumber'] = $request['mobileNumber'];
+        $payload['paymentInstrument'] = array("type" => "PAY_PAGE");
+
+        $encodedPayload = base64_encode(json_encode($payload, JSON_UNESCAPED_SLASHES));
+
+        $response = $client->request('POST', 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', [
+          'body' => '{"request": "'.$encodedPayload.'"}',
+          'headers' => [
+            'Content-Type' => 'application/json',
+            'accept' => 'application/json',
+            'X-VERIFY' => hash('sha256', $encodedPayload."/pg/v1/pay"."099eb0cd-02cf-4e2a-8aca-3e6c6aff0399").'###1'
+          ],
+        ]);
+
+        // return $response->response;
+        return $response->getBody();
+    }
     
 }

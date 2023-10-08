@@ -25,7 +25,7 @@ Route::post('verify_otp', [AuthController::class, 'verify_otp']);
 Route::post('forgetpassword', [AuthController::class, 'forgetpassword']);
 Route::post('resetpassword', [AuthController::class, 'resetpassword']);
 Route::post('emailsend', [AuthController::class, 'emailsend']);
-
+Route::post('payment_initiate', [UserController::class, 'payment_initiate']);
 
 
 Route::group(['middleware' => 'auth:api'], function () {
