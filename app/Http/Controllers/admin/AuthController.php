@@ -13,7 +13,7 @@ use App\Models\UserLogin;
 
 class AuthController extends Controller
 {
-    private $page = "Elala Admin";
+    private $page = "Kentgo Admin";
 
     public function index()
     {
