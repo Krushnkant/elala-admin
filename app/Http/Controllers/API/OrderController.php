@@ -39,15 +39,15 @@ class OrderController extends BaseController
                 }
             }else{
                 return $this->sendResponseSuccess("space available this time slot");
-            } 
+            }
         }else{
             return $this->sendError("Only ".$max_member_size." space available this time slot", "Space Not Available", []);
-        } 
+        }
     }
 
     public function availableprivategroupdate(Request $request)
     {
-        
+
 
         $validator = Validator::make($request->all(), [
             'experience_id' => 'required',
@@ -74,17 +74,17 @@ class OrderController extends BaseController
             $all_dates[] = $startDate->toDateString();
             $startDate->addDay();
         }
-      
+
         $orders_arr = [];
         //for($i = 1; $i <= $number; $i++){
-         foreach($all_dates as $paymentDate){    
+         foreach($all_dates as $paymentDate){
            // dd($paymentDate);
             //$paymentDate = $i.'/'.$request->booking_month.'/'.$request->booking_year;
             $day = Carbon::createFromFormat('Y-m-d', $paymentDate)->format('l');
             //dump($day);
             $order_slot = OrderSlot::where(['experience_id'=>$request->experience_id])->whereYear('booking_date', '=', $request->booking_year)->whereMonth('booking_date', '=', $request->booking_month)->get()->pluck('schedule_time_id');
             $experiencescheduletimes = ExperienceScheduleTime::where(['experience_id'=>$request->experience_id,'day'=>$day])->whereNotIn('id', $order_slot)->get();
-            
+
             foreach($experiencescheduletimes as $experiencescheduletime){
                 $temp = array();
                 $temp['id'] = $experiencescheduletime->id;
@@ -97,17 +97,17 @@ class OrderController extends BaseController
                 $temp['individual_rate'] = $experience->individual_rate;
                 $temp['min_private_group_rate'] = $experience->min_private_group_rate;
                 $date = $paymentDate;
-                $temp['date'] = date('d-m-Y', strtotime($date)); 
+                $temp['date'] = date('d-m-Y', strtotime($date));
                 array_push($orders_arr,$temp);
             }
         }
         return $this->sendResponseWithData($orders_arr,"Private Group Slot Retrieved Successfully.");
-           
+
     }
 
     public function createorder(Request $request)
     {
-        
+
 
         $validator = Validator::make($request->all(), [
             'experience_id' => 'required',
@@ -126,7 +126,7 @@ class OrderController extends BaseController
             //'payment_date' => 'required',
         ]);
 
-        
+
         if($validator->fails()){
             return response()->json(['errors' => $validator->errors(),'status'=>'failed']);
         }
@@ -199,14 +199,14 @@ class OrderController extends BaseController
         ]);
         $days = 7;
         if($order){
-           
+
             $dt = Carbon::now()->addDays($days);
             $dt =  $dt->toDateString();
 
             $user = User::where('id',$experience->user_id)->first();
             if($user){
                 $user->out_stand_amt = (int)$user->out_stand_amt + (int)$order->total_amount;
-                $user->save();  
+                $user->save();
             }
 
             $supplierPayments = SupplierPayments::where('payment_date',$dt)->where('host_id',$experience->user_id)->first();
@@ -215,7 +215,7 @@ class OrderController extends BaseController
                 $supplierPayments->host_id = $experience->user_id;
                 $supplierPayments->total_amt = $order->total_amount;
                 $supplierPayments->payment_date = $dt;
-                $supplierPayments->save();  
+                $supplierPayments->save();
                 ActivityLog::create([
                     "title"=>"Experience Supplier Payments",
                     "old_data"=>$order,
@@ -239,7 +239,7 @@ class OrderController extends BaseController
                     "new_data"=>$supplierPayments,
                 ]);
             }
-            
+
             if($supplierPayments){
                 $singleOrdPayment = new SingleOrdPayment();
                 $singleOrdPayment->payment_id = 1;
@@ -278,12 +278,12 @@ class OrderController extends BaseController
                   ->orWhere('booking_date', 'LIKE',"%{$search}%")
                   ->orWhere('title', 'LIKE',"%{$search}%")
                   ->orWhere('full_name', 'LIKE',"%{$search}%");
-              });  
+              });
           }
           $orders =  $orders->where('experiences.user_id',Auth::user()->id);
-          $total_orders =  $orders->get();
+          $total_orders =  $orders->where('payment_verify',1)->get();
           $orders =  $orders->paginate($limit);
-        
+
         $orders_arr = array();
         foreach ($orders as $order){
             $image = ExperienceMedia::where('experience_id',$order->experience_id)->where('type','img')->first();
@@ -300,7 +300,7 @@ class OrderController extends BaseController
             $temp['full_name'] = $order->full_name;
             $temp['is_group_order'] = $order->is_group_order;
             $temp['image'] = isset($image->thumb)?'images/experience_images_thumb/'.$image->thumb:"";
-            
+
             array_push($orders_arr,$temp);
         }
         $data['orders'] = $orders_arr;
@@ -325,12 +325,12 @@ class OrderController extends BaseController
                   ->orWhere('booking_date', 'LIKE',"%{$search}%")
                   ->orWhere('title', 'LIKE',"%{$search}%")
                   ->orWhere('full_name', 'LIKE',"%{$search}%");
-              });  
+              });
           }
           $orders =  $orders->where('orders.user_id',Auth::user()->id);
-          $total_orders =  $orders->get();
+          $total_orders =  $orders->where('payment_verify',1)->get();
           $orders =  $orders->paginate($limit);
-        
+
         $orders_arr = array();
         foreach ($orders as $order){
             $image = ExperienceMedia::where('experience_id',$order->experience_id)->where('type','img')->first();
@@ -347,7 +347,7 @@ class OrderController extends BaseController
             $temp['full_name'] = $order->full_name;
             $temp['is_group_order'] = $order->is_group_order;
             $temp['image'] = isset($image->thumb)?'images/experience_images_thumb/'.$image->thumb:"";
-            
+
             array_push($orders_arr,$temp);
         }
         $data['orders'] = $orders_arr;
@@ -356,7 +356,7 @@ class OrderController extends BaseController
     }
 
     public function getOrderCalender($month,$years){
-       
+
         $number = cal_days_in_month(CAL_GREGORIAN, $month, $years);
         $order_check = [];
         for($i = 1; $i <= $number; $i++){
@@ -364,22 +364,22 @@ class OrderController extends BaseController
             $orderHost = Order::whereDay('booking_date', '=', $i)->whereMonth('booking_date', '=', $month)->whereYear('booking_date', '=', $years)->where('host_id', '=', Auth::user()->id)->get();
             $orderHostCount = $orderHost->count();
 
-            $Myorder = Order::whereDay('booking_date', '=', $i)->whereMonth('booking_date', '=', $month)->whereYear('booking_date', '=', $years)->where('user_id', '=', Auth::user()->id)->get();
+            $Myorder = Order::whereDay('booking_date', '=', $i)->whereMonth('booking_date', '=', $month)->whereYear('booking_date', '=', $years)->where('user_id', '=', Auth::user()->id)->where('payment_verify',1)->get();
             $MyorderCount = $Myorder->count();
-          
+
             $order_check1['day'] = $i;
             $order_check1['orderHost'] = $orderHostCount;
             $order_check1['Myorder'] = $MyorderCount;
-            array_push($order_check, $order_check1); 
-           
+            array_push($order_check, $order_check1);
+
         }
 
         return $this->sendResponseWithData($order_check,"Order Calender Retrieved Successfully.");
     }
 
     public function getOrderDetails($id,Request $request){
-      
-        $order = Order::with('orderslot')->where('id',$id)->first();
+
+        $order = Order::with('orderslot')->where('id',$id)->where('payment_verify',1)->first();
         if (!$order){
             return $this->sendError("Order Not Exist", "Not Found Error", []);
         }
@@ -442,7 +442,7 @@ class OrderController extends BaseController
             $temp['type'] = $media['type'];
             array_push($video_array,$temp);
         }
-  
+
         $experienceData =  [
             'id' => $experience->id,
             'slug' => $experience->slug,
@@ -506,7 +506,7 @@ class OrderController extends BaseController
     }
 
     function add_review(Request $request){
-       
+
         $validator = Validator::make($request->all(), [
             'order_id' => 'required',
             'experience_id' => 'required',
@@ -518,12 +518,12 @@ class OrderController extends BaseController
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
 
-        $order = Order::find($request->order_id);
+        $order = Order::where("id",$request->order_id)->where('payment_verify',1);
         //$old_order_status = $order->order_status;
         if (!$order){
             return $this->sendError("Order Item Not Exist", "Not Found Error", []);
         }
-        $review_item = New Review();    
+        $review_item = New Review();
         $review_item->order_id = $request->order_id;
         $review_item->experience_id = $request->experience_id;
         $review_item->customer_id = $request->customer_id;
@@ -531,9 +531,9 @@ class OrderController extends BaseController
         $review_item->rating = $request->rating;
         $review_item->save();
 
-       
+
         return $this->sendResponseSuccess("Review Submitted Successfully");
     }
 
-   
+
 }

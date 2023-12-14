@@ -53,7 +53,7 @@ class OrderController extends Controller
                 $order_status = [7,8];
             }
 
-            
+
 
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -65,9 +65,9 @@ class OrderController extends Controller
                 $dir = 'desc';
             }
 
-            $totalData = Order::count();
+            $totalData = Order::where('payment_verify',1)->count();
             if (isset($order_status)){
-                $totalData = Order::whereIn('order_status',$order_status)->count();
+                $totalData = Order::where('payment_verify',1)->whereIn('order_status',$order_status)->count();
             }
             $totalFiltered = $totalData;
             if(empty($request->input('search.value')) &&  empty($request->host_filter)  && empty($request->start_date) && empty($request->end_date))
@@ -76,15 +76,15 @@ class OrderController extends Controller
                 if (isset($order_status)){
                     $Orders = $Orders->whereIn('order_status',$order_status);
                 }
-                $Orders = $Orders->offset($start)
+                $Orders = $Orders->where('payment_verify',1)->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
-                    ->get();  
+                    ->get();
             }
             else {
                 $search = $request->input('search.value');
-                $Orders = Order::with('experience.user','orderslot');
-                
+                $Orders = Order::with('experience.user','orderslot')->where('payment_verify',1);
+
                 if (isset($request->host_filter) && $request->host_filter!=""){
                     $host_filter = $request->host_filter;
                     $Orders = $Orders->where('host_id', $host_filter)->orWhere('user_id', $host_filter);
@@ -101,7 +101,7 @@ class OrderController extends Controller
                     $query->where('custom_orderid','LIKE',"%{$search}%")
                         ->orWhere('payment_type', 'LIKE',"%{$search}%");
                     });
-                    
+
                     $Orders = $Orders->offset($start)
                     ->limit($limit)
                     ->orderBy($order,$dir)
@@ -156,7 +156,7 @@ class OrderController extends Controller
                     $nestedData['booking_info'] = $order_info;
                     $nestedData['customer_info'] = '<span><img src="'. $profile_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.$user_info->full_name.'</span>';
                     $nestedData['experience_details'] = $experience_details;
-                
+
                     //$nestedData['host'] = '<span><img src="'. $host_pic .'" width="50px" height="50px" alt="Profile Pic"></span><span>'.isset($Order->experience)?$Order->experience->user->full_name:"".'</span>';;
                     $nestedData['host_by'] = $host_by;
                     $nestedData['experience_date'] = date('d-m-Y h:i A', strtotime($Order->created_at));
