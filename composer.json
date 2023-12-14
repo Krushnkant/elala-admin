@@ -13,6 +13,7 @@
         "ghanuz/relations": "dev-master",
         "guzzlehttp/guzzle": "^7.4",
         "intervention/image": "^2.7",
+        "ixudra/curl": "^6.22",
         "laravel/framework": "^8.75",
         "laravel/helpers": "^1.6",
         "laravel/passport": "*",

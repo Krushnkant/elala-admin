@@ -25,10 +25,11 @@ Route::post('verify_otp', [AuthController::class, 'verify_otp']);
 Route::post('forgetpassword', [AuthController::class, 'forgetpassword']);
 Route::post('resetpassword', [AuthController::class, 'resetpassword']);
 Route::post('emailsend', [AuthController::class, 'emailsend']);
-Route::post('payment_initiate', [PaymentController::class, 'payment_initiate']);
+Route::any('phonepe-response', [PaymentController::class, 'response'])->name('response');
 
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('payment_initiate', [PaymentController::class, 'payment_initiate']);
 
     Route::post('addExperienceType', [ExperienceController::class, 'addExperienceType']);
     Route::post('addExperienceLocation', [ExperienceController::class, 'addExperienceLocation']);
