@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 
 class UserController extends BaseController
 {
@@ -72,7 +72,7 @@ class UserController extends BaseController
         $user->save();
         return $this->sendResponseSuccess("User Registered Successfully");
     }
-    
+
 
     public function editProfile(Request $request){
         $messages = [
@@ -92,7 +92,7 @@ class UserController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-        
+
         $user = User::find(Auth::user()->id);
        $activityLog = ActivityLog::create([
             "title"=>"Profile",
@@ -103,10 +103,14 @@ class UserController extends BaseController
             "user_id"=>Auth::user()->id,
         ]);
 
+        $carbonDate = Carbon::createFromFormat('D M d Y H:i:s e+', $request->dob);
+
+        $formattedDate = $carbonDate->format('Y-m-d');
+
         $user->full_name = $request->name;
         $user->mobile_no = $request->mobile_no;
         $user->gender = $request->gender;
-        $user->dob = $request->dob;
+        $user->dob = $formattedDate;
         $user->email = $request->email;
         $user->bio = isset($request->bio)?$request->bio:"";
         $user->is_completed = 1;
@@ -128,12 +132,12 @@ class UserController extends BaseController
     }
 
     public function settings(){
-        
+
         $Setting = Settings::first();
         $data['company_name'] = $Setting->company_name;
         $data['company_logo'] = isset($Setting->company_logo)?url('images/company/'.$Setting->company_logo):"";
         $data['company_favicon'] = isset($Setting->company_favicon)?url('images/company/'.$Setting->company_favicon):"";
-          
+
         return $this->sendResponseWithData($data,"Setting Data Retrieved Successfully.");
     }
 
@@ -161,8 +165,8 @@ class UserController extends BaseController
             $bank = New Bank();
             $bank->user_id = Auth::user()->id;
         }
-        
-        
+
+
         $bank->bank_name = $request->bank_name;
         $bank->account_no = $request->account_no;
         $bank->account_holder_name = $request->account_holder_name;
@@ -190,7 +194,6 @@ class UserController extends BaseController
     }
 
     public function viewProfile(Request $request){
-        \Log::info(Auth::user());
         $messages = [
             'profile_id.required' =>'Please provide a profile id',
         ];
@@ -201,7 +204,7 @@ class UserController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors(), "Validation Errors", []);
         }
-       
+
         //$user_id = Auth::user()->id;
         $limit = isset($request->limit)?$request->limit:20;
         $profile_id = $request->profile_id;
@@ -230,7 +233,7 @@ class UserController extends BaseController
             $mainQuery->where('user_id',$profile_id);
         })->where('estatus',1)->paginate($limit);
         $experiencereviews_arr = array();
-        foreach ($experiencereviews as $review){    
+        foreach ($experiencereviews as $review){
             $temp = array();
             $temp['id'] = $review->id;
             $temp['experience_id'] = isset($review->experience)?$review->experience->id:0;
@@ -245,7 +248,7 @@ class UserController extends BaseController
         }
 
         $experiences = Experience::with(['media' => function($q) {
-            $q->where('type', '=', 'img'); 
+            $q->where('type', '=', 'img');
         }])->where('user_id',$profile_id)->where('estatus',1)->get();
 
         $experiences_arr = array();
@@ -287,7 +290,7 @@ class UserController extends BaseController
         $userdata['experience_reviews'] = $experiencereviews_arr;
         $userdata['experiences'] = $experiences_arr;
         return $this->sendResponseWithData($userdata,"profile Retrieved Successfully.");
-        
+
     }
 
     public function getMyReview(Request $request){
@@ -339,7 +342,7 @@ class UserController extends BaseController
             $mainQuery->where('user_id',$profile_id);
         })->where('estatus',1)->paginate($limit);
         $experiencereviews_arr = array();
-        foreach ($experiencereviews as $review){    
+        foreach ($experiencereviews as $review){
             $temp = array();
             $temp['id'] = $review->id;
             $temp['experience_id'] = isset($review->experience)?$review->experience->id:0;
