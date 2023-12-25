@@ -115,7 +115,7 @@ class PaymentController extends BaseController
 
 
         $info=$request->all();
-        
+
 
         $validator = Validator::make($request->all(), [
             'experience_id' => 'required',
@@ -134,13 +134,13 @@ class PaymentController extends BaseController
             //'payment_date' => 'required',
         ]);
 
-        
+
         if($validator->fails()){
             return response()->json(['errors' => $validator->errors(),'status'=>'failed']);
         }
 
         $res =  $this->createorder($info);
-        
+
         if($res['status']){
             Log::info($res['order_id']);
         $keyIndex = 1; // Live or Sandbox Index
@@ -150,7 +150,7 @@ class PaymentController extends BaseController
           $payload['merchantId'] = "PGTESTPAYUAT";
           $payload['merchantTransactionId'] = (string)$res['order_id'];
           $payload['merchantUserId'] = $request['merchantUserId'];
-          $payload['amount'] = 1;
+          $payload['amount'] = $request['total_amount'];
           $payload['redirectUrl'] = route('response');
           $payload['redirectMode'] = "POST";
           $payload['callbackUrl'] = route('response');
@@ -160,16 +160,13 @@ class PaymentController extends BaseController
           $encodedPayload = base64_encode(json_encode($payload));
           $xVerifyKey = hash('sha256', $encodedPayload . "/pg/v1/pay" . $merchantKey) . '###' . $keyIndex;
 
-          $response = Curl::to('https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay')
+          $response = Curl::to(env('PAYMENT_API_URL'))
                   ->withHeader('Content-Type:application/json')
                   ->withHeader('X-VERIFY:'.$xVerifyKey)
                   ->withData(json_encode(['request' => $encodedPayload]))
                   ->post();
                   $rData = json_decode($response);
-                  Log::info(["level", $rData]);
 
-
-                  
           return $this->sendResponseWithData($rData->data->instrumentResponse->redirectInfo->url, "Payment Retrieved Successfully.");
         }
 
@@ -217,23 +214,23 @@ class PaymentController extends BaseController
             $days = 7;
             if($order){
                  $experience = Experience::where('id',$order->experience_id)->first();
-               
+
                 $dt = Carbon::now()->addDays($days);
                 $dt =  $dt->toDateString();
-    
+
                 $user = User::where('id',$experience->user_id)->first();
                 if($user){
                     $user->out_stand_amt = (int)$user->out_stand_amt + (int)$order->total_amount;
-                    $user->save();  
+                    $user->save();
                 }
-    
+
                 $supplierPayments = SupplierPayments::where('payment_date',$dt)->where('host_id',$experience->user_id)->first();
                 if(!$supplierPayments){
                     $supplierPayments = new SupplierPayments();
                     $supplierPayments->host_id = $experience->user_id;
                     $supplierPayments->total_amt = $order->total_amount;
                     $supplierPayments->payment_date = $dt;
-                    $supplierPayments->save();  
+                    $supplierPayments->save();
                     ActivityLog::create([
                         "title"=>"Experience Supplier Payments",
                         "old_data"=>$order,
@@ -257,7 +254,7 @@ class PaymentController extends BaseController
                         "new_data"=>$supplierPayments,
                     ]);
                 }
-                
+
                 if($supplierPayments){
                     $singleOrdPayment = new SingleOrdPayment();
                     $singleOrdPayment->payment_id = 1;
@@ -288,7 +285,7 @@ class PaymentController extends BaseController
     }
     public function createorder($request)
     {
-    
+
         Log::info($request);
 
         $last_order_id = Order::orderBy('id','desc')->pluck('id')->first();
@@ -335,7 +332,7 @@ class PaymentController extends BaseController
         $order->payment_date = isset($request['payment_date']) ? $request['payment_date'] : '';
         $order->is_group_order = isset($request['is_group_order']) ? $request['is_group_order'] : 0;
         $order->save();
-    
+
         return ['status'=>true,'order_id'=>$order->id];
     }
 }
