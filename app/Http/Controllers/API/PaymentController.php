@@ -160,7 +160,7 @@ class PaymentController extends BaseController
           $encodedPayload = base64_encode(json_encode($payload));
           $xVerifyKey = hash('sha256', $encodedPayload . "/pg/v1/pay" . $merchantKey) . '###' . $keyIndex;
 
-          $response = Curl::to(env('PAYMENT_API_URL'))
+          $response = Curl::to('https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay')
                   ->withHeader('Content-Type:application/json')
                   ->withHeader('X-VERIFY:'.$xVerifyKey)
                   ->withData(json_encode(['request' => $encodedPayload]))
@@ -180,7 +180,7 @@ class PaymentController extends BaseController
 
         $finalXHeader = hash('sha256','/pg/v1/status/'.$input['merchantId'].'/'.$input['transactionId'].$saltKey).'###'.$saltIndex;
 
-        $response = Curl::to(env('PAYMENT_RESPONSE_URL').$input['merchantId'].'/'.$input['transactionId'])
+        $response = Curl::to('https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/status/'.$input['merchantId'].'/'.$input['transactionId'])
                 ->withHeader('Content-Type:application/json')
                 ->withHeader('accept:application/json')
                 ->withHeader('X-VERIFY:'.$finalXHeader)
