@@ -150,7 +150,7 @@ class PaymentController extends BaseController
           $payload['merchantId'] = "PGTESTPAYUAT";
           $payload['merchantTransactionId'] = (string)$res['order_id'];
           $payload['merchantUserId'] = $request['merchantUserId'];
-          $payload['amount'] = $request['total_amount'];
+          $payload['amount'] = $request['total_amount'] * 100;
           $payload['redirectUrl'] = route('response');
           $payload['redirectMode'] = "POST";
           $payload['callbackUrl'] = route('response');
@@ -166,8 +166,8 @@ class PaymentController extends BaseController
                   ->withData(json_encode(['request' => $encodedPayload]))
                   ->post();
                   $rData = json_decode($response);
-            Log::info(["logggggggggg"=>$rData]);
-            Log::info(["logggggggggg"=>env('PAYMENT_API_URL')]);
+            // Log::info(["logggggggggg"=>$rData]);
+            // Log::info(["logggggggggg"=>env('PAYMENT_API_URL')]);
           return $this->sendResponseWithData($rData->data->instrumentResponse->redirectInfo->url, "Payment Retrieved Successfully.");
         }
 
