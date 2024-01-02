@@ -142,7 +142,6 @@ class PaymentController extends BaseController
         $res =  $this->createorder($info);
 
         if($res['status']){
-            Log::info($res['order_id']);
         $keyIndex = 1; // Live or Sandbox Index
         $merchantKey = "864f4078-1517-4d26-af3a-63a8a4d29de7"; // Live Key
         // $merchantKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"; // Sandbox Key
@@ -167,7 +166,7 @@ class PaymentController extends BaseController
                   ->post();
                   $rData = json_decode($response);
             Log::info(["logggggggggg"=>$rData]);
-            // Log::info(["logggggggggg"=>env('PAYMENT_API_URL')]);
+            Log::info(["logggggggggg"=>env('PAYMENT_API_URL')]);
           return $this->sendResponseWithData($rData->data->instrumentResponse->redirectInfo->url, "Payment Retrieved Successfully.");
         }
 
@@ -286,8 +285,6 @@ class PaymentController extends BaseController
     }
     public function createorder($request)
     {
-
-        Log::info($request);
 
         $last_order_id = Order::orderBy('id','desc')->pluck('id')->first();
         if(isset($last_order_id)) {
