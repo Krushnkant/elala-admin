@@ -166,7 +166,7 @@ class PaymentController extends BaseController
                   ->withData(json_encode(['request' => $encodedPayload]))
                   ->post();
                   $rData = json_decode($response);
-            // Log::info(["logggggggggg"=>$rData]);
+            Log::info(["logggggggggg"=>$rData]);
             // Log::info(["logggggggggg"=>env('PAYMENT_API_URL')]);
           return $this->sendResponseWithData($rData->data->instrumentResponse->redirectInfo->url, "Payment Retrieved Successfully.");
         }
