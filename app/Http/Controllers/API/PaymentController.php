@@ -144,8 +144,8 @@ class PaymentController extends BaseController
         if($res['status']){
             Log::info($res['order_id']);
         $keyIndex = 1; // Live or Sandbox Index
-        // $merchantKey = "864f4078-1517-4d26-af3a-63a8a4d29de7"; // Live Key
-        $merchantKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"; // Sandbox Key
+        $merchantKey = "864f4078-1517-4d26-af3a-63a8a4d29de7"; // Live Key
+        // $merchantKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"; // Sandbox Key
           $payload = array();
           $payload['merchantId'] = "PGTESTPAYUAT";
           $payload['merchantTransactionId'] = (string)$res['order_id'];
