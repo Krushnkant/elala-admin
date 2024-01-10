@@ -51,7 +51,7 @@ class CategoryController extends Controller
             $validator = Validator::make($request->all(), [
                 'sr_no' => 'required|numeric',
                 'category_name' => 'required',
-                'catImg' => 'required',
+                // 'catImg' => 'required',
             ], $messages);
         }
 
