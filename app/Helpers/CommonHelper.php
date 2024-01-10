@@ -59,16 +59,16 @@ function compressImage($source, $destination, $quality) {
     // Create a new image from file 
     switch($mime){ 
         case 'image/jpeg': 
-            $image = imagecreatefromjpeg($source); 
+            $image = @imagecreatefromjpeg($source); 
             break; 
         case 'image/png': 
-            $image = imagecreatefrompng($source); 
+            $image = @imagecreatefrompng($source); 
             break; 
         case 'image/gif': 
-            $image = imagecreatefromgif($source); 
+            $image = @imagecreatefromgif($source); 
             break; 
         default: 
-            $image = imagecreatefromjpeg($source); 
+            $image = @imagecreatefromjpeg($source); 
     } 
      
     // Save image 
