@@ -86,7 +86,7 @@ $settings = \App\Models\Settings::first();
         <!--**********************************
         Header start
     ***********************************-->
-        <input type="hidden" name="web_url" value="{{ url(" /") }}" id="web_url">
+        <input type="hidden" name="web_url" value="{{ url('/') }}" id="web_url">
         <div class="header">
             <div class="header-content clearfix">
 
